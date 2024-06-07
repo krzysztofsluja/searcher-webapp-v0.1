@@ -1,4 +1,4 @@
-package org.sluja.searcher.webapp.dto.product;
+package org.sluja.searcher.webapp.dto.scraper;
 
 import org.sluja.searcher.webapp.annotation.NullableOrEmptyField;
 

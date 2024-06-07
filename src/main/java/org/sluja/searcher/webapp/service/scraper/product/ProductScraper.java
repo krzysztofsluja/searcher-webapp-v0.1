@@ -2,7 +2,7 @@ package org.sluja.searcher.webapp.service.scraper.product;
 
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import org.sluja.searcher.webapp.dto.product.ProductScrapWithDefinedAttributes;
+import org.sluja.searcher.webapp.dto.scraper.ProductScrapWithDefinedAttributes;
 import org.sluja.searcher.webapp.service.scraper.Scraper;
 
 import java.util.List;

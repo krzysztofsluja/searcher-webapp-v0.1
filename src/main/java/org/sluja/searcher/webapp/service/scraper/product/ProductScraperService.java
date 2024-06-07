@@ -4,11 +4,13 @@ import lombok.RequiredArgsConstructor;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import org.sluja.searcher.webapp.dto.product.ProductScrapWithDefinedAttributes;
+
+import org.sluja.searcher.webapp.dto.scraper.ProductScrapWithDefinedAttributes;
 import org.sluja.searcher.webapp.exception.connection.ConnectionTimeoutException;
 import org.sluja.searcher.webapp.service.scraper.Scraper;
 import org.sluja.searcher.webapp.service.scraper.connector.ScraperConnector;
 import org.sluja.searcher.webapp.utils.connector.Connector;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -19,6 +21,7 @@ import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
+@Qualifier("productScraperService")
 public class ProductScraperService implements ProductScraper {
 
     private final Connector<Document> scraperConnector;
