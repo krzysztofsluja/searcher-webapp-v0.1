@@ -4,8 +4,13 @@ import org.sluja.searcher.webapp.exception.connection.ConnectionTimeoutException
 
 import java.io.IOException;
 
-@FunctionalInterface
 public interface Connector<T> {
 
-    T connectAndGetPage(final String url) throws ConnectionTimeoutException, IOException;
+    default T connectAndGetPage(final String url) throws ConnectionTimeoutException, IOException {
+        throw new ConnectionTimeoutException();
+    }
+
+    default T connect() throws ConnectionTimeoutException{
+        throw new ConnectionTimeoutException();
+    }
 }
