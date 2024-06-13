@@ -23,16 +23,15 @@ public class StaticWebsiteShopCategorySearchService extends ShopCategorySearchSe
 
     @Override
     public List<String> search(final SearchRequest request) throws ValueForSearchPropertyException, ProductNotFoundException, ConnectionTimeoutException, IOException, ScraperIncorrectFieldException {
-        final String homePageAddress = (String) SearchPropertyGetComponent.getProperty(request.properties().get(SearchProperty.HOME_PAGE_ADDRESS));
+        final String homePageAddress = (String) getProperty(request.properties().get(SearchProperty.HOME_PAGE_ADDRESS));
         final StaticWebsiteScrapRequest scrapRequest = new StaticWebsiteScrapRequest(request.dynamicWebsite(),
                 StringUtils.EMPTY,
-                StaticWebsiteConnector.INSTANCE.connectAndGetPage(new StaticWebsiteConnectRequest(homePageAddress)),
-                null);
+                StaticWebsiteConnector.INSTANCE.connectAndGetPage(new StaticWebsiteConnectRequest(homePageAddress)));
         final List<Element> elements = (List<Element>) super.search(request,scrapRequest);
         if(CollectionUtils.isEmpty(elements)) {
             throw new ProductNotFoundException();
         }
-        final String pageAddressExtractAttribute = (String) SearchPropertyGetComponent.getProperty(request.properties().get(SearchProperty.PAGE_ADDRESS_EXTRACT_ATTRIBUTE));
+        final String pageAddressExtractAttribute = (String) getProperty(request.properties().get(SearchProperty.PAGE_ADDRESS_EXTRACT_ATTRIBUTE));
         return elements.stream()
                 .map(element -> element.attr(pageAddressExtractAttribute))
                 .map(element -> element.replaceAll("\\s", StringUtils.EMPTY))

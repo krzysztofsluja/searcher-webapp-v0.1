@@ -10,11 +10,9 @@ import org.sluja.searcher.webapp.dto.scraper.ScrapRequest;
 public class StaticWebsiteScrapRequest extends ScrapRequest {
 
     private Document document;
-    private Element element;
 
-    public StaticWebsiteScrapRequest(final boolean isDynamicWebsite, final String property, final Document document, final Element element) {
+    public StaticWebsiteScrapRequest(final boolean isDynamicWebsite, final String property, final Document document) {
         super(isDynamicWebsite, property);
         this.document = document;
-        this.element = element;
     }
 }

@@ -15,21 +15,22 @@ import org.sluja.searcher.webapp.service.enums.search.SearchPropertyGetComponent
 import org.sluja.searcher.webapp.service.factory.scraper.WebsiteScraperFactory;
 import org.sluja.searcher.webapp.service.interfaces.search.ISearch;
 import org.sluja.searcher.webapp.service.scraper.interfaces.WebsiteScraper;
+import org.sluja.searcher.webapp.service.scraper.search.BaseSearchService;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class ShopCategorySearchService<T extends ScrapRequest> implements ISearch<T> {
+public abstract class ShopCategorySearchService<T extends ScrapRequest> extends BaseSearchService implements ISearch<T> {
 
     @Override
     public List<?> search(final SearchRequest request, T scrapRequest) throws ValueForSearchPropertyException, ProductNotFoundException, ScraperIncorrectFieldException {
         final WebsiteScraper scraperService = WebsiteScraperFactory.getScraper(request.dynamicWebsite());
         final List<?> addresses = new ArrayList<>();
-        final List<String> allCategoriesPageAddresses = (List<String>) SearchPropertyGetComponent.getProperty(request.properties().get(SearchProperty.ALL_CATEGORIES_PAGE_ADDRESSES));
+        final List<String> allCategoriesPageAddresses = (List<String>) getProperty(request.properties().get(SearchProperty.ALL_CATEGORIES_PAGE_ADDRESSES));
         for (String property : allCategoriesPageAddresses) {
             scrapRequest.setProperty(property);
-            addresses.addAll((List) scraperService.scrap(scrapRequest));
+            addresses.addAll(scraperService.scrap(scrapRequest));
         }
         return addresses;
     }
