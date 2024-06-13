@@ -4,11 +4,12 @@ import lombok.RequiredArgsConstructor;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jsoup.nodes.Element;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
 import org.sluja.searcher.webapp.dto.scraper.ProductScrapWithDefinedAttributes;
 import org.sluja.searcher.webapp.enums.product.ProductProperty;
 import org.sluja.searcher.webapp.exception.format.UnsuccessfulFormatException;
 import org.sluja.searcher.webapp.exception.product.ProductNotFoundException;
-import org.sluja.searcher.webapp.service.scraper.product.ProductScraper;
 import org.sluja.searcher.webapp.utils.extractor.Extractor;
 import org.sluja.searcher.webapp.utils.formatter.ProductFormatter;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -19,12 +20,12 @@ import java.util.List;
 @Component
 @Qualifier("productPageAddressExtractor")
 @RequiredArgsConstructor
-public class ProductPageAddressExtractor implements Extractor<List<String>, Element, ProductScrapWithDefinedAttributes> {
+public class ProductPageAddressExtractor implements Extractor<List<String>, WebElement, ProductScrapWithDefinedAttributes> {
 
-    private final ProductScraper productScraperService;
     @Override
-    public List<String> extract(final Element element, final ProductScrapWithDefinedAttributes request) throws UnsuccessfulFormatException, ProductNotFoundException {
-        List<Element> elements =  productScraperService.scrapElementsByAttributes(element, request.productPageAddresses());
+    public List<String> extract(final WebElement element, final ProductScrapWithDefinedAttributes request) throws UnsuccessfulFormatException, ProductNotFoundException {
+      /*//  List<Element> elements =  productScraperService.scrapElementsByAttributes(element, request.productPageAddresses());
+        List<WebElement> elements1 = element.findElements(By.tagName()request.productPageAddresses());
         return elements.stream()
                 .map(elem -> {
                     try {
@@ -34,6 +35,7 @@ public class ProductPageAddressExtractor implements Extractor<List<String>, Elem
                     }
                 })
                 .filter(StringUtils::isNotEmpty)
-                .toList();
+                .toList();*/
+        return null;
     }
 }

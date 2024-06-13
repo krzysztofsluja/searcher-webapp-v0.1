@@ -17,7 +17,6 @@ public class Category {
     private String name;
     private boolean active;
     @ManyToMany
-    @JoinColumn(name = "context_id")
     private List<Context> contexts;
     @Column(name = "insert_user_id")
     private long insertUserId;
