@@ -22,4 +22,10 @@ public class DynamicWebsiteConnector implements IConnector<WebDriver, DynamicWeb
         driver.get(request.getUrl());
         return driver;
     }
+
+    public static void quit(final WebDriver driver) {
+        if(Objects.nonNull(driver)) {
+            driver.quit();
+        }
+    }
 }
