@@ -1,0 +1,82 @@
+{
+"shopName": "manyfestbmx",
+  "productPrice": "span.product-price",
+  "homePageAddress": "https://www.manyfestbmx.pl",
+  "productDescription": "div.rte-content",
+  "productDescriptionAttribute": "",
+  "productName": "h2.h3.product-title",
+  "productDiscountPrice": "span.red",
+  "productPageAddressAttribute": "href",
+  "productImageExtractAttribute": "data-src",
+  "div": "div",
+  "pageAddressExtractAttribute": "href",
+  "plainPageAddressToFormat": "",
+  "productInstance": "div#products-container > div#products > div.col-prod > div.item",
+  "productPageAddresses": [
+    "h2.h3.product-title > a"
+  ],
+  "productImageAddresses": [
+    "a.thumbnail.product-thumbnail > img[data-full-size-image-url]"
+  ],
+  "allCategoriesPageAddressElement" : "a",
+  "categoryPageAmounts": [
+  "ul.pagination"
+  ],
+  "allCategoriesPageAddresses": [
+    "div.cbp-category-link-w > a",
+    "li#cbp-hrmenu-tab-4.cbp-hrmenu-tab.cbp-hrmenu-tab-4 > a"
+
+  ],
+  "allCategoriesSubMenuVisibility" : {
+    "//nav//a[contains(text(), 'Części')]": "ul.submenu-container"
+    },
+  "allowedEmptyProperties": [],
+  "categories": [
+    "bars",
+    "frames"
+  ],
+  "categoryProperties": {
+    "bars": ["kierownice", "kierownica"],
+    "frames": ["ramy","rama","ram"]
+  }
+}
+
+{
+"shopName": "bmxlife",
+  "productPrice": "span.price",
+  "homePageAddress": "https://bmxlife.pl",
+  "productDescription": "div.tab-content div#pdesc p",
+  "productDescriptionAttribute": "",
+  "productName": "h2.title",
+  "productDiscountPrice": "span.red",
+  "productPageAddressAttribute": "href",
+  "productImageExtractAttribute": "src",
+  "div": "div",
+  "pageAddressExtractAttribute": "href",
+  "plainPageAddressToFormat": "",
+  "productInstance": "div#products-container > div#products > div.col-prod > div.item",
+  "productPageAddresses": [
+    "a"
+  ],
+  "productImageAddresses": [
+    "img"
+  ],
+  "allCategoriesPageAddressElement" : "a",
+  "categoryPageAmounts": [],
+  "allCategoriesPageAddresses": [
+    "li.dropdown.megamenu-fw:has(a:containsOwn(cz)) > ul.dropdown-menu.megamenu-content li > a"
+
+  ],
+  "allCategoriesSubMenuVisibility" : {
+    "//nav//a[contains(text(), 'Części')]": "ul.submenu-container"
+    },
+  "allowedEmptyProperties": [],
+  "categories": [
+    "frames",
+    "bars"
+  ],
+  "categoryProperties": {
+    "bars": ["kierownice", "kierownica"],
+    "frames": ["ramy","rama","ram"]
+  }
+}
