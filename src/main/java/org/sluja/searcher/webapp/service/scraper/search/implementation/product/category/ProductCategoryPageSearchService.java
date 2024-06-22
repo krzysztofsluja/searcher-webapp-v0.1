@@ -20,7 +20,7 @@ public abstract class ProductCategoryPageSearchService<T extends ScrapRequest, S
     }
 
     protected boolean doesPageContainProductCategoryName(final String pageAddress, final SearchRequest request) throws ValueForSearchPropertyException {
-        final List<String> propertiesForExactCategoryName = ((List<String>) getProperty(request.getProperties().get(SearchProperty.CATEGORY_PROPERTIES)));
+        final List<String> propertiesForExactCategoryName = ((List<String>) getProperty(request, SearchProperty.CATEGORY_PROPERTIES));
         return propertiesForExactCategoryName.stream()
                 .anyMatch(property -> doesPageContainProductCategoryName(pageAddress, property));
     }
