@@ -21,7 +21,7 @@ import java.util.List;
 public class StaticWebsiteShopCategorySearchService extends ShopCategorySearchService<StaticWebsiteScrapRequest> {
 
     @Override
-    public List<String> search(final SearchRequest request) throws ShopCategoriesPageAddressesNotFoundException {
+    public List<String> searchList(final SearchRequest request) throws ShopCategoriesPageAddressesNotFoundException {
         try {
             final String homePageAddress = (String) getProperty(request, SearchProperty.HOME_PAGE_ADDRESS);
             final StaticWebsiteScrapRequest scrapRequest = new StaticWebsiteScrapRequest(StringUtils.EMPTY,

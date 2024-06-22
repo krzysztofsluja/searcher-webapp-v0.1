@@ -29,7 +29,7 @@ import java.util.Objects;
 
 public class DynamicWebsiteProductCategoryPageSearchService extends ProductCategoryPageSearchService<DynamicWebsiteScrapRequest, DynamicWebsiteSearchRequest> {
     @Override
-    public List<String> search(final DynamicWebsiteSearchRequest request) throws ProductNotFoundException {
+    public List<String> searchList(final DynamicWebsiteSearchRequest request) throws ProductNotFoundException {
         final List<String> categoryPageAddresses = getCategoryPageAddresses(request);
         if (CollectionUtils.isEmpty(categoryPageAddresses)) {
             throw new CategoryPageAddressNotFoundException();
@@ -60,7 +60,7 @@ public class DynamicWebsiteProductCategoryPageSearchService extends ProductCateg
         final List<SearchProperty> searchProperties = List.of(SearchProperty.HOME_PAGE_ADDRESS, SearchProperty.PAGE_ADDRESS_EXTRACT_ATTRIBUTE, SearchProperty.ALL_CATEGORIES_PAGE_ADDRESSES);
         try {
             final SearchRequest searchRequest = SearchRequestBuilder.buildFromAnotherRequest(false, searchProperties, request);
-            return (List<String>) shopCategorySearchService.search(searchRequest);
+            return (List<String>) shopCategorySearchService.searchList(searchRequest);
         } catch (IncorrectInputException ex) {
             //TODO logging
             throw new ShopCategoriesPageAddressesNotFoundException();
