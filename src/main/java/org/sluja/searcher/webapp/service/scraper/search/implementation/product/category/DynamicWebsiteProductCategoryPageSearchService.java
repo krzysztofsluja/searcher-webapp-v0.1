@@ -1,8 +1,10 @@
 package org.sluja.searcher.webapp.service.scraper.search.implementation.product.category;
 
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.sluja.searcher.webapp.builder.request.connect.dynamic.DynamicWebsiteConnectRequestBuilder;
 import org.sluja.searcher.webapp.builder.request.search.SearchRequestBuilder;
 import org.sluja.searcher.webapp.dto.connect.DynamicWebsiteConnectRequest;
 import org.sluja.searcher.webapp.dto.scraper.dynamic.DynamicWebsiteScrapRequest;
@@ -23,6 +25,7 @@ import org.sluja.searcher.webapp.service.scraper.search.implementation.shop.cate
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class DynamicWebsiteProductCategoryPageSearchService extends ProductCategoryPageSearchService<DynamicWebsiteScrapRequest, DynamicWebsiteSearchRequest> {
     @Override
@@ -35,56 +38,19 @@ public class DynamicWebsiteProductCategoryPageSearchService extends ProductCateg
             return categoryPageAddresses;
         }
         final List<String> productCategoryPageAddresses = new ArrayList<>();
-
+        WebDriver driver = null;
         for (final String address : categoryPageAddresses) {
-            productCategoryPageAddresses.add(address);
-            final DynamicWebsiteConnectRequest connectRequest = DynamicWebsiteConnectRequest.builder()
-                    .url(address)
-                    .driver(null)
-                    .build();
-            final WebDriver driver;
+            final DynamicWebsiteConnectRequest connectRequest = DynamicWebsiteConnectRequestBuilder.build(address, null);
             try {
                 driver = DynamicWebsiteConnector.INSTANCE.connectAndGetPage(connectRequest);
-            } catch (ConnectionTimeoutException | IOException e) {
+                productCategoryPageAddresses.addAll(getAllPageAddressesForGivenCategory(request, driver));
+            } catch (ConnectionTimeoutException | IOException | ValueForSearchPropertyException e) {
                 //TODO logging
-             continue;
+                continue;
             }
-            while(true) {
-                final DynamicWebsiteScrapRequest scrapRequest = new DynamicWebsiteScrapRequest(((List<String>) request.getProperties().get(SearchProperty.CATEGORY_PAGE_AMOUNTS)).get(0), driver);
-                final String pageAddressExtractAttribute = (String) request.getProperties().get(SearchProperty.PAGE_ADDRESS_EXTRACT_ATTRIBUTE);
-                final List<WebElement> pages;
-                try {
-                    pages = (List<WebElement>) super.search(request, scrapRequest);
-                    final WebElement page = pages.getFirst();
-                    final String pageAddresses = pages.stream()
-                            .map(element -> element.getAttribute(pageAddressExtractAttribute))
-                            .distinct()
-                            .findFirst()
-                            .orElseThrow(ValueForSearchPropertyException::new);
-                    if(page != null) {
-                        page.click();
-                        Thread.sleep(1000);
-                    } else {
-                        break;
-                    }
-                } catch (ValueForSearchPropertyException | ScraperIncorrectFieldException | InterruptedException e) {
-                    //TODO logging
-                    continue;
-                }
-            }
-
-/*            for (final WebElement page : pages) {
-
-                productCategoryPageAddresses.add(pageAddress);
-                try {
-                    if (super.doesPageHaveNextInOrder(page.getText())) {
-                        page.click();
-                    }
-                } catch (IncorrectInputException e) {
-                    //TODO logging
-                    continue;
-                }
-            }*/
+        }
+        if(Objects.nonNull(driver)) {
+            DynamicWebsiteConnector.quit(driver);
         }
         return productCategoryPageAddresses;
     }
@@ -117,11 +83,45 @@ public class DynamicWebsiteProductCategoryPageSearchService extends ProductCateg
 
     private boolean isCategoryPagePaginated(final DynamicWebsiteSearchRequest request) {
         try {
-            return CollectionUtils.isNotEmpty(((List<String>) getProperty(request.getProperties().get(SearchProperty.CATEGORY_PAGE_AMOUNTS))));
+            return StringUtils.isNotEmpty((String) getProperty(request, SearchProperty.CATEGORY_PAGE_AMOUNTS));
         } catch (ValueForSearchPropertyException e) {
             //TODO logging
             return false;
         }
+    }
+
+    private List<String> getAllPageAddressesForGivenCategory(final DynamicWebsiteSearchRequest request, final WebDriver driver) throws ValueForSearchPropertyException, CategoryPageAddressNotFoundException {
+        final String currentCategoryUrl = driver.getCurrentUrl();
+        if(StringUtils.isEmpty(currentCategoryUrl)) {
+            throw new CategoryPageAddressNotFoundException();
+        }
+        final List<String> pageAddressesForCategory = new ArrayList<>();
+        pageAddressesForCategory.add(currentCategoryUrl);
+        while (true) {
+            final DynamicWebsiteScrapRequest scrapRequest = new DynamicWebsiteScrapRequest(((String) getProperty(request, SearchProperty.CATEGORY_PAGE_AMOUNTS)), driver);
+            final String pageAddressExtractAttribute = (String) getProperty(request, SearchProperty.PAGE_ADDRESS_EXTRACT_ATTRIBUTE);
+            final List<WebElement> pages;
+            try {
+                pages = (List<WebElement>) super.search(request, scrapRequest);
+                final WebElement page = pages.stream()
+                        .distinct()
+                        .findFirst()
+                        .orElseThrow(CategoryPageAddressNotFoundException::new);
+                final String pageAddresses = page.getAttribute(pageAddressExtractAttribute);
+                if (StringUtils.isNotEmpty(pageAddresses)) {
+                    pageAddressesForCategory.add(pageAddresses);
+                }
+                page.click();
+                Thread.sleep(1000);
+            } catch (ValueForSearchPropertyException | ScraperIncorrectFieldException | InterruptedException ex) {
+                //TODO logging
+                continue;
+            } catch (ProductNotFoundException ex1) {
+                //TODO logging
+                break;
+            }
+        }
+        return pageAddressesForCategory;
     }
 
 }
