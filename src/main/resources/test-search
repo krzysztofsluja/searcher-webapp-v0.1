@@ -1,3 +1,4 @@
+----------------MANYFESTBMX----------------
 {
 "shopName": "manyfestbmx",
   "productPrice": "span.product-price",
@@ -20,7 +21,7 @@
   ],
   "allCategoriesPageAddressElement" : "a",
   "categoryPageAmounts": [
-  "ul.pagination"
+  ".pagination a[rel='next']"
   ],
   "allCategoriesPageAddresses": [
     "div.cbp-category-link-w > a",
@@ -40,6 +41,8 @@
     "frames": ["ramy","rama","ram"]
   }
 }
+
+----------------BMXLIFE----------------
 
 {
 "shopName": "bmxlife",
