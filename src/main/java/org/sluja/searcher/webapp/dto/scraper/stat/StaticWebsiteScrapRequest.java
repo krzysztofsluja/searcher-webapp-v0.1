@@ -11,8 +11,8 @@ public class StaticWebsiteScrapRequest extends ScrapRequest {
 
     private Document document;
 
-    public StaticWebsiteScrapRequest(final boolean isDynamicWebsite, final String property, final Document document) {
-        super(isDynamicWebsite, property);
+    public StaticWebsiteScrapRequest(final String property, final Document document) {
+        super(false, property);
         this.document = document;
     }
 }
