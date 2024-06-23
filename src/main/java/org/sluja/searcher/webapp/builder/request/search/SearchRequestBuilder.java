@@ -15,9 +15,13 @@ public class SearchRequestBuilder {
         if(Objects.isNull(request)) {
             throw new IncorrectInputException("Search Request");
         }
+        return build(isDynamicWebsite, buildPropertiesMap(searchProperties, request));
+    }
+
+    public static SearchRequest build(final boolean isDynamicWebsite, final Map<SearchProperty, Object> properties) {
         return SearchRequest.builder()
                 .dynamicWebsite(isDynamicWebsite)
-                .properties(buildPropertiesMap(searchProperties, request))
+                .properties(properties)
                 .build();
     }
 
