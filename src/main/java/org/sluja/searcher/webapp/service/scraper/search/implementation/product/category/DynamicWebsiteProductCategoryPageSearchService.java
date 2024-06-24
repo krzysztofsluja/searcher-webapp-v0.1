@@ -5,31 +5,31 @@ import org.apache.commons.lang3.StringUtils;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.sluja.searcher.webapp.builder.request.connect.dynamic.DynamicWebsiteConnectRequestBuilder;
-import org.sluja.searcher.webapp.builder.request.search.SearchRequestBuilder;
 import org.sluja.searcher.webapp.dto.connect.DynamicWebsiteConnectRequest;
+import org.sluja.searcher.webapp.dto.product.request.search.category.ProductCategoryPageSearchRequest;
+import org.sluja.searcher.webapp.dto.product.request.shop.category.ShopCategoryPageSearchRequest;
 import org.sluja.searcher.webapp.dto.scraper.dynamic.DynamicWebsiteScrapRequest;
-import org.sluja.searcher.webapp.dto.scraper.search.DynamicWebsiteSearchRequest;
-import org.sluja.searcher.webapp.dto.scraper.search.SearchRequest;
-import org.sluja.searcher.webapp.enums.scraper.search.SearchProperty;
 import org.sluja.searcher.webapp.exception.connection.ConnectionTimeoutException;
 import org.sluja.searcher.webapp.exception.enums.search.ValueForSearchPropertyException;
-import org.sluja.searcher.webapp.exception.product.general.ProductNotFoundException;
 import org.sluja.searcher.webapp.exception.product.category.CategoryPageAddressNotFoundException;
-import org.sluja.searcher.webapp.exception.product.shop.ShopCategoriesPageAddressesNotFoundException;
+import org.sluja.searcher.webapp.exception.product.general.ProductNotFoundException;
 import org.sluja.searcher.webapp.exception.scraper.ScraperIncorrectFieldException;
-import org.sluja.searcher.webapp.exception.scraper.search.IncorrectInputException;
 import org.sluja.searcher.webapp.service.connector.dynamic.DynamicWebsiteConnector;
 import org.sluja.searcher.webapp.service.factory.search.ShopCategorySearchFactory;
 import org.sluja.searcher.webapp.service.scraper.search.implementation.shop.category.ShopCategorySearchService;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class DynamicWebsiteProductCategoryPageSearchService extends ProductCategoryPageSearchService<DynamicWebsiteScrapRequest, DynamicWebsiteSearchRequest> {
+@Service
+@Qualifier("dynamicWebsiteProductCategoryPageSearchService")
+public class DynamicWebsiteProductCategoryPageSearchService extends ProductCategoryPageSearchService<DynamicWebsiteScrapRequest, ProductCategoryPageSearchRequest> {
     @Override
-    public List<String> searchList(final DynamicWebsiteSearchRequest request) throws ProductNotFoundException {
+    public List<String> searchList(final ProductCategoryPageSearchRequest request) throws ProductNotFoundException {
         final List<String> categoryPageAddresses = getCategoryPageAddresses(request);
         if (CollectionUtils.isEmpty(categoryPageAddresses)) {
             throw new CategoryPageAddressNotFoundException();
@@ -49,30 +49,24 @@ public class DynamicWebsiteProductCategoryPageSearchService extends ProductCateg
                 continue;
             }
         }
-        if(Objects.nonNull(driver)) {
+        if (Objects.nonNull(driver)) {
             DynamicWebsiteConnector.quit(driver);
         }
         return productCategoryPageAddresses;
     }
 
-    private List<String> getAllCategoriesAddresses(final DynamicWebsiteSearchRequest request) throws ProductNotFoundException {
+    private List<String> getAllCategoriesAddresses(final boolean isDynamicWebsite, final String homePageAddress, final List<String> allCategoriesPageAddresses, final String pageAddressExtractAttribute) throws ProductNotFoundException {
         final ShopCategorySearchService shopCategorySearchService = ShopCategorySearchFactory.create(false);
-        final List<SearchProperty> searchProperties = List.of(SearchProperty.HOME_PAGE_ADDRESS, SearchProperty.PAGE_ADDRESS_EXTRACT_ATTRIBUTE, SearchProperty.ALL_CATEGORIES_PAGE_ADDRESSES);
-        try {
-            final SearchRequest searchRequest = SearchRequestBuilder.buildFromAnotherRequest(false, searchProperties, request);
-            return (List<String>) shopCategorySearchService.searchList(searchRequest);
-        } catch (IncorrectInputException ex) {
-            //TODO logging
-            throw new ShopCategoriesPageAddressesNotFoundException();
-        }
+        final ShopCategoryPageSearchRequest searchRequest = new ShopCategoryPageSearchRequest(false, homePageAddress,allCategoriesPageAddresses, pageAddressExtractAttribute);
+        return (List<String>) shopCategorySearchService.searchList(searchRequest);
     }
 
-    private List<String> getCategoryPageAddresses(final DynamicWebsiteSearchRequest request) throws ProductNotFoundException {
-        final List<String> allCategoriesPageAddresses = getAllCategoriesAddresses(request);
+    private List<String> getCategoryPageAddresses(final ProductCategoryPageSearchRequest request) throws ProductNotFoundException {
+        final List<String> allCategoriesPageAddresses = getAllCategoriesAddresses(request.isDynamicWebsite(), request.getHomePageAddress(), request.getAllCategoriesPageAddresses(), request.getPageAddressExtractAttribute());
         return allCategoriesPageAddresses.stream()
                 .filter(address -> {
                     try {
-                        return doesPageContainProductCategoryName(address, request);
+                        return doesPageContainProductCategoryName(address, request.getCategoryProperties());
                     } catch (ValueForSearchPropertyException e) {
                         //TODO logging
                         return false;
@@ -81,25 +75,20 @@ public class DynamicWebsiteProductCategoryPageSearchService extends ProductCateg
                 .toList();
     }
 
-    private boolean isCategoryPagePaginated(final DynamicWebsiteSearchRequest request) {
-        try {
-            return StringUtils.isNotEmpty((String) getProperty(request, SearchProperty.CATEGORY_PAGE_AMOUNTS));
-        } catch (ValueForSearchPropertyException e) {
-            //TODO logging
-            return false;
-        }
+    private boolean isCategoryPagePaginated(final ProductCategoryPageSearchRequest request) {
+        return StringUtils.isNotEmpty(request.getCategoryPageAmounts());
     }
 
-    private List<String> getAllPageAddressesForGivenCategory(final DynamicWebsiteSearchRequest request, final WebDriver driver) throws ValueForSearchPropertyException, CategoryPageAddressNotFoundException {
+    private List<String> getAllPageAddressesForGivenCategory(final ProductCategoryPageSearchRequest request, final WebDriver driver) throws ValueForSearchPropertyException, CategoryPageAddressNotFoundException {
         final String currentCategoryUrl = driver.getCurrentUrl();
-        if(StringUtils.isEmpty(currentCategoryUrl)) {
+        if (StringUtils.isEmpty(currentCategoryUrl)) {
             throw new CategoryPageAddressNotFoundException();
         }
         final List<String> pageAddressesForCategory = new ArrayList<>();
         pageAddressesForCategory.add(currentCategoryUrl);
         while (true) {
-            final DynamicWebsiteScrapRequest scrapRequest = new DynamicWebsiteScrapRequest(((String) getProperty(request, SearchProperty.CATEGORY_PAGE_AMOUNTS)), driver);
-            final String pageAddressExtractAttribute = (String) getProperty(request, SearchProperty.PAGE_ADDRESS_EXTRACT_ATTRIBUTE);
+            final DynamicWebsiteScrapRequest scrapRequest = new DynamicWebsiteScrapRequest(request.getCategoryPageAmounts(), driver);
+            final String pageAddressExtractAttribute = request.getPageAddressExtractAttribute();
             final List<WebElement> pages;
             try {
                 pages = (List<WebElement>) super.search(request, scrapRequest);

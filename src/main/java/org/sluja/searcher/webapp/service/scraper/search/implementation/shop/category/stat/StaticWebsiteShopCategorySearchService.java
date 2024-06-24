@@ -4,9 +4,8 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jsoup.nodes.Element;
 import org.sluja.searcher.webapp.dto.connect.StaticWebsiteConnectRequest;
-import org.sluja.searcher.webapp.dto.scraper.search.SearchRequest;
+import org.sluja.searcher.webapp.dto.product.request.shop.category.ShopCategoryPageSearchRequest;
 import org.sluja.searcher.webapp.dto.scraper.stat.StaticWebsiteScrapRequest;
-import org.sluja.searcher.webapp.enums.scraper.search.SearchProperty;
 import org.sluja.searcher.webapp.exception.connection.ConnectionTimeoutException;
 import org.sluja.searcher.webapp.exception.enums.search.ValueForSearchPropertyException;
 import org.sluja.searcher.webapp.exception.product.general.ProductNotFoundException;
@@ -21,16 +20,16 @@ import java.util.List;
 public class StaticWebsiteShopCategorySearchService extends ShopCategorySearchService<StaticWebsiteScrapRequest> {
 
     @Override
-    public List<String> searchList(final SearchRequest request) throws ShopCategoriesPageAddressesNotFoundException {
+    public List<String> searchList(final ShopCategoryPageSearchRequest request) throws ShopCategoriesPageAddressesNotFoundException {
         try {
-            final String homePageAddress = (String) getProperty(request, SearchProperty.HOME_PAGE_ADDRESS);
+            final String homePageAddress = request.getHomePageAddress();
             final StaticWebsiteScrapRequest scrapRequest = new StaticWebsiteScrapRequest(StringUtils.EMPTY,
                     StaticWebsiteConnector.INSTANCE.connectAndGetPage(new StaticWebsiteConnectRequest(homePageAddress)));
             final List<Element> elements = (List<Element>) super.search(request, scrapRequest);
             if (CollectionUtils.isEmpty(elements)) {
                 throw new ShopCategoriesPageAddressesNotFoundException();
             }
-            final String pageAddressExtractAttribute = (String) getProperty(request, SearchProperty.PAGE_ADDRESS_EXTRACT_ATTRIBUTE);
+            final String pageAddressExtractAttribute = request.getPageAddressExtractAttribute();
             return elements.stream()
                     .map(element -> element.attr(pageAddressExtractAttribute))
                     .map(element -> element.replaceAll("\\s", StringUtils.EMPTY))
