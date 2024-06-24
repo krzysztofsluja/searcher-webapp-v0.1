@@ -6,7 +6,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.sluja.searcher.webapp.builder.request.connect.dynamic.DynamicWebsiteConnectRequestBuilder;
 import org.sluja.searcher.webapp.dto.connect.DynamicWebsiteConnectRequest;
-import org.sluja.searcher.webapp.dto.product.request.search.category.ProductCategoryPageSearchRequest;
+import org.sluja.searcher.webapp.dto.product.request.search.category.ProductOneCategoryPageSearchRequest;
 import org.sluja.searcher.webapp.dto.product.request.shop.category.ShopCategoryPageSearchRequest;
 import org.sluja.searcher.webapp.dto.scraper.dynamic.DynamicWebsiteScrapRequest;
 import org.sluja.searcher.webapp.exception.connection.ConnectionTimeoutException;
@@ -27,9 +27,9 @@ import java.util.Objects;
 
 @Service
 @Qualifier("dynamicWebsiteProductCategoryPageSearchService")
-public class DynamicWebsiteProductCategoryPageSearchService extends ProductCategoryPageSearchService<DynamicWebsiteScrapRequest, ProductCategoryPageSearchRequest> {
+public class DynamicWebsiteProductCategoryPageSearchService extends ProductCategoryPageSearchService<DynamicWebsiteScrapRequest, ProductOneCategoryPageSearchRequest> {
     @Override
-    public List<String> searchList(final ProductCategoryPageSearchRequest request) throws ProductNotFoundException {
+    public List<String> searchList(final ProductOneCategoryPageSearchRequest request) throws ProductNotFoundException {
         final List<String> categoryPageAddresses = getCategoryPageAddresses(request);
         if (CollectionUtils.isEmpty(categoryPageAddresses)) {
             throw new CategoryPageAddressNotFoundException();
@@ -61,7 +61,7 @@ public class DynamicWebsiteProductCategoryPageSearchService extends ProductCateg
         return (List<String>) shopCategorySearchService.searchList(searchRequest);
     }
 
-    private List<String> getCategoryPageAddresses(final ProductCategoryPageSearchRequest request) throws ProductNotFoundException {
+    private List<String> getCategoryPageAddresses(final ProductOneCategoryPageSearchRequest request) throws ProductNotFoundException {
         final List<String> allCategoriesPageAddresses = getAllCategoriesAddresses(request.isDynamicWebsite(), request.getHomePageAddress(), request.getAllCategoriesPageAddresses(), request.getPageAddressExtractAttribute());
         return allCategoriesPageAddresses.stream()
                 .filter(address -> {
@@ -75,11 +75,11 @@ public class DynamicWebsiteProductCategoryPageSearchService extends ProductCateg
                 .toList();
     }
 
-    private boolean isCategoryPagePaginated(final ProductCategoryPageSearchRequest request) {
+    private boolean isCategoryPagePaginated(final ProductOneCategoryPageSearchRequest request) {
         return StringUtils.isNotEmpty(request.getCategoryPageAmounts());
     }
 
-    private List<String> getAllPageAddressesForGivenCategory(final ProductCategoryPageSearchRequest request, final WebDriver driver) throws ValueForSearchPropertyException, CategoryPageAddressNotFoundException {
+    private List<String> getAllPageAddressesForGivenCategory(final ProductOneCategoryPageSearchRequest request, final WebDriver driver) throws ValueForSearchPropertyException, CategoryPageAddressNotFoundException {
         final String currentCategoryUrl = driver.getCurrentUrl();
         if (StringUtils.isEmpty(currentCategoryUrl)) {
             throw new CategoryPageAddressNotFoundException();
