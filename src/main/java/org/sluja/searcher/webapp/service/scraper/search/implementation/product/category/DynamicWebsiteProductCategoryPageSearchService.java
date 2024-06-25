@@ -1,7 +1,9 @@
 package org.sluja.searcher.webapp.service.scraper.search.implementation.product.category;
 
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.sluja.searcher.webapp.builder.request.connect.dynamic.DynamicWebsiteConnectRequestBuilder;
@@ -17,7 +19,9 @@ import org.sluja.searcher.webapp.exception.scraper.ScraperIncorrectFieldExceptio
 import org.sluja.searcher.webapp.service.connector.dynamic.DynamicWebsiteConnector;
 import org.sluja.searcher.webapp.service.factory.search.ShopCategorySearchFactory;
 import org.sluja.searcher.webapp.service.scraper.search.implementation.shop.category.ShopCategorySearchService;
+import org.sluja.searcher.webapp.utils.connector.IConnector;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -27,7 +31,12 @@ import java.util.Objects;
 
 @Service
 @Qualifier("dynamicWebsiteProductCategoryPageSearchService")
+@RequiredArgsConstructor
+@Scope("prototype")
 public class DynamicWebsiteProductCategoryPageSearchService extends ProductCategoryPageSearchService<DynamicWebsiteScrapRequest, ProductOneCategoryPageSearchRequest> {
+
+    private final IConnector<WebDriver, DynamicWebsiteConnectRequest> dynamicWebsiteConnector;
+
     @Override
     public List<String> searchList(final ProductOneCategoryPageSearchRequest request) throws ProductNotFoundException {
         final List<String> categoryPageAddresses = getCategoryPageAddresses(request);
@@ -41,16 +50,23 @@ public class DynamicWebsiteProductCategoryPageSearchService extends ProductCateg
         WebDriver driver = null;
         for (final String address : categoryPageAddresses) {
             final DynamicWebsiteConnectRequest connectRequest = DynamicWebsiteConnectRequestBuilder.build(address, null);
-            try {
-                driver = DynamicWebsiteConnector.INSTANCE.connectAndGetPage(connectRequest);
-                productCategoryPageAddresses.addAll(getAllPageAddressesForGivenCategory(request, driver));
-            } catch (ConnectionTimeoutException | IOException | ValueForSearchPropertyException e) {
-                //TODO logging
-                continue;
+            int connectCounter = 0;
+            while(connectCounter < 5) {
+                try {
+                    driver = dynamicWebsiteConnector.connectAndGetPage(connectRequest);
+                    productCategoryPageAddresses.addAll(getAllPageAddressesForGivenCategory(request, driver));
+                    break;
+                } catch (ConnectionTimeoutException | IOException | ValueForSearchPropertyException e) {
+                    //TODO logging
+                    continue;
+                } catch (StaleElementReferenceException ex) {
+                    //TODO logging
+                    connectCounter++;
+                }
             }
         }
         if (Objects.nonNull(driver)) {
-            DynamicWebsiteConnector.quit(driver);
+            ((DynamicWebsiteConnector) dynamicWebsiteConnector).quit(driver);
         }
         return productCategoryPageAddresses;
     }
