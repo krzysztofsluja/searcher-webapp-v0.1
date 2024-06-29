@@ -1,8 +1,8 @@
 package org.sluja.searcher.webapp.builder.request.product.category;
 
 import org.apache.commons.collections4.CollectionUtils;
-import org.sluja.searcher.webapp.dto.product.request.search.category.ProductManyCategoriesPageSearchRequest;
 import org.sluja.searcher.webapp.dto.product.request.search.category.ProductOneCategoryPageSearchRequest;
+import org.sluja.searcher.webapp.dto.product.request.search.instance.ProductInstanceSearchRequest;
 import org.sluja.searcher.webapp.dto.scraper.search.SearchRequest;
 import org.sluja.searcher.webapp.enums.scraper.search.SearchProperty;
 import org.sluja.searcher.webapp.exception.enums.search.ValueForSearchPropertyException;
@@ -20,17 +20,28 @@ public class ProductOneCategoryPageSearchRequestBuilder {
                 (String) getProperty(request, SearchProperty.PAGE_ADDRESS_EXTRACT_ATTRIBUTE),
                 (List<String>) getProperty(request, SearchProperty.ALL_CATEGORIES_PAGE_ADDRESSES),
                 (String) getProperty(request, SearchProperty.CATEGORY_PAGE_AMOUNTS),
-                ((Map<String, List<String>>) getProperty(request, SearchProperty.CATEGORY_PROPERTIES)).get(category));
+                ((Map<String, List<String>>) getProperty(request, SearchProperty.CATEGORY_PROPERTIES)).get(category),
+                (String) getProperty(request, SearchProperty.PRODUCT_INSTANCE));
     }
 
-    public static ProductOneCategoryPageSearchRequest build(final ProductManyCategoriesPageSearchRequest request, final String category) throws ValueForSearchPropertyException {
+    public static ProductOneCategoryPageSearchRequest build(final ProductInstanceSearchRequest request) {
+        return new ProductOneCategoryPageSearchRequest(request.isDynamicWebsite(),
+                request.getHomePageAddress(),
+                request.getPageAddressExtractAttribute(),
+                request.getAllCategoriesPageAddresses(),
+                request.getCategoryPageAmounts(),
+                request.getCategoryProperties(),
+                request.getProductInstance());
+    }
+
+/*    public static ProductOneCategoryPageSearchRequest build(final ProductManyCategoriesPageSearchRequest request, final String category) throws ValueForSearchPropertyException {
         return new ProductOneCategoryPageSearchRequest(request.isDynamicWebsite(),
                 request.getHomePageAddress(),
                 request.getPageAddressExtractAttribute(),
                 request.getAllCategoriesPageAddresses(),
                 request.getCategoryPageAmounts(),
                 getPropertiesForGivenCategory(request.getCategoryProperties(), category));
-    }
+    }*/
 
     private static Object getProperty(final SearchRequest request, final SearchProperty property) throws ValueForSearchPropertyException {
         return GetSearchPropertyValueUtils.getProperty(request, property);
