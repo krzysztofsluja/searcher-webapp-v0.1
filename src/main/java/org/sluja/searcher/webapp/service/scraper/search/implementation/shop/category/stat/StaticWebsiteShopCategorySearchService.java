@@ -1,5 +1,6 @@
 package org.sluja.searcher.webapp.service.scraper.search.implementation.shop.category.stat;
 
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jsoup.nodes.Element;
@@ -13,10 +14,15 @@ import org.sluja.searcher.webapp.exception.product.shop.ShopCategoriesPageAddres
 import org.sluja.searcher.webapp.exception.scraper.ScraperIncorrectFieldException;
 import org.sluja.searcher.webapp.service.connector.stat.StaticWebsiteConnector;
 import org.sluja.searcher.webapp.service.scraper.search.implementation.shop.category.ShopCategorySearchService;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.util.List;
 
+@Component
+@RequiredArgsConstructor
+@Qualifier("staticWebsiteShopCategorySearchService")
 public class StaticWebsiteShopCategorySearchService extends ShopCategorySearchService<StaticWebsiteScrapRequest> {
 
     @Override

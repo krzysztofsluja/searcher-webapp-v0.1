@@ -4,6 +4,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.sluja.searcher.webapp.dto.product.request.search.SearchServiceRequest;
 import org.sluja.searcher.webapp.dto.scraper.ScrapRequest;
 import org.sluja.searcher.webapp.exception.enums.search.ValueForSearchPropertyException;
+import org.sluja.searcher.webapp.exception.product.general.ProductNotFoundException;
 import org.sluja.searcher.webapp.exception.scraper.search.IncorrectInputException;
 import org.sluja.searcher.webapp.service.interfaces.search.ISearch;
 import org.sluja.searcher.webapp.service.scraper.search.BaseSearchService;
@@ -18,7 +19,7 @@ public abstract class ProductCategoryPageSearchService<T extends ScrapRequest, S
                 && pageAddress.toUpperCase().contains(categoryName.toUpperCase());
     }
 
-    protected boolean doesPageContainProductCategoryName(final String pageAddress, final List<String> categoryProperties) throws ValueForSearchPropertyException {
+    public boolean doesPageContainProductCategoryName(final String pageAddress, final List<String> categoryProperties) throws ValueForSearchPropertyException {
         return categoryProperties.stream()
                 .anyMatch(property -> doesPageContainProductCategoryName(pageAddress, property));
     }
@@ -33,5 +34,8 @@ public abstract class ProductCategoryPageSearchService<T extends ScrapRequest, S
     protected int getNumberOfCurrentPage(final String currentCategoryPageAddress) {
         return Integer.parseInt(currentCategoryPageAddress);
     }
+
+    public abstract List<?> getCategoryPageAddresses(S request) throws ProductNotFoundException;
+    public abstract List<?> getAllCategoriesAddresses(S request) throws ProductNotFoundException;
 
 }
