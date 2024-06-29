@@ -18,11 +18,11 @@ public abstract class ShopCategorySearchService<T extends ScrapRequest> extends 
     @Override
     public List<?> search(final ShopCategoryPageSearchRequest request, T scrapRequest) throws ValueForSearchPropertyException, ProductNotFoundException, ScraperIncorrectFieldException {
         final WebsiteScraper scraperService = WebsiteScraperFactory.getScraper(request.isDynamicWebsite());
-        final List<?> addresses = new ArrayList<>();
+        final List<String> addresses = new ArrayList<>();
         final List<String> allCategoriesPageAddresses = request.getAllCategoriesPageAddresses();
         for (String property : allCategoriesPageAddresses) {
             scrapRequest.setProperty(property);
-            addresses.addAll(scraperService.scrap(scrapRequest));
+            addresses.addAll((List<String>) scraperService.scrap(scrapRequest));
         }
         return addresses;
     }
