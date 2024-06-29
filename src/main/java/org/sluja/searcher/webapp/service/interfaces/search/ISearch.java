@@ -12,8 +12,13 @@ import java.util.List;
 
 public interface ISearch<S extends SearchServiceRequest,T extends ScrapRequest> {
 
-    default List<?> search(S request, T scrapRequest) throws ValueForSearchPropertyException, ProductNotFoundException, ScraperIncorrectFieldException {
-        final WebsiteScraper scraperService = WebsiteScraperFactory.getScraper(request.isDynamicWebsite());
-        return scraperService.scrap(scrapRequest);
+    default List<?> search(final boolean isDynamicWebsite, T scrapRequest) throws ValueForSearchPropertyException, ProductNotFoundException, ScraperIncorrectFieldException {
+        final WebsiteScraper scraperService = WebsiteScraperFactory.getScraper(isDynamicWebsite);
+        return (List<?>) scraperService.scrap(scrapRequest);
+    }
+
+    default List<?> search(S searchRequest, T scrapRequest) throws ValueForSearchPropertyException, ProductNotFoundException, ScraperIncorrectFieldException {
+        //TODO
+        return null;
     }
 }

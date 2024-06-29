@@ -14,17 +14,16 @@ public record ProductDTO(String name,
                          BigDecimal price,
                          List<String> productPageAddress,
                          List<String> imageProductPageAddress,
-                         String category,
-                         String description) implements Serializable {
+                         String category) implements Serializable {
 
     public static ProductDTO emptyProductDTO() {
         return ProductDTO.builder()
                 .name(StringUtils.EMPTY)
+                .shopName(StringUtils.EMPTY)
                 .category(StringUtils.EMPTY)
                 .price(BigDecimal.ZERO)
                 .productPageAddress(Collections.emptyList())
                 .imageProductPageAddress(Collections.emptyList())
-                .description(StringUtils.EMPTY)
                 .build();
     }
 
@@ -37,7 +36,12 @@ public record ProductDTO(String name,
                 && (((ProductDTO) o).price().equals(this.price()))
                 && (((ProductDTO) o).productPageAddress().equals(this.productPageAddress()))
                 && (((ProductDTO) o).imageProductPageAddress().equals(this.imageProductPageAddress()))
-                && (((ProductDTO) o).category().equals(this.category()))
-                && (((ProductDTO) o).description().equals(this.description()));
+                && (((ProductDTO) o).category().equals(this.category()));
+    }
+
+    public static List<String> NO_IMAGE_ADDRESS() {
+        //TODO
+        //return List.of(MessageReader.getMessage("attribute.product.image.address"));
+        return Collections.emptyList();
     }
 }

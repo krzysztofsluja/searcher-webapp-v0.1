@@ -8,14 +8,17 @@ import java.util.List;
 public class ProductOneCategoryPageSearchRequest extends ProductCategoryPageSearchRequest{
 
     private List<String> categoryProperties;
+    private String productInstance;
 
     public ProductOneCategoryPageSearchRequest(final boolean dynamicWebsite,
                                                final String homePageAddress,
                                                final String pageAddressExtractAttribute,
                                                final List<String> allCategoriesPageAddresses,
                                                final String categoryPageAmounts,
-                                               final List<String> categoryProperties) {
+                                               final List<String> categoryProperties,
+                                               final String productInstance) {
         super(dynamicWebsite, homePageAddress, pageAddressExtractAttribute, allCategoriesPageAddresses, categoryPageAmounts);
         this.categoryProperties = categoryProperties;
+        this.productInstance = productInstance;
     }
 }

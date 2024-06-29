@@ -1,11 +1,13 @@
 package org.sluja.searcher.webapp.utils.extractor.implementation;
 
 import lombok.RequiredArgsConstructor;
-import org.openqa.selenium.WebElement;
-import org.sluja.searcher.webapp.dto.scraper.ProductScrapWithDefinedAttributes;
+import org.jsoup.nodes.Element;
+import org.sluja.searcher.webapp.dto.product.request.search.object.BuildProductObjectRequest;
+import org.sluja.searcher.webapp.dto.scraper.stat.StaticWebsiteElementScrapRequest;
 import org.sluja.searcher.webapp.enums.product.ProductProperty;
 import org.sluja.searcher.webapp.exception.format.UnsuccessfulFormatException;
-import org.sluja.searcher.webapp.exception.product.ProductNotFoundException;
+import org.sluja.searcher.webapp.exception.scraper.ScraperIncorrectFieldException;
+import org.sluja.searcher.webapp.service.scraper.interfaces.WebsiteScraper;
 import org.sluja.searcher.webapp.utils.extractor.Extractor;
 import org.sluja.searcher.webapp.utils.formatter.ProductFormatter;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -15,18 +17,21 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 
 @Component
-@Qualifier("productImageAddressExtractor")
+@Qualifier("productPriceExtractor")
 @RequiredArgsConstructor
-public class ProductPriceExtractor implements Extractor<BigDecimal, WebElement, ProductScrapWithDefinedAttributes> {
+public class ProductPriceExtractor implements Extractor<BigDecimal, Element, BuildProductObjectRequest> {
 
+    private final WebsiteScraper<Element, StaticWebsiteElementScrapRequest> staticWebsiteElementScraper;
     private static final int RESOLUTION_PRICE = 2;
+
     @Override
-    public BigDecimal extract(final WebElement element, final ProductScrapWithDefinedAttributes request) throws UnsuccessfulFormatException, ProductNotFoundException {
-            final String noFormattedPrice = formatPrice(request, element);
-            return new BigDecimal(noFormattedPrice).setScale(RESOLUTION_PRICE, RoundingMode.HALF_UP);
+    public BigDecimal extract(final Element element, final BuildProductObjectRequest request) throws UnsuccessfulFormatException, ScraperIncorrectFieldException {
+        final StaticWebsiteElementScrapRequest scrapRequest = new StaticWebsiteElementScrapRequest(request.getProductPrice(), element);
+        final String noFormattedPrice = formatPrice(request, staticWebsiteElementScraper.scrap(scrapRequest));
+        return new BigDecimal(noFormattedPrice).setScale(RESOLUTION_PRICE, RoundingMode.HALF_UP);
     }
 
-    private String formatPrice(final ProductScrapWithDefinedAttributes request, WebElement element) throws UnsuccessfulFormatException{
+    private String formatPrice(final BuildProductObjectRequest request, Element element) throws UnsuccessfulFormatException {
         return ProductFormatter.format(request, ProductProperty.PRICE, element);
     }
 }

@@ -6,9 +6,6 @@ import org.jsoup.nodes.Document;
 import org.sluja.searcher.webapp.dto.connect.StaticWebsiteConnectRequest;
 import org.sluja.searcher.webapp.exception.connection.ConnectionTimeoutException;
 import org.sluja.searcher.webapp.utils.connector.IConnector;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.Objects;

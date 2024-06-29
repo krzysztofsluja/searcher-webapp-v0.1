@@ -1,12 +1,14 @@
 package org.sluja.searcher.webapp.enums.scraper.search;
 
 import lombok.Getter;
-import org.atmosphere.config.service.Get;
 
 @Getter
 public enum SearchProperty {
     SHOP_NAME("shopName"),
+    PRODUCT_PRICE("productPrice"),
+    PRODUCT_DISCOUNT_PRICE("productDiscountPrice"),
     HOME_PAGE_ADDRESS("homePageAddress"),
+    CATEGORY("category"),
     PRODUCT_DESCRIPTION("productDescription"),
     PRODUCT_DESCRIPTION_ATTRIBUTE("productDescriptionAttribute"),
     PRODUCT_NAME("productName"),
@@ -30,5 +32,8 @@ public enum SearchProperty {
 
     SearchProperty(String jsonValue) {
         this.jsonValue = jsonValue;
+    }
+    public SearchProperty get() {
+        return this;
     }
 }
