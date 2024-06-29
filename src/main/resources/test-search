@@ -1,7 +1,7 @@
 ----------------MANYFESTBMX----------------
 {
 "shopName": "manyfestbmx",
-  "productPrice": "span.product-price",
+  "productPrice": ".product-description .product-price[content]",
   "homePageAddress": "https://www.manyfestbmx.pl",
   "productDescription": "div.rte-content",
   "productDescriptionAttribute": "",
@@ -12,7 +12,7 @@
   "div": "div",
   "pageAddressExtractAttribute": "href",
   "plainPageAddressToFormat": "",
-  "productInstance": "div#products-container > div#products > div.col-prod > div.item",
+  "productInstance": "div.js-product-miniature-wrapper article.product-miniature",
   "productPageAddresses": [
     "h2.h3.product-title > a"
   ],
@@ -32,11 +32,41 @@
   "allowedEmptyProperties": [],
   "categories": [
     "bars",
-    "frames"
+    "frames",
+    "rims",
+    "hubs",
+    "spokes",
+    "gears",
+    "tires",
+    "pegs",
+    "hubguards",
+    "grips",
+    "stems",
+    "barends",
+    "heads",
+    "chains",
+    "supports",
+    "pedals",
+    "posts"
   ],
   "categoryProperties": {
     "bars": ["kierownice", "kierownica"],
-    "frames": ["ramy","rama","ram"]
+    "frames": ["ramy","rama","ram"],
+    "rims": ["obrecz", "obrecze", "felga", "felgi"],
+    "hubs": ["piasta", "piasty"],
+    "spokes": ["szprycha", "szprychy"],
+    "gears": ["zebatka", "zebatki"],
+    "tires": ["opona", "opony"],
+    "pegs": ["pegi", "peg"],
+    "hubguards": ["hubguardy", "hubguard"],
+    "grips": ["grip", "gripy", "chwyty", "chwyt"],
+    "stems": ["mostki", "mosty", "most", "wsporniki", "wspornik"],
+    "barends": ["barendy","barend"],
+    "heads": ["stery", "ster"],
+    "chains": ["lancuchy", "lancuch"],
+    "supports": ["supporty", "support", "suporty", "suport"],
+    "pedals": ["pedal", "pedaly"],
+    "posts": ["sztyce", "sztyca", "sztyc"]
   }
 }
 
