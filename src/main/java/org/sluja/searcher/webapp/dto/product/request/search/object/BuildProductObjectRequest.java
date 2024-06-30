@@ -24,4 +24,5 @@ public class BuildProductObjectRequest {
     private List<String> productImageAddresses;
     private String shopName;
     private String categoryName;
+    private String context;
 }

@@ -26,7 +26,8 @@ public enum SearchProperty {
     ALLOWED_EMPTY_PROPERTIES("allowedEmptyProperties"),
     CATEGORIES("categories"),
     CATEGORY_PROPERTIES("categoryProperties"),
-    ALL_CATEGORIES_SUB_MENU_VISIBILITY("allCategoriesSubMenuVisibility");
+    ALL_CATEGORIES_SUB_MENU_VISIBILITY("allCategoriesSubMenuVisibility"),
+    CONTEXT("context");
 
     private final String jsonValue;
 

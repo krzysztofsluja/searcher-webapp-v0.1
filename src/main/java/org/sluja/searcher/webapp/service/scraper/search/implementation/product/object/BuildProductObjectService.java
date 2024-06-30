@@ -70,6 +70,7 @@ public class BuildProductObjectService implements IBuildProductObject {
                         .imageProductPageAddress(futureImageAddresses.join())
                         .category(categoryName)
                         .shopName(request.getShopName())
+                        .context(request.getContext())
                         .build();
             } catch (Exception e) {
                 //LOGGER.error("Error during product search occurred", e);

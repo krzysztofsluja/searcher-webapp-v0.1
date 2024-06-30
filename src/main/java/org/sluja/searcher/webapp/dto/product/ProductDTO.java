@@ -14,7 +14,8 @@ public record ProductDTO(String name,
                          BigDecimal price,
                          List<String> productPageAddress,
                          List<String> imageProductPageAddress,
-                         String category) implements Serializable {
+                         String category,
+                         String context) implements Serializable {
 
     public static ProductDTO emptyProductDTO() {
         return ProductDTO.builder()
@@ -24,6 +25,7 @@ public record ProductDTO(String name,
                 .price(BigDecimal.ZERO)
                 .productPageAddress(Collections.emptyList())
                 .imageProductPageAddress(Collections.emptyList())
+                .context(StringUtils.EMPTY)
                 .build();
     }
 
@@ -36,7 +38,8 @@ public record ProductDTO(String name,
                 && (((ProductDTO) o).price().equals(this.price()))
                 && (((ProductDTO) o).productPageAddress().equals(this.productPageAddress()))
                 && (((ProductDTO) o).imageProductPageAddress().equals(this.imageProductPageAddress()))
-                && (((ProductDTO) o).category().equals(this.category()));
+                && (((ProductDTO) o).category().equals(this.category())
+                && (((ProductDTO) o).context().equals(this.context())));
     }
 
     public static List<String> NO_IMAGE_ADDRESS() {
