@@ -28,7 +28,9 @@ public record ProductScrapWithDefinedAttributes(String shopName,
                                            @NullableOrEmptyField List<String> allCategoriesPageAddresses,
                                            @NullableOrEmptyField List<String> allowedEmptyProperties,
                                            @NullableOrEmptyField List<String> categories,
-                                           @NullableOrEmptyField Map<String, List<String>> categoryProperties, @NullableOrEmptyField Map<String, String> allCategoriesSubMenuVisibility) implements Serializable {
+                                           @NullableOrEmptyField Map<String, List<String>> categoryProperties,
+                                           @NullableOrEmptyField Map<String, String> allCategoriesSubMenuVisibility,
+                                           String context) implements Serializable {
 
 /*    public static List<String> NO_IMAGE_ADDRESS() {
         return List.of(MessageReader.getMessage("attribute.product.image.address"));

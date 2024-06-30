@@ -24,7 +24,8 @@ public class BuildProductObjectRequestBuilder extends ProductBuilder {
                 (List<String>) getProperty(request, SearchProperty.PRODUCT_PAGE_ADDRESSES),
                 (List<String>) getProperty(request, SearchProperty.PRODUCT_IMAGE_ADDRESSES),
                 (String) getProperty(request, SearchProperty.SHOP_NAME),
-                categoryName);
+                categoryName,
+                (String) getProperty(request, SearchProperty.CONTEXT));
     }
 
 }
