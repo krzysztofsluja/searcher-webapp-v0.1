@@ -9,6 +9,8 @@ import org.sluja.searcher.webapp.enums.product.ProductProperty;
 import org.sluja.searcher.webapp.exception.format.UnsuccessfulFormatException;
 import org.sluja.searcher.webapp.exception.product.general.ProductNotFoundException;
 import org.sluja.searcher.webapp.exception.scraper.ScraperIncorrectFieldException;
+import org.sluja.searcher.webapp.service.factory.scraper.WebsiteScraperFactory;
+import org.sluja.searcher.webapp.service.interfaces.scrap.IGetScraper;
 import org.sluja.searcher.webapp.service.scraper.interfaces.WebsiteScraper;
 import org.sluja.searcher.webapp.utils.extractor.Extractor;
 import org.sluja.searcher.webapp.utils.formatter.ProductFormatter;
@@ -21,9 +23,9 @@ import java.util.Objects;
 @Component
 @Qualifier("productPageAddressExtractor")
 @RequiredArgsConstructor
-public class ProductPageAddressExtractor implements Extractor<List<String>, Element, BuildProductObjectRequest> {
+public class ProductPageAddressExtractor implements Extractor<List<String>, Element, BuildProductObjectRequest>, IGetScraper {
 
-    private final WebsiteScraper<Element, StaticWebsiteElementScrapRequest> staticWebsiteElementScraper;
+    private final WebsiteScraperFactory websiteScraperFactory;
 
     @Override
     public List<String> extract(final Element element, final BuildProductObjectRequest request) throws UnsuccessfulFormatException, ProductNotFoundException {
@@ -33,7 +35,7 @@ public class ProductPageAddressExtractor implements Extractor<List<String>, Elem
                 .map(address -> {
                     final StaticWebsiteElementScrapRequest scrapRequest = new StaticWebsiteElementScrapRequest(address, element);
                     try {
-                        return staticWebsiteElementScraper.scrap(scrapRequest);
+                        return getScraperService().scrap(scrapRequest);
                     } catch (ScraperIncorrectFieldException e) {
                         //TODO logging
                         return null;
@@ -52,5 +54,10 @@ public class ProductPageAddressExtractor implements Extractor<List<String>, Elem
                 })
                 .filter(StringUtils::isNotEmpty)
                 .toList();
+    }
+
+    @Override
+    public WebsiteScraper<Element, StaticWebsiteElementScrapRequest> getScraperService() {
+        return (WebsiteScraper<Element, StaticWebsiteElementScrapRequest>) websiteScraperFactory.getElementScraper(false);
     }
 }
