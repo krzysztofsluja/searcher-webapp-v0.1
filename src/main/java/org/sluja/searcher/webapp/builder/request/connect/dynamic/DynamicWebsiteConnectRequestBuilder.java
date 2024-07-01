@@ -11,4 +11,8 @@ public class DynamicWebsiteConnectRequestBuilder {
                 .driver(driver)
                 .build();
     }
+
+    public static DynamicWebsiteConnectRequest build(final String url) {
+        return build(url, null);
+    }
 }

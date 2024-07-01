@@ -12,7 +12,7 @@ import java.util.List;
 public class BuildProductObjectRequest {
 
     private String productPrice;
-    private String homePageAddress;
+    private String homePageAddress; //
     private String productName;
     private String productDiscountPrice;
     private String productImageExtractAttribute;

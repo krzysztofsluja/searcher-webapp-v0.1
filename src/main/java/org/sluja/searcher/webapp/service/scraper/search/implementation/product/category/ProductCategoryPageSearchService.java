@@ -3,7 +3,6 @@ package org.sluja.searcher.webapp.service.scraper.search.implementation.product.
 import org.apache.commons.lang3.StringUtils;
 import org.sluja.searcher.webapp.dto.product.request.search.SearchServiceRequest;
 import org.sluja.searcher.webapp.dto.scraper.ScrapRequest;
-import org.sluja.searcher.webapp.exception.enums.search.ValueForSearchPropertyException;
 import org.sluja.searcher.webapp.exception.product.general.ProductNotFoundException;
 import org.sluja.searcher.webapp.exception.scraper.search.IncorrectInputException;
 import org.sluja.searcher.webapp.service.interfaces.search.ISearch;
@@ -19,7 +18,7 @@ public abstract class ProductCategoryPageSearchService<T extends ScrapRequest, S
                 && pageAddress.toUpperCase().contains(categoryName.toUpperCase());
     }
 
-    public boolean doesPageContainProductCategoryName(final String pageAddress, final List<String> categoryProperties) throws ValueForSearchPropertyException {
+    public boolean doesPageContainProductCategoryName(final String pageAddress, final List<String> categoryProperties) {
         return categoryProperties.stream()
                 .anyMatch(property -> doesPageContainProductCategoryName(pageAddress, property));
     }

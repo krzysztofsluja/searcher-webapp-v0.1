@@ -46,6 +46,7 @@ public class ProductPageAddressExtractor implements Extractor<List<String>, Elem
                     try {
                         return ProductFormatter.format(request, ProductProperty.URL, elem);
                     } catch (UnsuccessfulFormatException e) {
+                        //TODO logging
                         return StringUtils.EMPTY;
                     }
                 })
