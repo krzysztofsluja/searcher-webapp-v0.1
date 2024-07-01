@@ -12,6 +12,8 @@ import org.sluja.searcher.webapp.dto.scraper.stat.StaticWebsiteElementScrapReque
 import org.sluja.searcher.webapp.exception.format.UnsuccessfulFormatException;
 import org.sluja.searcher.webapp.exception.product.general.ProductNotFoundException;
 import org.sluja.searcher.webapp.exception.scraper.ScraperIncorrectFieldException;
+import org.sluja.searcher.webapp.service.factory.scraper.WebsiteScraperFactory;
+import org.sluja.searcher.webapp.service.interfaces.scrap.IGetScraper;
 import org.sluja.searcher.webapp.service.scraper.interfaces.WebsiteScraper;
 import org.sluja.searcher.webapp.utils.extractor.Extractor;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -23,11 +25,10 @@ import java.util.Objects;
 @Component
 @Qualifier("productImageAddressExtractor")
 @RequiredArgsConstructor
-public class ProductImageAddressExtractor implements Extractor<List<String>, Element, BuildProductObjectRequest> {
+public class ProductImageAddressExtractor implements Extractor<List<String>, Element, BuildProductObjectRequest>, IGetScraper {
 
     private static final Logger LOGGER = Logger.getLogger(ProductImageAddressExtractor.class);
-    private final WebsiteScraper<Element, StaticWebsiteElementScrapRequest> staticWebsiteElementScraper;
-
+    private final WebsiteScraperFactory websiteScraperFactory;
     @Override
     public List<String> extract(final Element element, final BuildProductObjectRequest request) throws ProductNotFoundException, UnsuccessfulFormatException {
 
@@ -37,7 +38,7 @@ public class ProductImageAddressExtractor implements Extractor<List<String>, Ele
                 .map(address -> {
                     final StaticWebsiteElementScrapRequest scrapRequest = new StaticWebsiteElementScrapRequest(address, element);
                     try {
-                        return staticWebsiteElementScraper.scrap(scrapRequest);
+                        return getScraperService().scrap(scrapRequest);
                     } catch (ScraperIncorrectFieldException e) {
                         //TODO logging
                         return null;
@@ -49,5 +50,10 @@ public class ProductImageAddressExtractor implements Extractor<List<String>, Ele
                 .map(e -> e.attr(request.getProductImageExtractAttribute()))
                 .toList();
         return CollectionUtils.isEmpty(imageAddresses) ? ProductDTO.NO_IMAGE_ADDRESS() : imageAddresses;
+    }
+
+    @Override
+    public WebsiteScraper<Element, StaticWebsiteElementScrapRequest> getScraperService() {
+        return (WebsiteScraper<Element, StaticWebsiteElementScrapRequest>) websiteScraperFactory.getElementScraper(false);
     }
 }

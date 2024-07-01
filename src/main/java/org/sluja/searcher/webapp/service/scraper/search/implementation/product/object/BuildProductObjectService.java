@@ -132,6 +132,6 @@ public class BuildProductObjectService implements IBuildProductObject {
 
     @Override
     public WebsiteScraper<Element, StaticWebsiteElementScrapRequest> getScraperService() {
-        return (WebsiteScraper<Element, StaticWebsiteElementScrapRequest>) websiteScraperFactory.getScraper(false);
+        return (WebsiteScraper<Element, StaticWebsiteElementScrapRequest>) websiteScraperFactory.getElementScraper(false);
     }
 }
