@@ -1,5 +1,6 @@
 package org.sluja.searcher.webapp.service.scraper.search;
 
+import org.sluja.searcher.webapp.dto.marker.product.request.SearchServiceRequestMarker;
 import org.sluja.searcher.webapp.dto.product.request.search.SearchServiceRequest;
 import org.sluja.searcher.webapp.dto.scraper.search.SearchRequest;
 import org.sluja.searcher.webapp.enums.scraper.search.SearchProperty;
@@ -10,7 +11,7 @@ import org.sluja.searcher.webapp.utils.property.GetSearchPropertyValueUtils;
 import java.util.List;
 import java.util.Map;
 
-public abstract class BaseSearchService<T extends SearchServiceRequest> {
+public abstract class BaseSearchService<T extends SearchServiceRequestMarker> {
 
     protected Object getProperty(final SearchRequest request, final SearchProperty property) throws ValueForSearchPropertyException {
         return GetSearchPropertyValueUtils.getProperty(request, property);
