@@ -2,6 +2,7 @@ package org.sluja.searcher.webapp.builder.request.product.get;
 
 import org.sluja.searcher.webapp.builder.request.product.ProductBuilder;
 import org.sluja.searcher.webapp.dto.product.request.get.GetProductForShopNameAndCategoryRequest;
+import org.sluja.searcher.webapp.dto.product.request.get.GetProductForShopNameRequest;
 import org.sluja.searcher.webapp.dto.scraper.search.SearchRequest;
 import org.sluja.searcher.webapp.enums.scraper.search.SearchProperty;
 import org.sluja.searcher.webapp.exception.enums.search.ValueForSearchPropertyException;
@@ -29,5 +30,26 @@ public class GetProductForShopAndCategoryRequestBuilder extends ProductBuilder {
                 (String) getProperty(request, SearchProperty.PLAIN_PAGE_ADDRESS_TO_FORMAT),
                 (List<String>) getProperty(request, SearchProperty.PRODUCT_PAGE_ADDRESSES),
                 (List<String>) getProperty(request, SearchProperty.PRODUCT_IMAGE_ADDRESSES));
+    }
+
+    public static GetProductForShopNameAndCategoryRequest build(final GetProductForShopNameRequest request, final String shopName, final String categoryName) {
+        return new GetProductForShopNameAndCategoryRequest(request.isDynamicWebsite(),
+                request.getHomePageAddress(),
+                request.getPageAddressExtractAttribute(),
+                request.getAllCategoriesPageAddresses(),
+                request.getCategoryPageAmounts(),
+                categoryName,
+                shopName,
+                request.getCategoriesProperties().get(categoryName),
+                request.getProductInstance(),
+                request.getContext(),
+                request.getProductPrice(),
+                request.getProductName(),
+                request.getProductDiscountPrice(),
+                request.getProductImageExtractAttribute(),
+                request.getDiv(),
+                request.getPlainPageAddressToFormat(),
+                request.getProductPageAddresses(),
+                request.getProductImageAddresses());
     }
 }
