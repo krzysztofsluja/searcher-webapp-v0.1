@@ -4,6 +4,6 @@ import org.sluja.searcher.webapp.exception.scraper.ScraperIncorrectFieldExceptio
 
 public class DynamicWebsiteScraperIncorrectFieldException extends ScraperIncorrectFieldException {
     public DynamicWebsiteScraperIncorrectFieldException() {
-        super("error.scraper.dynamic.incorrect.field", 11002L);
+        super("error.scraper.dynamic.incorrect.field", 6002L);
     }
 }

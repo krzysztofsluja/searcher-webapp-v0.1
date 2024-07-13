@@ -1,15 +1,30 @@
 package org.sluja.searcher.webapp.service.factory.scraper;
 
-import org.jsoup.select.Elements;
-import org.sluja.searcher.webapp.dto.marker.scraper.IScraper;
+import lombok.RequiredArgsConstructor;
+import org.jsoup.nodes.Element;
+import org.openqa.selenium.WebElement;
+import org.sluja.searcher.webapp.dto.scraper.dynamic.DynamicWebsiteScrapRequest;
+import org.sluja.searcher.webapp.dto.scraper.stat.StaticWebsiteElementScrapRequest;
 import org.sluja.searcher.webapp.dto.scraper.stat.StaticWebsiteScrapRequest;
-import org.sluja.searcher.webapp.service.scraper.dynamic.DynamicWebsiteScraper;
 import org.sluja.searcher.webapp.service.scraper.interfaces.WebsiteScraper;
-import org.sluja.searcher.webapp.service.scraper.stat.StaticWebsiteScraper;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
 
+import java.util.List;
+
+@Component
+@Qualifier("websiteScraperFactory")
+@RequiredArgsConstructor
 public class WebsiteScraperFactory {
 
-    public static WebsiteScraper getScraper(final boolean isDynamicWebsite) {
-        return isDynamicWebsite ? new DynamicWebsiteScraper() : new StaticWebsiteScraper();
+    private final WebsiteScraper<List<Element>, StaticWebsiteScrapRequest> staticWebsiteScraper;
+    private final WebsiteScraper<List<WebElement>, DynamicWebsiteScrapRequest> dynamicWebsiteScraper;
+    private final WebsiteScraper<Element, StaticWebsiteElementScrapRequest> staticWebsiteElementScraper;
+    public WebsiteScraper getScraper(final boolean isDynamicWebsite) {
+        return isDynamicWebsite ? dynamicWebsiteScraper : staticWebsiteScraper;
+    }
+
+    public WebsiteScraper getElementScraper(final boolean isDynamicWebsite) {
+        return isDynamicWebsite ? null : staticWebsiteElementScraper;
     }
 }

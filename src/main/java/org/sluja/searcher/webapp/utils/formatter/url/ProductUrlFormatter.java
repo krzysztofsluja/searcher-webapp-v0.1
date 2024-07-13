@@ -3,6 +3,7 @@ package org.sluja.searcher.webapp.utils.formatter.url;
 import org.apache.commons.lang3.StringUtils;
 import org.jsoup.nodes.Element;
 import org.sluja.searcher.webapp.dto.product.request.search.object.BuildProductObjectRequest;
+import org.sluja.searcher.webapp.enums.product.ProductProperty;
 import org.sluja.searcher.webapp.exception.format.UnsuccessfulFormatException;
 
 public class ProductUrlFormatter {
@@ -11,7 +12,7 @@ public class ProductUrlFormatter {
         StringBuilder builder = new StringBuilder();
         final String address = value.attr(request.getPageAddressExtractAttribute());
         if(StringUtils.isEmpty(address)) {
-            throw new UnsuccessfulFormatException();
+            throw new UnsuccessfulFormatException(ProductProperty.URL);
         }
         builder.append(formatIncompleteUriForBuilder(address, request));
         builder.append(address);

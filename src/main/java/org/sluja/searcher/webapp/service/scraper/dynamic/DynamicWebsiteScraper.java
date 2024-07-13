@@ -7,20 +7,20 @@ import org.sluja.searcher.webapp.enums.scraper.dynamic.ScraperByAttribute;
 import org.sluja.searcher.webapp.exception.scraper.ScraperIncorrectFieldException;
 import org.sluja.searcher.webapp.exception.scraper.dynamic.DynamicWebsiteScraperIncorrectFieldException;
 import org.sluja.searcher.webapp.service.scraper.interfaces.WebsiteScraper;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Objects;
 
+@Component
+@Qualifier("dynamicWebsiteScraper")
 public class DynamicWebsiteScraper implements WebsiteScraper<List<WebElement>, DynamicWebsiteScrapRequest> {
     //TODO logging on exception
     @Override
     public List<WebElement> scrap(final DynamicWebsiteScrapRequest request) throws ScraperIncorrectFieldException {
-        try {
-            if (Objects.nonNull(request)) {
-                return request.getDriver().findElements(getBy(request.getAttribute(), request.getProperty()));
-            }
-        } catch (Exception ex) {
-            //TODO logging
+        if (Objects.nonNull(request)) {
+            return request.getDriver().findElements(getBy(request.getAttribute(), request.getProperty()));
         }
         throw new DynamicWebsiteScraperIncorrectFieldException();
     }

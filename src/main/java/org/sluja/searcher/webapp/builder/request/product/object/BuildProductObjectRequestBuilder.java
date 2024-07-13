@@ -2,6 +2,7 @@ package org.sluja.searcher.webapp.builder.request.product.object;
 
 import org.jsoup.nodes.Element;
 import org.sluja.searcher.webapp.builder.request.product.ProductBuilder;
+import org.sluja.searcher.webapp.dto.product.request.get.GetProductForShopNameAndCategoryRequest;
 import org.sluja.searcher.webapp.dto.product.request.search.object.BuildProductObjectRequest;
 import org.sluja.searcher.webapp.dto.scraper.search.SearchRequest;
 import org.sluja.searcher.webapp.enums.scraper.search.SearchProperty;
@@ -26,6 +27,23 @@ public class BuildProductObjectRequestBuilder extends ProductBuilder {
                 (String) getProperty(request, SearchProperty.SHOP_NAME),
                 categoryName,
                 (String) getProperty(request, SearchProperty.CONTEXT));
+    }
+
+    public static BuildProductObjectRequest build(final GetProductForShopNameAndCategoryRequest request, final List<Element> productInstances) {
+        return new BuildProductObjectRequest(request.getProductPrice(),
+                request.getHomePageAddress(),
+                request.getProductName(),
+                request.getProductDiscountPrice(),
+                request.getProductImageExtractAttribute(),
+                request.getDiv(),
+                request.getPageAddressExtractAttribute(),
+                request.getPlainPageAddressToFormat(),
+                productInstances,
+                request.getProductPageAddresses(),
+                request.getProductImageAddresses(),
+                request.getShopName(),
+                request.getCategoryName(),
+                request.getContext());
     }
 
 }

@@ -1,6 +1,7 @@
 package org.sluja.searcher.webapp.builder.request.product.instance;
 
 import org.sluja.searcher.webapp.builder.request.product.ProductBuilder;
+import org.sluja.searcher.webapp.dto.product.request.get.GetProductForShopNameAndCategoryRequest;
 import org.sluja.searcher.webapp.dto.product.request.search.instance.ProductInstanceSearchRequest;
 import org.sluja.searcher.webapp.dto.scraper.search.SearchRequest;
 import org.sluja.searcher.webapp.enums.scraper.search.SearchProperty;
@@ -19,5 +20,15 @@ public class ProductInstanceSearchRequestBuilder extends ProductBuilder {
                 (String) getProperty(request, SearchProperty.CATEGORY_PAGE_AMOUNTS),
                 ((Map<String, List<String>>) getProperty(request, SearchProperty.CATEGORY_PROPERTIES)).get(category),
                 (String) getProperty(request, SearchProperty.PRODUCT_INSTANCE));
+    }
+
+    public static ProductInstanceSearchRequest build(final GetProductForShopNameAndCategoryRequest request) {
+        return new ProductInstanceSearchRequest(request.isDynamicWebsite(),
+                request.getHomePageAddress(),
+                request.getPageAddressExtractAttribute(),
+                request.getAllCategoriesPageAddresses(),
+                request.getCategoryPageAmounts(),
+                request.getCategoryProperties(),
+                request.getProductInstance());
     }
 }

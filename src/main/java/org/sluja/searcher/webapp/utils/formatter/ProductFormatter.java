@@ -12,10 +12,10 @@ public class ProductFormatter {
 
     public static String format(final BuildProductObjectRequest request, final ProductProperty property, final Element element) throws UnsuccessfulFormatException {
         return switch (property) {
-            case PRICE -> ProductPriceFormatter.format(request, element);
+            case PRICE -> ProductPriceFormatter.format(element);
             case URL -> ProductUrlFormatter.format(request, element);
             case NAME -> ProductNameFormatter.format(element);
-            default -> throw new UnsuccessfulFormatException();
+            default -> throw new UnsuccessfulFormatException(property);
         };
     }
 }
