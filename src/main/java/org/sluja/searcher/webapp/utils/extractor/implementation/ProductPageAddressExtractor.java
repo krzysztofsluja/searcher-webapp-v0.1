@@ -7,7 +7,6 @@ import org.sluja.searcher.webapp.dto.product.request.search.object.BuildProductO
 import org.sluja.searcher.webapp.dto.scraper.stat.StaticWebsiteElementScrapRequest;
 import org.sluja.searcher.webapp.enums.product.ProductProperty;
 import org.sluja.searcher.webapp.exception.format.UnsuccessfulFormatException;
-import org.sluja.searcher.webapp.exception.product.general.ProductNotFoundException;
 import org.sluja.searcher.webapp.exception.scraper.ScraperIncorrectFieldException;
 import org.sluja.searcher.webapp.service.factory.scraper.WebsiteScraperFactory;
 import org.sluja.searcher.webapp.service.interfaces.scrap.IGetScraper;
@@ -28,7 +27,7 @@ public class ProductPageAddressExtractor implements Extractor<List<String>, Elem
     private final WebsiteScraperFactory websiteScraperFactory;
 
     @Override
-    public List<String> extract(final Element element, final BuildProductObjectRequest request) throws UnsuccessfulFormatException, ProductNotFoundException {
+    public List<String> extract(final Element element, final BuildProductObjectRequest request) {
         final List<Element> elements = request.getProductPageAddresses()
                 .stream()
                 .filter(StringUtils::isNotEmpty)

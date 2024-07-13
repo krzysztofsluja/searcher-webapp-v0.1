@@ -9,8 +9,6 @@ import org.jsoup.nodes.Element;
 import org.sluja.searcher.webapp.dto.product.ProductDTO;
 import org.sluja.searcher.webapp.dto.product.request.search.object.BuildProductObjectRequest;
 import org.sluja.searcher.webapp.dto.scraper.stat.StaticWebsiteElementScrapRequest;
-import org.sluja.searcher.webapp.exception.format.UnsuccessfulFormatException;
-import org.sluja.searcher.webapp.exception.product.general.ProductNotFoundException;
 import org.sluja.searcher.webapp.exception.scraper.ScraperIncorrectFieldException;
 import org.sluja.searcher.webapp.service.factory.scraper.WebsiteScraperFactory;
 import org.sluja.searcher.webapp.service.interfaces.scrap.IGetScraper;
@@ -30,7 +28,7 @@ public class ProductImageAddressExtractor implements Extractor<List<String>, Ele
     private static final Logger LOGGER = Logger.getLogger(ProductImageAddressExtractor.class);
     private final WebsiteScraperFactory websiteScraperFactory;
     @Override
-    public List<String> extract(final Element element, final BuildProductObjectRequest request) throws ProductNotFoundException, UnsuccessfulFormatException {
+    public List<String> extract(final Element element, final BuildProductObjectRequest request) {
 
         final List<Element> elements = request.getProductImageAddresses()
                 .stream()
