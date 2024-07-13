@@ -102,6 +102,10 @@ public class DynamicWebsiteProductInstanceSearchService extends ProductInstanceS
     }
 
     private void changePage(final ProductInstanceSearchRequest request, final WebDriver driver) throws ProductNotFoundException {
+        if(StringUtils.isEmpty(request.getCategoryPageAmounts())) {
+            //TODO logging
+            throw new CategoryPageAddressNotFoundException();
+        }
         try {
             final DynamicWebsiteScrapRequest scrapRequest = new DynamicWebsiteScrapRequest(request.getCategoryPageAmounts(), driver);
             ((List<WebElement>) super.search(scrapRequest)).stream()
