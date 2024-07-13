@@ -1,4 +1,4 @@
-package org.sluja.searcher.webapp.service.product.get.implementation;
+package org.sluja.searcher.webapp.service.product.get.implementation.singleshop;
 
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.collections4.CollectionUtils;
