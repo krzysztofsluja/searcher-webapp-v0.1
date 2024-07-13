@@ -1,5 +1,6 @@
 package org.sluja.searcher.webapp.dto.scraper;
 
+import lombok.Builder;
 import org.sluja.searcher.webapp.annotation.NullableOrEmptyField;
 
 import java.io.Serializable;
@@ -7,6 +8,7 @@ import java.util.List;
 
 import java.util.Map;
 
+@Builder
 public record ProductScrapWithDefinedAttributes(String shopName,
                                            String productPrice,
                                            String homePageAddress,
