@@ -7,6 +7,7 @@ import org.sluja.searcher.webapp.dto.product.ProductDTO;
 import org.sluja.searcher.webapp.dto.product.request.get.GetProductForManyShopsAndCategoriesRequest;
 import org.sluja.searcher.webapp.dto.product.request.get.GetProductForShopNameAndCategoryRequest;
 import org.sluja.searcher.webapp.dto.product.request.get.GetProductForShopNameRequest;
+import org.sluja.searcher.webapp.dto.product.response.GetProductForShopAndCategoryResponse;
 import org.sluja.searcher.webapp.dto.product.response.GetProductsForShopAndManyCategoriesResponse;
 import org.sluja.searcher.webapp.exception.product.general.ProductNotFoundException;
 import org.sluja.searcher.webapp.exception.product.object.ProductForShopAndCategoryNotFoundException;
@@ -24,7 +25,7 @@ import java.util.concurrent.ExecutionException;
 @RequiredArgsConstructor
 public class GetProductForManyShopsAndCategoriesService implements IGetProductService<List<GetProductsForShopAndManyCategoriesResponse>, GetProductForManyShopsAndCategoriesRequest> {
 
-    private final IGetProductService<List<ProductDTO>, GetProductForShopNameAndCategoryRequest> getProductForShopAndCategoryService;
+    private final IGetProductService<GetProductForShopAndCategoryResponse, GetProductForShopNameAndCategoryRequest> getProductForShopAndCategoryService;
     @Override
     public List<GetProductsForShopAndManyCategoriesResponse> get(final GetProductForManyShopsAndCategoriesRequest request) throws ProductNotFoundException {
         final List<CompletableFuture<GetProductsForShopAndManyCategoriesResponse>> futureResponses = new ArrayList<>();
@@ -52,7 +53,7 @@ public class GetProductForManyShopsAndCategoriesService implements IGetProductSe
                final GetProductForShopNameAndCategoryRequest requestForCategory = GetProductForShopAndCategoryRequestBuilder.build(request, shop, category);
                final List<ProductDTO> products;
                try {
-                   products = getProductForShopAndCategoryService.get(requestForCategory);
+                   products = getProductForShopAndCategoryService.get(requestForCategory).products();
                    if(CollectionUtils.isEmpty(products)) {
                        throw new ProductForShopAndCategoryNotFoundException(new Pair<>(shop, category));
                    }

@@ -9,6 +9,7 @@ import org.sluja.searcher.webapp.dto.product.ProductDTO;
 import org.sluja.searcher.webapp.dto.product.request.get.GetProductForShopNameAndCategoryRequest;
 import org.sluja.searcher.webapp.dto.product.request.search.instance.ProductInstanceSearchRequest;
 import org.sluja.searcher.webapp.dto.product.request.search.object.BuildProductObjectRequest;
+import org.sluja.searcher.webapp.dto.product.response.GetProductForShopAndCategoryResponse;
 import org.sluja.searcher.webapp.dto.scraper.dynamic.DynamicWebsiteScrapRequest;
 import org.sluja.searcher.webapp.exception.product.general.ProductNotFoundException;
 import org.sluja.searcher.webapp.exception.product.object.ProductObjectBuildFailedException;
@@ -23,13 +24,22 @@ import java.util.List;
 @Service
 @Qualifier("getProductForShopAndCategoryService")
 @RequiredArgsConstructor
-public class GetProductForShopAndCategoryService implements IGetProductService<List<ProductDTO>, GetProductForShopNameAndCategoryRequest> {
+public class GetProductForShopAndCategoryService implements IGetProductService<GetProductForShopAndCategoryResponse, GetProductForShopNameAndCategoryRequest> {
 
     private final ProductInstanceSearchService<DynamicWebsiteScrapRequest, ProductInstanceSearchRequest> dynamicWebsiteProductInstanceSearchService;
     private final IBuildProductObject buildProductObjectService;
 
     @Override
-    public List<ProductDTO> get(final GetProductForShopNameAndCategoryRequest request) throws ProductNotFoundException{
+    public GetProductForShopAndCategoryResponse get(final GetProductForShopNameAndCategoryRequest request) throws ProductNotFoundException  {
+        final List<ProductDTO> products = getProducts(request);
+        return GetProductForShopAndCategoryResponse.builder()
+                .shopName(request.getShopName())
+                .categoryName(request.getCategoryName())
+                .products(products)
+                .build();
+    }
+
+    private List<ProductDTO> getProducts(final GetProductForShopNameAndCategoryRequest request) throws ProductNotFoundException{
         final ProductInstanceSearchRequest productInstanceSearchRequest = ProductInstanceSearchRequestBuilder.build(request);
         final List<Element> elements = (List<Element>) dynamicWebsiteProductInstanceSearchService.searchList(productInstanceSearchRequest);
         final BuildProductObjectRequest buildProductObjectRequest = BuildProductObjectRequestBuilder.build(request, elements);
