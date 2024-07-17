@@ -6,6 +6,7 @@ import org.sluja.searcher.webapp.exception.cache.CacheElementForGivenKeyNotFound
 import org.sluja.searcher.webapp.service.cache.CacheService;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.util.Objects;
@@ -37,6 +38,12 @@ public class GetProductsForShopAndCategoryCacheService implements CacheService<P
     @Override
     public Boolean exists(final String key) {
         return productsForShopAndCategoryRedisTemplate.hasKey(key);
+    }
+
+    @Scheduled(cron = "0 0 23 * * ?")
+    public void clearCache() {
+        //TODO logging
+        Objects.requireNonNull(productsForShopAndCategoryRedisTemplate.getConnectionFactory()).getConnection().serverCommands().flushAll();
     }
 
     private Boolean notExists(final String key) {
