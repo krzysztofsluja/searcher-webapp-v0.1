@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.sluja.searcher.webapp.model.category.Category;
-import org.sluja.searcher.webapp.model.shop.Shop;
 
 import java.util.Date;
 import java.util.List;
@@ -27,13 +26,6 @@ public class CategoryProperty {
             inverseJoinColumns = @JoinColumn(name = "category_id")
     )
     private List<Category> categories;
-    @ManyToMany
-    @JoinTable(
-            name = "category_property_shop",
-            joinColumns = @JoinColumn(name = "category_property_id"),
-            inverseJoinColumns = @JoinColumn(name = "shop_id")
-    )
-    private List<Shop> shops;
     @CreationTimestamp
     @Column(name = "created_date")
     public Date createdDate;
