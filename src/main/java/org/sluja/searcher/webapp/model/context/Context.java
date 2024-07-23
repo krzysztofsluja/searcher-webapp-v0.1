@@ -1,12 +1,14 @@
 package org.sluja.searcher.webapp.model.context;
 
 import jakarta.persistence.*;
+import lombok.Getter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.util.Date;
 
 @Entity
+@Getter
 public class Context {
 
     @Id
