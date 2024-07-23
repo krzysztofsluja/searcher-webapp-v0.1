@@ -16,4 +16,5 @@ public class GetProductForManyShopsAndCategoriesRequest implements SearchService
 
     private Map<String, List<String>> shopsWithCategories;
     private Map<String, GetProductForShopNameRequest> shopsPropertiesMap;
+    private String context;
 }
