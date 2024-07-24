@@ -1,5 +1,6 @@
 package org.sluja.searcher.webapp.aspect.product;
 
+import jakarta.validation.Valid;
 import org.apache.commons.collections4.CollectionUtils;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;

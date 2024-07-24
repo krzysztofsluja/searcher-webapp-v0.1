@@ -1,5 +1,6 @@
 package org.sluja.searcher.webapp.builder.request.product.get;
 
+import jakarta.validation.Valid;
 import org.sluja.searcher.webapp.builder.request.product.ProductBuilder;
 import org.sluja.searcher.webapp.dto.presentation.shop.attribute.ShopAttributeDto;
 import org.sluja.searcher.webapp.dto.product.request.get.GetProductForManyShopsAndCategoriesRequest;
@@ -16,14 +17,14 @@ import java.util.stream.Collectors;
 
 public class GetProductForManyShopsAndCategoriesRequestBuilder extends ProductBuilder {
 
-    public static GetProductForManyShopsAndCategoriesRequest build(final ManyShopsSearchProductsRequest request) {
+    public static @Valid GetProductForManyShopsAndCategoriesRequest build(final ManyShopsSearchProductsRequest request) {
         return GetProductForManyShopsAndCategoriesRequest.builder()
                 .shopsWithCategories(getShopsWithCategories(request))
                 .shopsPropertiesMap(getShopsPropertiesMap(request.getShopsProperties()))
                 .build();
     }
 
-    public static GetProductForManyShopsAndCategoriesRequest build(final GetProductsRequest request, final Map<String, List<ShopAttributeDto>> shopAttributes, final Map<String, List<String>> categoryProperties) {
+    public static @Valid GetProductForManyShopsAndCategoriesRequest build(final GetProductsRequest request, final Map<String, List<ShopAttributeDto>> shopAttributes, final Map<String, List<String>> categoryProperties) {
         final Map<String, GetProductForShopNameRequest> shopsPropertiesMap = new HashMap<>();
         for(final Map.Entry<String, List<ShopAttributeDto>> entry : shopAttributes.entrySet()) {
             GetProductForShopNameRequest requestForShop = GetProductForShopNameRequestBuilder.build(entry.getValue(),

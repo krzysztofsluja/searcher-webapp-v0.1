@@ -1,5 +1,6 @@
 package org.sluja.searcher.webapp.dto.product.request.get;
 
+import jakarta.validation.constraints.NotEmpty;
 import lombok.Getter;
 import org.sluja.searcher.webapp.dto.product.request.GetProductRequest;
 
@@ -10,6 +11,7 @@ import java.util.Map;
 @Getter
 public class GetProductForShopNameRequest extends GetProductRequest implements Serializable {
 
+    @NotEmpty
     private String shopName;
     private Map<String, List<String>> categoriesProperties;
     private List<String> categories;

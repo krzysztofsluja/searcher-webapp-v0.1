@@ -1,5 +1,6 @@
 package org.sluja.searcher.webapp.dto.product.request.get;
 
+import jakarta.validation.constraints.NotEmpty;
 import lombok.Getter;
 import org.sluja.searcher.webapp.dto.product.request.GetProductRequest;
 
@@ -8,7 +9,9 @@ import java.util.List;
 @Getter
 public class GetProductForShopNameAndCategoryRequest extends GetProductRequest {
 
+    @NotEmpty
     private String categoryName;
+    @NotEmpty
     private String shopName;
     private List<String> categoryProperties;
 
