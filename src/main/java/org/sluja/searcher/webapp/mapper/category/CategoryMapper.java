@@ -1,5 +1,6 @@
 package org.sluja.searcher.webapp.mapper.category;
 
+import jakarta.validation.Valid;
 import org.mapstruct.*;
 import org.sluja.searcher.webapp.dto.presentation.category.CategoryDto;
 import org.sluja.searcher.webapp.model.category.Category;
@@ -10,13 +11,10 @@ import java.util.stream.Collectors;
 
 @Mapper(componentModel = "spring")
 public interface CategoryMapper {
-    Category toEntity(CategoryDto categoryDto);
+    Category toEntity(@Valid CategoryDto categoryDto);
 
     @Mapping(target = "contextNames", expression = "java(contextsToContextNames(category.getContexts()))")
     CategoryDto toDto(Category category);
-
-    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    Category partialUpdate(CategoryDto categoryDto, @MappingTarget Category category);
 
     default List<String> contextsToContextNames(List<org.sluja.searcher.webapp.model.context.Context> contexts) {
         return contexts.stream().map(Context::getName).collect(Collectors.toList());
