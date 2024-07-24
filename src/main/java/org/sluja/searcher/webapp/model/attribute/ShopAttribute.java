@@ -1,6 +1,7 @@
 package org.sluja.searcher.webapp.model.attribute;
 
 import jakarta.persistence.*;
+import lombok.Getter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.sluja.searcher.webapp.model.context.Context;
@@ -9,6 +10,7 @@ import org.sluja.searcher.webapp.model.shop.Shop;
 import java.util.Date;
 
 @Entity(name = "shop_attribute")
+@Getter
 public class ShopAttribute {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

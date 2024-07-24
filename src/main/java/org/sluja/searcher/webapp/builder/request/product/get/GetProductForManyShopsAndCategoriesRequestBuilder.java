@@ -1,11 +1,14 @@
 package org.sluja.searcher.webapp.builder.request.product.get;
 
 import org.sluja.searcher.webapp.builder.request.product.ProductBuilder;
+import org.sluja.searcher.webapp.dto.presentation.shop.attribute.ShopAttributeDto;
 import org.sluja.searcher.webapp.dto.product.request.get.GetProductForManyShopsAndCategoriesRequest;
 import org.sluja.searcher.webapp.dto.product.request.get.GetProductForShopNameRequest;
+import org.sluja.searcher.webapp.dto.request.presentation.product.GetProductsRequest;
 import org.sluja.searcher.webapp.dto.request.search.manyshops.ManyShopsSearchProductsRequest;
 import org.sluja.searcher.webapp.dto.scraper.ProductScrapWithDefinedAttributes;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -17,6 +20,22 @@ public class GetProductForManyShopsAndCategoriesRequestBuilder extends ProductBu
         return GetProductForManyShopsAndCategoriesRequest.builder()
                 .shopsWithCategories(getShopsWithCategories(request))
                 .shopsPropertiesMap(getShopsPropertiesMap(request.getShopsProperties()))
+                .build();
+    }
+
+    public static GetProductForManyShopsAndCategoriesRequest build(final GetProductsRequest request, final Map<String, List<ShopAttributeDto>> shopAttributes, final Map<String, List<String>> categoryProperties) {
+        final Map<String, GetProductForShopNameRequest> shopsPropertiesMap = new HashMap<>();
+        for(final Map.Entry<String, List<ShopAttributeDto>> entry : shopAttributes.entrySet()) {
+            GetProductForShopNameRequest requestForShop = GetProductForShopNameRequestBuilder.build(entry.getValue(),
+                    request.dynamicWebsitesOfShops().get(entry.getKey()),
+                    categoryProperties,
+                    request.categories().get(entry.getKey()));
+            shopsPropertiesMap.put(entry.getKey(), requestForShop);
+        }
+        return GetProductForManyShopsAndCategoriesRequest.builder()
+                .shopsWithCategories(request.categories())
+                .shopsPropertiesMap(shopsPropertiesMap)
+                .context(request.context())
                 .build();
     }
 

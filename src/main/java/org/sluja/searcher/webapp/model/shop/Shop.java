@@ -1,6 +1,7 @@
 package org.sluja.searcher.webapp.model.shop;
 
 import jakarta.persistence.*;
+import lombok.Getter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.sluja.searcher.webapp.model.context.Context;
@@ -8,6 +9,7 @@ import org.sluja.searcher.webapp.model.context.Context;
 import java.util.Date;
 
 @Entity(name = "shop")
+@Getter
 public class Shop {
 
     @Id
