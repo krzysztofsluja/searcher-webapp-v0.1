@@ -1,5 +1,6 @@
 package org.sluja.searcher.webapp.service.presentation.shop.list;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.sluja.searcher.webapp.dto.presentation.shop.list.ShopDto;
 import org.sluja.searcher.webapp.exception.presentation.SpecificEntityNotFoundException;
@@ -22,7 +23,7 @@ public class GetShopService {
     @Autowired
     private final ShopMapper shopMapper;
 
-    public List<ShopDto> getAllShops() {
+    public @Valid List<ShopDto> getAllShops() {
         //TODO logging
         return shopRepository
                 .findAll()
