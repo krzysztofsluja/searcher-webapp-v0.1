@@ -4,5 +4,6 @@ import java.time.LocalDate;
 
 public record ProductsForShopAndCategoryKeyCreatorData(String shopName,
                                                        String category,
+                                                       String context,
                                                        LocalDate additionDate) {
 }
