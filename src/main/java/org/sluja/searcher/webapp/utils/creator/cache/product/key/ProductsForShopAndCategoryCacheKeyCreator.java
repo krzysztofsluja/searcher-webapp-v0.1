@@ -16,7 +16,7 @@ public class ProductsForShopAndCategoryCacheKeyCreator implements Creator<String
     private static final String SEPARATOR = "-";
 
     @Override
-    public String create(@Valid final ProductsForShopAndCategoryKeyCreatorData request) throws CacheKeyCreationFailedException {
+    public String create(final ProductsForShopAndCategoryKeyCreatorData request) throws CacheKeyCreationFailedException {
         if(Objects.nonNull(request)) {
             return new StringBuilder()
                     .append(request.shopName())

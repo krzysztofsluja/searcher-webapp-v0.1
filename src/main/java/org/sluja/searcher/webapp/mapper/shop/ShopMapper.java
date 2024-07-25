@@ -10,5 +10,5 @@ import org.sluja.searcher.webapp.model.shop.Shop;
 public interface ShopMapper {
 
     @Mapping(target = "contextName", source = "shop.context.name")
-    @Valid ShopDto map(final Shop shop);
+    ShopDto map(final Shop shop);
 }

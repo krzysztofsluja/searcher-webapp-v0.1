@@ -9,9 +9,9 @@ import java.util.List;
 @Getter
 public class GetProductForShopNameAndCategoryRequest extends GetProductRequest {
 
-    @NotEmpty
+    @NotEmpty(message = "error.validation.category.name.empty")
     private String categoryName;
-    @NotEmpty
+    @NotEmpty(message = "error.validation.shop.name.empty")
     private String shopName;
     private List<String> categoryProperties;
 

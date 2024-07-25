@@ -23,7 +23,7 @@ public class GetShopService {
     @Autowired
     private final ShopMapper shopMapper;
 
-    public @Valid List<ShopDto> getAllShops() {
+    public List<ShopDto> getAllShops() {
         //TODO logging
         return shopRepository
                 .findAll()

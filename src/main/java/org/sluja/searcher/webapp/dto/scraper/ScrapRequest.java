@@ -1,19 +1,14 @@
 package org.sluja.searcher.webapp.dto.scraper;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.Data;
-import lombok.NoArgsConstructor;
-import org.sluja.searcher.webapp.annotation.NullableOrEmptyField;
 import org.sluja.searcher.webapp.dto.marker.scraper.IScrapRequest;
-
-import java.util.List;
-import java.util.Map;
 
 @Data
 public class ScrapRequest implements IScrapRequest {
 
     protected boolean isDynamicWebsite;
+    @NotEmpty(message = "error.validation.scrap.request.property.empty")
     protected String property;
 
     public ScrapRequest(boolean isDynamicWebsite, String property) {

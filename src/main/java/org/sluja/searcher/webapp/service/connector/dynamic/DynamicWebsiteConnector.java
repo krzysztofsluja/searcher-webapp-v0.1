@@ -22,7 +22,7 @@ public class DynamicWebsiteConnector implements IConnector<WebDriver, DynamicWeb
 
     //public static DynamicWebsiteConnector INSTANCE = new DynamicWebsiteConnector();
     @Override
-    public WebDriver connectAndGetPage(@Valid final DynamicWebsiteConnectRequest request) throws ConnectionTimeoutException, IOException {
+    public WebDriver connectAndGetPage(final DynamicWebsiteConnectRequest request) throws ConnectionTimeoutException, IOException {
         if(StringUtils.isEmpty(request.getUrl())) {
             throw new ConnectionTimeoutException();
         }

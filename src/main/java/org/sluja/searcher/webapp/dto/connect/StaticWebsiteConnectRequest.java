@@ -10,6 +10,6 @@ import org.sluja.searcher.webapp.dto.marker.connect.ConnectRequest;
 public class StaticWebsiteConnectRequest implements ConnectRequest {
 
     @NotEmpty
-    @Pattern(regexp = "^https://.*", message = "URL must start with https://")
+    @Pattern(regexp = "^https://.*", message = "error.validation.url.wrong.start")
     private String url;
 }

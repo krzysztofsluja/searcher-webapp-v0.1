@@ -11,7 +11,7 @@ import java.util.Map;
 @Getter
 public class GetProductForShopNameRequest extends GetProductRequest implements Serializable {
 
-    @NotEmpty
+    @NotEmpty(message = "error.validation.shop.name.empty")
     private String shopName;
     private Map<String, List<String>> categoriesProperties;
     private List<String> categories;

@@ -1,5 +1,6 @@
 package org.sluja.searcher.webapp.dto.product.response;
 
+import jakarta.validation.constraints.NotEmpty;
 import lombok.Builder;
 import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
@@ -13,6 +14,7 @@ import java.util.Map;
 @Builder
 public class GetProductsForShopAndManyCategoriesResponse {
 
+    @NotEmpty(message = "error.validation.shop.name.empty")
     private String shopName;
     private List<String> categories;
     private Map<String, List<ProductDTO>> productsForCategory;

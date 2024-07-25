@@ -16,10 +16,10 @@ import java.io.Serializable;
 public class CategoryPropertyDto implements Serializable {
 
     private Long id;
-    @NotEmpty
+    @NotEmpty(message = "error.validation.category.property.value.empty")
     private String value;
-    @NotEmpty
+    @NotEmpty(message = "error.validation.category.name.empty")
     private String categoryName;
-    @NotEmpty
+    @NotEmpty(message = "error.validation.context.empty")
     private String context;
 }

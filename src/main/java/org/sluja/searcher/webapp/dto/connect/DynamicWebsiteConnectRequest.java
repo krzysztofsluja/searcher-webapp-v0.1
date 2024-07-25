@@ -15,6 +15,6 @@ public class DynamicWebsiteConnectRequest implements ConnectRequest {
 
     private WebDriver driver;
     @NotEmpty
-    @Pattern(regexp = "^https://.*", message = "URL must start with https://")
+    @Pattern(regexp = "^https://.*", message = "error.validation.url.wrong.start")
     private String url;
 }

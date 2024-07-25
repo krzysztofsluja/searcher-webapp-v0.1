@@ -1,5 +1,6 @@
 package org.sluja.searcher.webapp.dto.product;
 
+import jakarta.validation.constraints.NotEmpty;
 import lombok.Builder;
 import org.apache.commons.lang3.StringUtils;
 
@@ -9,13 +10,13 @@ import java.util.Collections;
 import java.util.List;
 
 @Builder
-public record ProductDTO(String name,
-                         String shopName,
+public record ProductDTO(@NotEmpty(message = "error.validation.product.name.empty") String name,
+                         @NotEmpty(message = "error.validation.shop.name.empty") String shopName,
                          BigDecimal price,
                          List<String> productPageAddress,
                          List<String> imageProductPageAddress,
-                         String category,
-                         String context) implements Serializable {
+                         @NotEmpty(message = "error.validation.category.name.empty") String category,
+                         @NotEmpty(message = "error.validation.context.empty") String context) implements Serializable {
 
     public static ProductDTO emptyProductDTO() {
         return ProductDTO.builder()

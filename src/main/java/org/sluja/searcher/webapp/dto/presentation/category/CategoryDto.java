@@ -9,6 +9,6 @@ import java.util.List;
  * DTO for {@link org.sluja.searcher.webapp.model.category.Category}
  */
 public record CategoryDto(Long id,
-                          @NotEmpty String name,
+                          @NotEmpty(message = "error.validation.category.name.empty") String name,
                           List<String> contextNames) implements Serializable {
 }

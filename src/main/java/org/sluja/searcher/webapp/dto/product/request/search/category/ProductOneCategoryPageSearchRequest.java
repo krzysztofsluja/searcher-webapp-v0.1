@@ -1,5 +1,6 @@
 package org.sluja.searcher.webapp.dto.product.request.search.category;
 
+import jakarta.validation.constraints.NotEmpty;
 import lombok.Getter;
 
 import java.util.List;
@@ -8,6 +9,7 @@ import java.util.List;
 public class ProductOneCategoryPageSearchRequest extends ProductCategoryPageSearchRequest{
 
     private List<String> categoryProperties;
+    @NotEmpty(message = "error.validation.search.request.attribute.empty")
     private String productInstance;
 
     public ProductOneCategoryPageSearchRequest(final boolean dynamicWebsite,

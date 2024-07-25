@@ -58,7 +58,7 @@ public class GetProductForShopNameRequestBuilder extends ProductBuilder {
                 categories);
     }
 
-    private static Optional<String> getPropertyValue(@Valid final List<ShopAttributeDto> attributeDtos, final SearchProperty property) {
+    private static Optional<String> getPropertyValue(final List<ShopAttributeDto> attributeDtos, final SearchProperty property) {
         return attributeDtos.stream()
                 .filter(attribute -> attribute.name().equalsIgnoreCase(property.getJsonValue()))
                 .limit(1)
@@ -66,11 +66,11 @@ public class GetProductForShopNameRequestBuilder extends ProductBuilder {
                 .findFirst();
     }
 
-    private static Optional<String> getContextName(@Valid final ShopAttributeDto attribute) {
+    private static Optional<String> getContextName(final ShopAttributeDto attribute) {
         return Optional.ofNullable(attribute.contextName());
     }
 
-    private static Optional<List<String>> getPropertyValueWhereTypeList(@Valid final List<ShopAttributeDto> attributes, final SearchProperty property) {
+    private static Optional<List<String>> getPropertyValueWhereTypeList(final List<ShopAttributeDto> attributes, final SearchProperty property) {
         return Optional.of(attributes.stream()
                 .filter(attribute -> attribute.name().equalsIgnoreCase(property.getJsonValue()))
                 .filter(Objects::nonNull)

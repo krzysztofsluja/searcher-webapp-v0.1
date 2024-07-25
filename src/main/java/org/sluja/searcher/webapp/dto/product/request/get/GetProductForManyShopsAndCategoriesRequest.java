@@ -17,6 +17,6 @@ public class GetProductForManyShopsAndCategoriesRequest implements SearchService
 
     private Map<String, List<String>> shopsWithCategories;
     private Map<String, GetProductForShopNameRequest> shopsPropertiesMap;
-    @NotEmpty
+    @NotEmpty(message = "error.validation.context.empty")
     private String context;
 }

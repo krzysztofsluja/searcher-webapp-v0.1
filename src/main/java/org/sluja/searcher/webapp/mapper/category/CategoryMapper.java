@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 
 @Mapper(componentModel = "spring")
 public interface CategoryMapper {
-    Category toEntity(@Valid CategoryDto categoryDto);
+    Category toEntity(CategoryDto categoryDto);
 
     @Mapping(target = "contextNames", expression = "java(contextsToContextNames(category.getContexts()))")
     CategoryDto toDto(Category category);
