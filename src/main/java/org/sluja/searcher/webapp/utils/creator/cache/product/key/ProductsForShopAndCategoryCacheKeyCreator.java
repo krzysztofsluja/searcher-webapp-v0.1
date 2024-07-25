@@ -22,6 +22,8 @@ public class ProductsForShopAndCategoryCacheKeyCreator implements Creator<String
                     .append(SEPARATOR)
                     .append(request.category())
                     .append(SEPARATOR)
+                    .append(request.context())
+                    .append(SEPARATOR)
                     .append(request.additionDate().getYear())
                     .append(SEPARATOR)
                     .append(request.additionDate().getMonthValue())

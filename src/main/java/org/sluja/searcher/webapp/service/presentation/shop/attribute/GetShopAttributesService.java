@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -36,6 +37,7 @@ public class GetShopAttributesService {
                 .orElseThrow(AttributeForGivenShopInContextNotFoundException::new)
                 .stream()
                 .map(shopAttributeMapper::toDto)
+                .filter(Objects::nonNull)
                 .collect(Collectors.groupingBy(ShopAttributeDto::shopName));
     }
 }

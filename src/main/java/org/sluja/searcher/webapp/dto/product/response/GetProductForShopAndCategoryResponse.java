@@ -9,5 +9,6 @@ import java.util.List;
 @Builder
 public record GetProductForShopAndCategoryResponse(String shopName,
                                                   String categoryName,
+                                                  String context,
                                                   List<ProductDTO> products) implements Serializable {
 }
