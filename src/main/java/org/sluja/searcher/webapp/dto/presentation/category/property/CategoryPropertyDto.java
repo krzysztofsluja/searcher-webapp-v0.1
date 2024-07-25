@@ -4,6 +4,7 @@ import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import org.sluja.searcher.webapp.utils.dto.validation.DtoValidationErrorMessage;
 
 import java.io.Serializable;
 
@@ -16,10 +17,10 @@ import java.io.Serializable;
 public class CategoryPropertyDto implements Serializable {
 
     private Long id;
-    @NotEmpty(message = "error.validation.category.property.value.empty")
+    @NotEmpty(message = DtoValidationErrorMessage.CATEGORY_PROPERTY_VALUE_EMPTY)
     private String value;
-    @NotEmpty(message = "error.validation.category.name.empty")
+    @NotEmpty(message = DtoValidationErrorMessage.CATEGORY_NAME_EMPTY)
     private String categoryName;
-    @NotEmpty(message = "error.validation.context.empty")
+    @NotEmpty(message = DtoValidationErrorMessage.CONTEXT_EMPTY)
     private String context;
 }

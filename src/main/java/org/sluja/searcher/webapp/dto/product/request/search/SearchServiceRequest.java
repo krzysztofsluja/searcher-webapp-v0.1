@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import org.sluja.searcher.webapp.dto.marker.product.request.SearchServiceRequestMarker;
+import org.sluja.searcher.webapp.utils.dto.validation.DtoValidationErrorMessage;
 
 @AllArgsConstructor
 @Builder
@@ -12,6 +13,6 @@ import org.sluja.searcher.webapp.dto.marker.product.request.SearchServiceRequest
 public class SearchServiceRequest implements SearchServiceRequestMarker {
 
     private boolean dynamicWebsite;
-    @NotEmpty(message = "error.validation.search.request.attribute.empty")
+    @NotEmpty(message = DtoValidationErrorMessage.SEARCH_REQUEST_ATTRIBUTE_EMPTY)
     private String homePageAddress;
 }
