@@ -48,6 +48,7 @@ public class ProductsForShopAndCategoryAspect {
                     .shopName(cachedProducts.shopName())
                     .categoryName(cachedProducts.category())
                     .products(cachedProducts.products())
+                    .context(request.getContext())
                     .build();
         } catch (CacheElementForGivenKeyNotFound | CacheKeyCreationFailedException e) {
             try {

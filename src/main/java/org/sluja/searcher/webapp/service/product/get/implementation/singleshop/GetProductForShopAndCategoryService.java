@@ -36,6 +36,7 @@ public class GetProductForShopAndCategoryService implements IGetProductService<G
                 .shopName(request.getShopName())
                 .categoryName(request.getCategoryName())
                 .products(products)
+                .context(request.getContext())
                 .build();
     }
 

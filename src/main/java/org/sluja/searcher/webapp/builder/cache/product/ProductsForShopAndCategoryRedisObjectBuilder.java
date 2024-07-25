@@ -20,7 +20,7 @@ public class ProductsForShopAndCategoryRedisObjectBuilder {
 
     public ProductsForShopAndCategoryRedisObject build(final GetProductForShopAndCategoryResponse response) throws CacheKeyCreationFailedException {
         return new ProductsForShopAndCategoryRedisObject(
-                productsForShopAndCategoryCacheKeyCreator.create(new ProductsForShopAndCategoryKeyCreatorData(response.shopName(), response.categoryName(), LocalDate.now())),
+                productsForShopAndCategoryCacheKeyCreator.create(new ProductsForShopAndCategoryKeyCreatorData(response.shopName(), response.categoryName(), response.context(), LocalDate.now())),
                 response.shopName(),
                 response.categoryName(),
                 LocalDate.now(),
@@ -29,7 +29,7 @@ public class ProductsForShopAndCategoryRedisObjectBuilder {
 
     public ProductsForShopAndCategoryRedisObject buildObjectWithEmptyProductsList(final GetProductForShopNameAndCategoryRequest request) throws CacheKeyCreationFailedException {
         return new ProductsForShopAndCategoryRedisObject(
-                productsForShopAndCategoryCacheKeyCreator.create(new ProductsForShopAndCategoryKeyCreatorData(request.getShopName(), request.getCategoryName(), LocalDate.now())),
+                productsForShopAndCategoryCacheKeyCreator.create(new ProductsForShopAndCategoryKeyCreatorData(request.getShopName(), request.getCategoryName(), request.getContext(), LocalDate.now())),
                 request.getShopName(),
                 request.getCategoryName(),
                 LocalDate.now(),
