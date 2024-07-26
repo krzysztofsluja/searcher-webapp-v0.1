@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.sluja.searcher.webapp.annotation.validation.InputValidation;
 import org.sluja.searcher.webapp.dto.product.request.search.instance.ScrapProductInstanceSearchRequest;
 import org.sluja.searcher.webapp.dto.scraper.stat.StaticWebsiteScrapRequest;
 import org.sluja.searcher.webapp.exception.product.instance.ProductInstanceNotFoundException;
@@ -23,6 +24,7 @@ public class StaticWebsiteProductInstanceSearchService extends ProductInstanceSe
 
     private final WebsiteScraperFactory websiteScraperFactory;
     @Override
+    @InputValidation(inputs = {ScrapProductInstanceSearchRequest.class})
     public List<Element> searchList(final ScrapProductInstanceSearchRequest searchRequest) throws ProductInstanceNotFoundException {
         final Document document = Jsoup.parse(searchRequest.getCurrentPageSource());
         final StaticWebsiteScrapRequest scrapRequest = new StaticWebsiteScrapRequest(searchRequest.getProductInstance(), document);

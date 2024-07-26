@@ -1,6 +1,7 @@
 package org.sluja.searcher.webapp.builder.request.product.object;
 
 import org.jsoup.nodes.Element;
+import org.sluja.searcher.webapp.annotation.validation.InputValidation;
 import org.sluja.searcher.webapp.builder.request.product.ProductBuilder;
 import org.sluja.searcher.webapp.dto.product.request.get.GetProductForShopNameAndCategoryRequest;
 import org.sluja.searcher.webapp.dto.product.request.search.object.BuildProductObjectRequest;
@@ -29,6 +30,7 @@ public class BuildProductObjectRequestBuilder extends ProductBuilder {
                 (String) getProperty(request, SearchProperty.CONTEXT));
     }
 
+    @InputValidation(inputs = {GetProductForShopNameAndCategoryRequest.class})
     public static BuildProductObjectRequest build(final GetProductForShopNameAndCategoryRequest request, final List<Element> productInstances) {
         return new BuildProductObjectRequest(request.getProductPrice(),
                 request.getHomePageAddress(),

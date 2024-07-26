@@ -3,6 +3,7 @@ package org.sluja.searcher.webapp.service.product.get.implementation.singleshop;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.collections4.CollectionUtils;
 import org.jsoup.nodes.Element;
+import org.sluja.searcher.webapp.annotation.validation.InputValidation;
 import org.sluja.searcher.webapp.builder.request.product.instance.ProductInstanceSearchRequestBuilder;
 import org.sluja.searcher.webapp.builder.request.product.object.BuildProductObjectRequestBuilder;
 import org.sluja.searcher.webapp.dto.product.ProductDTO;
@@ -30,6 +31,7 @@ public class GetProductForShopAndCategoryService implements IGetProductService<G
     private final IBuildProductObject buildProductObjectService;
 
     @Override
+    @InputValidation(inputs = {GetProductForShopNameAndCategoryRequest.class})
     public GetProductForShopAndCategoryResponse get(final GetProductForShopNameAndCategoryRequest request) throws ProductNotFoundException  {
         final List<ProductDTO> products = getProducts(request);
         return GetProductForShopAndCategoryResponse.builder()
@@ -40,6 +42,7 @@ public class GetProductForShopAndCategoryService implements IGetProductService<G
                 .build();
     }
 
+    @InputValidation(inputs = {GetProductForShopNameAndCategoryRequest.class})
     private List<ProductDTO> getProducts(final GetProductForShopNameAndCategoryRequest request) throws ProductNotFoundException{
         final ProductInstanceSearchRequest productInstanceSearchRequest = ProductInstanceSearchRequestBuilder.build(request);
         final List<Element> elements = (List<Element>) dynamicWebsiteProductInstanceSearchService.searchList(productInstanceSearchRequest);

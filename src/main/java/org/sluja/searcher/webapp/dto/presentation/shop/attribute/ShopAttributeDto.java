@@ -9,6 +9,7 @@ import java.io.Serializable;
 /**
  * DTO for {@link org.sluja.searcher.webapp.model.attribute.ShopAttribute}
  */
+//TODO add validation
 public record ShopAttributeDto(Long id,
                                @NotEmpty(message = DtoValidationErrorMessage.SHOP_NAME_EMPTY) String shopName,
                                @NotEmpty(message = DtoValidationErrorMessage.CONTEXT_EMPTY) String contextName,

@@ -1,5 +1,6 @@
 package org.sluja.searcher.webapp.builder.request.product.get;
 
+import org.sluja.searcher.webapp.annotation.validation.InputValidation;
 import org.sluja.searcher.webapp.builder.request.product.ProductBuilder;
 import org.sluja.searcher.webapp.dto.presentation.shop.attribute.ShopAttributeDto;
 import org.sluja.searcher.webapp.dto.product.request.get.GetProductForManyShopsAndCategoriesRequest;
@@ -23,6 +24,7 @@ public class GetProductForManyShopsAndCategoriesRequestBuilder extends ProductBu
                 .build();
     }
 
+    @InputValidation(inputs = {GetProductsRequest.class})
     public static GetProductForManyShopsAndCategoriesRequest build(final GetProductsRequest request, final Map<String, List<ShopAttributeDto>> shopAttributes, final Map<String, List<String>> categoryProperties) {
         final Map<String, GetProductForShopNameRequest> shopsPropertiesMap = new HashMap<>();
         for(final Map.Entry<String, List<ShopAttributeDto>> entry : shopAttributes.entrySet()) {

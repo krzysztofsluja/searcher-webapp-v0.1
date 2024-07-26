@@ -1,5 +1,6 @@
 package org.sluja.searcher.webapp.builder.request.product.instance;
 
+import org.sluja.searcher.webapp.annotation.validation.InputValidation;
 import org.sluja.searcher.webapp.builder.request.product.ProductBuilder;
 import org.sluja.searcher.webapp.dto.product.request.get.GetProductForShopNameAndCategoryRequest;
 import org.sluja.searcher.webapp.dto.product.request.search.instance.ProductInstanceSearchRequest;
@@ -22,6 +23,7 @@ public class ProductInstanceSearchRequestBuilder extends ProductBuilder {
                 (String) getProperty(request, SearchProperty.PRODUCT_INSTANCE));
     }
 
+    @InputValidation(inputs = {GetProductForShopNameAndCategoryRequest.class})
     public static ProductInstanceSearchRequest build(final GetProductForShopNameAndCategoryRequest request) {
         return new ProductInstanceSearchRequest(request.isDynamicWebsite(),
                 request.getHomePageAddress(),

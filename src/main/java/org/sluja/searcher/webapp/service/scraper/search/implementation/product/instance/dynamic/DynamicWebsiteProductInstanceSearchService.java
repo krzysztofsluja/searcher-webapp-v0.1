@@ -7,6 +7,7 @@ import org.jsoup.nodes.Element;
 import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.sluja.searcher.webapp.annotation.validation.InputValidation;
 import org.sluja.searcher.webapp.builder.request.connect.dynamic.DynamicWebsiteConnectRequestBuilder;
 import org.sluja.searcher.webapp.builder.request.product.category.ProductOneCategoryPageSearchRequestBuilder;
 import org.sluja.searcher.webapp.builder.request.product.instance.ScrapProductInstanceSearchRequestBuilder;
@@ -43,6 +44,7 @@ public class DynamicWebsiteProductInstanceSearchService extends ProductInstanceS
     private final ProductInstanceSearchService<StaticWebsiteScrapRequest, ScrapProductInstanceSearchRequest> staticWebsiteProductInstanceSearchService;
     private final WebsiteScraperFactory websiteScraperFactory;
     @Override
+    @InputValidation(inputs = {ProductInstanceSearchRequest.class})
     public List<Element> searchList(final ProductInstanceSearchRequest searchRequest) throws ProductNotFoundException {
         final ProductOneCategoryPageSearchRequest request = ProductOneCategoryPageSearchRequestBuilder.build(searchRequest);
         final List<String> categoryPageAddresses = (List<String>) dynamicWebsiteProductCategoryPageSearchService.getCategoryPageAddresses(request);

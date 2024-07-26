@@ -2,6 +2,7 @@ package org.sluja.searcher.webapp.service.presentation.shop.list;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.sluja.searcher.webapp.annotation.validation.InputValidation;
 import org.sluja.searcher.webapp.dto.presentation.shop.list.ShopDto;
 import org.sluja.searcher.webapp.exception.presentation.SpecificEntityNotFoundException;
 import org.sluja.searcher.webapp.exception.presentation.shop.ShopNotFoundException;
@@ -33,6 +34,7 @@ public class GetShopService {
                 .toList();
     }
 
+    @InputValidation(inputs = {ShopDto.class})
     public ShopDto getShopByName(final String name) throws SpecificEntityNotFoundException {
         //TODO logging
         return shopRepository

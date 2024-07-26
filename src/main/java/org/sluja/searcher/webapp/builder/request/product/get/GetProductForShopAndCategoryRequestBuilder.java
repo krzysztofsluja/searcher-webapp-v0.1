@@ -1,5 +1,6 @@
 package org.sluja.searcher.webapp.builder.request.product.get;
 
+import org.sluja.searcher.webapp.annotation.validation.InputValidation;
 import org.sluja.searcher.webapp.builder.request.product.ProductBuilder;
 import org.sluja.searcher.webapp.dto.product.request.get.GetProductForShopNameAndCategoryRequest;
 import org.sluja.searcher.webapp.dto.product.request.get.GetProductForShopNameRequest;
@@ -32,6 +33,7 @@ public class GetProductForShopAndCategoryRequestBuilder extends ProductBuilder {
                 (List<String>) getProperty(request, SearchProperty.PRODUCT_IMAGE_ADDRESSES));
     }
 
+    @InputValidation(inputs = {GetProductForShopNameRequest.class})
     public static GetProductForShopNameAndCategoryRequest build(final GetProductForShopNameRequest request, final String shopName, final String categoryName) {
         return new GetProductForShopNameAndCategoryRequest(request.isDynamicWebsite(),
                 request.getHomePageAddress(),

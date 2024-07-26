@@ -2,6 +2,7 @@ package org.sluja.searcher.webapp.service.product.get.implementation.manyshops;
 
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.collections4.CollectionUtils;
+import org.sluja.searcher.webapp.annotation.validation.InputValidation;
 import org.sluja.searcher.webapp.builder.request.product.get.GetProductForShopAndCategoryRequestBuilder;
 import org.sluja.searcher.webapp.dto.product.ProductDTO;
 import org.sluja.searcher.webapp.dto.product.request.get.GetProductForManyShopsAndCategoriesRequest;
@@ -27,6 +28,7 @@ public class GetProductForManyShopsAndCategoriesService implements IGetProductSe
 
     private final IGetProductService<GetProductForShopAndCategoryResponse, GetProductForShopNameAndCategoryRequest> getProductForShopAndCategoryService;
     @Override
+    @InputValidation(inputs = {GetProductForManyShopsAndCategoriesRequest.class})
     public List<GetProductsForShopAndManyCategoriesResponse> get(final GetProductForManyShopsAndCategoriesRequest request) throws ProductNotFoundException {
         final List<CompletableFuture<GetProductsForShopAndManyCategoriesResponse>> futureResponses = new ArrayList<>();
         for(final String shop : request.getShopsWithCategories().keySet()) {
@@ -46,6 +48,7 @@ public class GetProductForManyShopsAndCategoriesService implements IGetProductSe
                 .toList();
     }
 
+    @InputValidation(inputs = {GetProductForShopNameRequest.class})
     private CompletableFuture<GetProductsForShopAndManyCategoriesResponse> getResponseFuture(final String shop, final GetProductForShopNameRequest request) {
         return CompletableFuture.supplyAsync(() -> {
            final Map<String, List<ProductDTO>> productsForShop = new HashMap<>();
