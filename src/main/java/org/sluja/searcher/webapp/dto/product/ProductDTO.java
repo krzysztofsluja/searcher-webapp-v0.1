@@ -11,7 +11,7 @@ import java.util.Collections;
 import java.util.List;
 
 @Builder
-public record ProductDTO(@NotEmpty(message = "error.validation.product.name.empty") String name,
+public record ProductDTO(@NotEmpty(message = DtoValidationErrorMessage.PRODUCT_NAME_EMPTY) String name,
                          @NotEmpty(message = DtoValidationErrorMessage.SHOP_NAME_EMPTY) String shopName,
                          BigDecimal price,
                          List<String> productPageAddress,

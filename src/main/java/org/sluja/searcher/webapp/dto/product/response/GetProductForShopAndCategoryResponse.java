@@ -11,6 +11,6 @@ import java.util.List;
 @Builder
 public record GetProductForShopAndCategoryResponse(@NotEmpty(message = DtoValidationErrorMessage.SHOP_NAME_EMPTY) String shopName,
                                                    @NotEmpty(message = DtoValidationErrorMessage.CATEGORY_NAME_EMPTY) String categoryName,
-                                                   @NotEmpty(message = "error.validation.context.name.empty") String context,
+                                                   @NotEmpty(message = DtoValidationErrorMessage.CONTEXT_EMPTY) String context,
                                                   List<ProductDTO> products) implements Serializable {
 }

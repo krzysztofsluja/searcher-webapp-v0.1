@@ -4,10 +4,14 @@ import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import jakarta.validation.ValidatorFactory;
+import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.sluja.searcher.webapp.annotation.validation.InputValidation;
+import org.sluja.searcher.webapp.exception.message.IncorrectMessageCodeForReaderException;
+import org.sluja.searcher.webapp.utils.message.implementation.ErrorMessageReader;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.annotation.Validated;
 
@@ -19,10 +23,13 @@ import java.util.Set;
 public class InputValidationAspect {
 
     private final Validator validator;
+    private final ErrorMessageReader errorMessageReader;
 
-    public InputValidationAspect() {
+    @Autowired
+    public InputValidationAspect(final ErrorMessageReader errorMessageReader) {
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
         this.validator = factory.getValidator();
+        this.errorMessageReader = errorMessageReader;
     }
 
     @Before("@annotation(inputValidation)")
@@ -43,9 +50,17 @@ public class InputValidationAspect {
         Set<ConstraintViolation<T>> violations = validator.validate(object);
         if (!violations.isEmpty()) {
             StringBuilder sb = new StringBuilder("Validation failed: ");
-            for (ConstraintViolation<T> violation : violations) {
-                sb.append(violation.getPropertyPath()).append(" ").append(violation.getMessage()).append("; ");
-            }
+            violations.stream()
+                    .map(violation -> {
+                        try {
+                            return errorMessageReader.getPropertyValue(violation.getMessage());
+                        } catch (final IncorrectMessageCodeForReaderException e) {
+                            //TODO logging
+                            return StringUtils.EMPTY;
+                        }
+                    })
+                    .filter(StringUtils::isNotEmpty)
+                    .forEach(sb::append);
             //TODO add error handling
             throw new IllegalArgumentException(sb.toString());
         }

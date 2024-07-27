@@ -14,4 +14,5 @@ public class DtoValidationErrorMessage {
     public static final String SEARCH_REQUEST_ATTRIBUTE_EMPTY = "error.validation.search.request.attribute.empty";
     public static final String SCRAP_SEARCH_REQUEST_URL_EMPTY = "error.validation.scrap.search.request.url.empty";
     public static final String SCRAP_REQUEST_PROPERTY_EMPTY = "error.validation.scrap.request.property.empty";
+    public static final String PRODUCT_NAME_EMPTY = "error.validation.product.name.empty";
 }
