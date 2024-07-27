@@ -10,6 +10,7 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.sluja.searcher.webapp.annotation.validation.InputValidation;
 import org.sluja.searcher.webapp.exception.message.IncorrectMessageCodeForReaderException;
+import org.sluja.searcher.webapp.exception.message.MessageForGivenKeyNotFoundException;
 import org.sluja.searcher.webapp.utils.message.implementation.ErrorMessageReader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -54,7 +55,7 @@ public class InputValidationAspect {
                     .map(violation -> {
                         try {
                             return errorMessageReader.getPropertyValue(violation.getMessage());
-                        } catch (final IncorrectMessageCodeForReaderException e) {
+                        } catch (final IncorrectMessageCodeForReaderException | MessageForGivenKeyNotFoundException e) {
                             //TODO logging
                             return StringUtils.EMPTY;
                         }
