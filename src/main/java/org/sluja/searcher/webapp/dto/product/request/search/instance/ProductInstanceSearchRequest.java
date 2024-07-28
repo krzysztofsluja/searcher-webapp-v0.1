@@ -13,16 +13,19 @@ public class ProductInstanceSearchRequest extends ProductCategoryPageSearchReque
     @NotEmpty(message = DtoValidationErrorMessage.SEARCH_REQUEST_ATTRIBUTE_EMPTY)
     private String productInstance;
     private List<String> categoryProperties;
+    private String shopName;
     public ProductInstanceSearchRequest(final boolean dynamicWebsite,
                                         final String homePageAddress,
                                         final String pageAddressExtractAttribute,
                                         final List<String> allCategoriesPageAddresses,
                                         final String categoryPageAmounts,
                                         final List<String> categoryProperties,
-                                        final String productInstance) {
+                                        final String productInstance,
+                                        final String shopName) {
         super(dynamicWebsite, homePageAddress, pageAddressExtractAttribute, allCategoriesPageAddresses, categoryPageAmounts);
         this.productInstance = productInstance;
         this.categoryProperties = categoryProperties;
+        this.shopName = shopName;
     }
 
 }

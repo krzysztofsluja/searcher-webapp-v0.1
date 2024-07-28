@@ -38,7 +38,7 @@ public class StaticWebsiteShopCategorySearchService extends ShopCategorySearchSe
                     staticWebsiteConnector.connectAndGetPage(connectRequest));
             final List<Element> elements = (List<Element>) super.search(request, scrapRequest);
             if (CollectionUtils.isEmpty(elements)) {
-                throw new ShopCategoriesPageAddressesNotFoundException();
+                throw new ShopCategoriesPageAddressesNotFoundException(request.getShopName());
             }
             final String pageAddressExtractAttribute = request.getPageAddressExtractAttribute();
             return elements.stream()
@@ -48,7 +48,7 @@ public class StaticWebsiteShopCategorySearchService extends ShopCategorySearchSe
                     .toList();
         } catch (ConnectionTimeoutException | IOException | ProductNotFoundException e) {
             //TODO logging
-            throw new ShopCategoriesPageAddressesNotFoundException();
+            throw new ShopCategoriesPageAddressesNotFoundException(request.getShopName());
         }
     }
 

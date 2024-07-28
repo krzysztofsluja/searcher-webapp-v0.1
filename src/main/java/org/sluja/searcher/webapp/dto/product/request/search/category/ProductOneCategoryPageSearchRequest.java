@@ -12,6 +12,7 @@ public class ProductOneCategoryPageSearchRequest extends ProductCategoryPageSear
     private List<String> categoryProperties;
     @NotEmpty(message = DtoValidationErrorMessage.SEARCH_REQUEST_ATTRIBUTE_EMPTY)
     private String productInstance;
+    private String shopName;
 
     public ProductOneCategoryPageSearchRequest(final boolean dynamicWebsite,
                                                final String homePageAddress,
@@ -19,9 +20,11 @@ public class ProductOneCategoryPageSearchRequest extends ProductCategoryPageSear
                                                final List<String> allCategoriesPageAddresses,
                                                final String categoryPageAmounts,
                                                final List<String> categoryProperties,
-                                               final String productInstance) {
+                                               final String productInstance,
+                                               final String shopName) {
         super(dynamicWebsite, homePageAddress, pageAddressExtractAttribute, allCategoriesPageAddresses, categoryPageAmounts);
         this.categoryProperties = categoryProperties;
         this.productInstance = productInstance;
+        this.shopName = shopName;
     }
 }
