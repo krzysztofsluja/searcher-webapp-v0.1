@@ -8,9 +8,13 @@ import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.sluja.searcher.webapp.annotation.validation.InputValidation;
+import org.sluja.searcher.webapp.exception.validation.ValidationNotPassedException;
+import org.sluja.searcher.webapp.utils.message.implementation.ErrorMessageReader;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.annotation.Validated;
 
+import java.util.List;
 import java.util.Set;
 
 @Aspect
@@ -19,14 +23,17 @@ import java.util.Set;
 public class InputValidationAspect {
 
     private final Validator validator;
+    private final ErrorMessageReader errorMessageReader;
 
-    public InputValidationAspect() {
+    @Autowired
+    public InputValidationAspect(final ErrorMessageReader errorMessageReader) {
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
         this.validator = factory.getValidator();
+        this.errorMessageReader = errorMessageReader;
     }
 
     @Before("@annotation(inputValidation)")
-    public void validateMethodParameters(JoinPoint joinPoint, InputValidation inputValidation) {
+    public void validateMethodParameters(JoinPoint joinPoint, InputValidation inputValidation) throws ValidationNotPassedException {
         Object[] args = joinPoint.getArgs();
         Class<?>[] inputClasses = inputValidation.inputs();
 
@@ -39,15 +46,14 @@ public class InputValidationAspect {
         }
     }
 
-    private <T> void validate(T object) {
+    private <T> void validate(T object) throws ValidationNotPassedException {
         Set<ConstraintViolation<T>> violations = validator.validate(object);
         if (!violations.isEmpty()) {
-            StringBuilder sb = new StringBuilder("Validation failed: ");
-            for (ConstraintViolation<T> violation : violations) {
-                sb.append(violation.getPropertyPath()).append(" ").append(violation.getMessage()).append("; ");
-            }
+            final List<String> errorCodes =violations.stream()
+                    .map(ConstraintViolation::getMessage)
+                    .toList();
             //TODO add error handling
-            throw new IllegalArgumentException(sb.toString());
+            throw new ValidationNotPassedException(errorCodes);
         }
     }
 }

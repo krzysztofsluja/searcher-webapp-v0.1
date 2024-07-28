@@ -1,6 +1,7 @@
 package org.sluja.searcher.webapp.service.cache.product;
 
 import lombok.RequiredArgsConstructor;
+import org.sluja.searcher.webapp.annotation.validation.InputValidation;
 import org.sluja.searcher.webapp.dto.product.cache.ProductsForShopAndCategoryRedisObject;
 import org.sluja.searcher.webapp.exception.cache.CacheElementForGivenKeyNotFound;
 import org.sluja.searcher.webapp.service.cache.CacheService;
@@ -18,6 +19,7 @@ public class GetProductsForShopAndCategoryCacheService implements CacheService<P
 
     private final RedisTemplate<String, ProductsForShopAndCategoryRedisObject> productsForShopAndCategoryRedisTemplate;
     @Override
+    @InputValidation(inputs = {ProductsForShopAndCategoryRedisObject.class})
     public void save(final ProductsForShopAndCategoryRedisObject object) {
         //TODO logging
         final String key = object.id();

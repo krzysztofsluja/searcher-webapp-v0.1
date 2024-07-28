@@ -1,7 +1,9 @@
 package org.sluja.searcher.webapp.dto.product.request.get;
 
+import jakarta.validation.constraints.NotEmpty;
 import lombok.Getter;
 import org.sluja.searcher.webapp.dto.product.request.GetProductRequest;
+import org.sluja.searcher.webapp.utils.dto.validation.DtoValidationErrorMessage;
 
 import java.io.Serializable;
 import java.util.List;
@@ -10,6 +12,7 @@ import java.util.Map;
 @Getter
 public class GetProductForShopNameRequest extends GetProductRequest implements Serializable {
 
+    @NotEmpty(message = DtoValidationErrorMessage.SHOP_NAME_EMPTY)
     private String shopName;
     private Map<String, List<String>> categoriesProperties;
     private List<String> categories;

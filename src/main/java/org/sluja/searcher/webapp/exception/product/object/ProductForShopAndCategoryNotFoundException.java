@@ -1,17 +1,15 @@
 package org.sluja.searcher.webapp.exception.product.object;
 
-import org.sluja.searcher.webapp.exception.product.general.ParametrizedProductNotFoundException;
+import org.sluja.searcher.webapp.exception.ParametrizedExceptionWithErrorCodeAndMessage;
+import org.sluja.searcher.webapp.exception.product.general.ProductNotFoundException;
 import oshi.util.tuples.Pair;
 
-public class ProductForShopAndCategoryNotFoundException extends ParametrizedProductNotFoundException {
+import java.util.List;
+
+public class ProductForShopAndCategoryNotFoundException extends ProductNotFoundException {
 
     public ProductForShopAndCategoryNotFoundException(final Pair<String, String> shopWithCategory) {
-        super(new StringBuilder("error.product.for.shop.and.category.not.found")
-                .append("|")
-                .append(shopWithCategory.getA())
-                .append("|")
-                .append(shopWithCategory.getB())
-                .toString(), 3007L, "|");
+        super(ParametrizedExceptionWithErrorCodeAndMessage.getCombinedMessage("error.product.for.shop.and.category.not.found", List.of(shopWithCategory.getA(), shopWithCategory.getB())), 3007L);
     }
 
 }

@@ -1,5 +1,6 @@
 package org.sluja.searcher.webapp.builder.request.product.get;
 
+import jakarta.validation.Valid;
 import org.apache.commons.lang3.StringUtils;
 import org.sluja.searcher.webapp.builder.request.product.ProductBuilder;
 import org.sluja.searcher.webapp.dto.presentation.shop.attribute.ShopAttributeDto;

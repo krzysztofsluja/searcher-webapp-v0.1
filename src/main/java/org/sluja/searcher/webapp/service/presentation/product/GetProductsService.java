@@ -49,6 +49,7 @@ public class GetProductsService implements IGetProductService<List<GetProductsFo
         return null;
     }
 
+    @InputValidation(inputs = {GetProductsRequest.class})
     private Map<String, List<String>> getCategoriesProperties(final GetProductsRequest request) {
         final List<String> allCategories = request.categories()
                 .values()
@@ -67,6 +68,7 @@ public class GetProductsService implements IGetProductService<List<GetProductsFo
         }
     }
 
+    @InputValidation(inputs = {GetProductsRequest.class})
     private Map<String, List<ShopAttributeDto>> getAttributesForShops(final GetProductsRequest request) throws SpecificEntityNotFoundException {
         final Map<String, List<ShopAttributeDto>> attributesForManyShops = getShopAttributesService.getAttributesForManyShopsInContext(request.shopsNames(), request.context());
         if (CollectionUtils.isEmpty(attributesForManyShops.values())) {

@@ -75,6 +75,7 @@ public class BuildProductObjectService implements IBuildProductObject {
                         .shopName(request.getShopName())
                         .context(request.getContext())
                         .build();
+                //TODO add validation for fields
             } catch (Exception e) {
                 //LOGGER.error("Error during product search occurred", e);
                 //TODO logging

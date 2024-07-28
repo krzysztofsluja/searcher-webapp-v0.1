@@ -1,5 +1,7 @@
 package org.sluja.searcher.webapp.utils.creator.cache.product.key;
 
+import jakarta.validation.Valid;
+import org.sluja.searcher.webapp.annotation.validation.InputValidation;
 import org.sluja.searcher.webapp.dto.creator.product.ProductsForShopAndCategoryKeyCreatorData;
 import org.sluja.searcher.webapp.exception.cache.CacheKeyCreationFailedException;
 import org.sluja.searcher.webapp.utils.creator.Creator;
@@ -15,6 +17,7 @@ public class ProductsForShopAndCategoryCacheKeyCreator implements Creator<String
     private static final String SEPARATOR = "-";
 
     @Override
+    @InputValidation(inputs = {ProductsForShopAndCategoryKeyCreatorData.class})
     public String create(final ProductsForShopAndCategoryKeyCreatorData request) throws CacheKeyCreationFailedException {
         if(Objects.nonNull(request)) {
             return new StringBuilder()

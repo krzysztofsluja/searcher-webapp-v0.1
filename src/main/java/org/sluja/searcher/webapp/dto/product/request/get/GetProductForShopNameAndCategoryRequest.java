@@ -1,14 +1,18 @@
 package org.sluja.searcher.webapp.dto.product.request.get;
 
+import jakarta.validation.constraints.NotEmpty;
 import lombok.Getter;
 import org.sluja.searcher.webapp.dto.product.request.GetProductRequest;
+import org.sluja.searcher.webapp.utils.dto.validation.DtoValidationErrorMessage;
 
 import java.util.List;
 
 @Getter
 public class GetProductForShopNameAndCategoryRequest extends GetProductRequest {
 
+    @NotEmpty(message = DtoValidationErrorMessage.CATEGORY_NAME_EMPTY)
     private String categoryName;
+    @NotEmpty(message = DtoValidationErrorMessage.SHOP_NAME_EMPTY)
     private String shopName;
     private List<String> categoryProperties;
 

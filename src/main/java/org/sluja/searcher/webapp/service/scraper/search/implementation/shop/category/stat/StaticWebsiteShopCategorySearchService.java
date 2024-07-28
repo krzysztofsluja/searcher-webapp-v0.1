@@ -5,6 +5,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.sluja.searcher.webapp.annotation.validation.InputValidation;
 import org.sluja.searcher.webapp.builder.request.connect.stat.StaticWebsiteConnectRequestBuilder;
 import org.sluja.searcher.webapp.dto.connect.StaticWebsiteConnectRequest;
 import org.sluja.searcher.webapp.dto.product.request.shop.category.ShopCategoryPageSearchRequest;
@@ -31,6 +32,7 @@ public class StaticWebsiteShopCategorySearchService extends ShopCategorySearchSe
     private final WebsiteScraperFactory websiteScraperFactory;
 
     @Override
+    @InputValidation(inputs = {ShopCategoryPageSearchRequest.class})
     public List<String> searchList(final ShopCategoryPageSearchRequest request) throws ShopCategoriesPageAddressesNotFoundException {
         try {
             final StaticWebsiteConnectRequest connectRequest = StaticWebsiteConnectRequestBuilder.build(request.getHomePageAddress());
@@ -38,7 +40,7 @@ public class StaticWebsiteShopCategorySearchService extends ShopCategorySearchSe
                     staticWebsiteConnector.connectAndGetPage(connectRequest));
             final List<Element> elements = (List<Element>) super.search(request, scrapRequest);
             if (CollectionUtils.isEmpty(elements)) {
-                throw new ShopCategoriesPageAddressesNotFoundException();
+                throw new ShopCategoriesPageAddressesNotFoundException(request.getShopName());
             }
             final String pageAddressExtractAttribute = request.getPageAddressExtractAttribute();
             return elements.stream()
@@ -48,7 +50,7 @@ public class StaticWebsiteShopCategorySearchService extends ShopCategorySearchSe
                     .toList();
         } catch (ConnectionTimeoutException | IOException | ProductNotFoundException e) {
             //TODO logging
-            throw new ShopCategoriesPageAddressesNotFoundException();
+            throw new ShopCategoriesPageAddressesNotFoundException(request.getShopName());
         }
     }
 

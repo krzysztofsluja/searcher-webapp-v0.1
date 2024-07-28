@@ -1,5 +1,6 @@
 package org.sluja.searcher.webapp.mapper.shop;
 
+import jakarta.validation.Valid;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.sluja.searcher.webapp.dto.presentation.shop.list.ShopDto;

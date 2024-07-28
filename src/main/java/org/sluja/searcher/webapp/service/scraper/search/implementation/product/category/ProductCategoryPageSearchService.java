@@ -25,7 +25,7 @@ public abstract class ProductCategoryPageSearchService<T extends ScrapRequest, S
 
     protected boolean doesPageHaveNextInOrder(final String currentCategoryPageAddress) throws IncorrectInputException {
         if(StringUtils.isEmpty(currentCategoryPageAddress) && !StringUtils.isNumeric(currentCategoryPageAddress)) {
-            throw new IncorrectInputException("error.current.page.notFound");
+            throw new IncorrectInputException("error.current.page.not.found");
         }
         return currentCategoryPageAddress.equals(String.valueOf(getNumberOfCurrentPage(currentCategoryPageAddress) + 1));
     }

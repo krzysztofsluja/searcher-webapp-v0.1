@@ -9,7 +9,8 @@ public class ShopCategoryPageSearchRequestBuilder {
         return new ShopCategoryPageSearchRequest(isDynamicWebsite,
                 request.getHomePageAddress(),
                 request.getAllCategoriesPageAddresses(),
-                request.getPageAddressExtractAttribute());
+                request.getPageAddressExtractAttribute(),
+                request.getShopName());
     }
 
     public static ShopCategoryPageSearchRequest buildStatic(final ProductOneCategoryPageSearchRequest request) {
