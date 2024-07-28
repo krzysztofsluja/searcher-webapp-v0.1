@@ -2,8 +2,10 @@ package org.sluja.searcher.webapp.exception.product.general;
 
 import org.sluja.searcher.webapp.exception.ParametrizedExceptionWithErrorCodeAndMessage;
 
-public abstract class ParametrizedProductNotFoundException extends ParametrizedExceptionWithErrorCodeAndMessage {
-    public ParametrizedProductNotFoundException(final String messageCode, final Long errorCode, final String separator) {
-        super(messageCode, errorCode, separator);
+import java.util.List;
+
+public abstract class ParametrizedProductNotFoundException extends ProductNotFoundException {
+    public ParametrizedProductNotFoundException(final String messageCode, final List<String> parameters, final Long errorCode) {
+        super(ParametrizedExceptionWithErrorCodeAndMessage.getCombinedMessage(messageCode, parameters), errorCode);
     }
 }
