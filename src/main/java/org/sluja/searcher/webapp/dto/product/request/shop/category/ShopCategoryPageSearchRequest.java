@@ -13,6 +13,7 @@ public class ShopCategoryPageSearchRequest extends SearchServiceRequest {
     private List<String> allCategoriesPageAddresses;
     @NotEmpty(message = DtoValidationErrorMessage.SEARCH_REQUEST_ATTRIBUTE_EMPTY)
     private String pageAddressExtractAttribute;
+    @NotEmpty(message = DtoValidationErrorMessage.SHOP_NAME_EMPTY)
     private String shopName;
 
     public ShopCategoryPageSearchRequest(final boolean dynamicWebsite,

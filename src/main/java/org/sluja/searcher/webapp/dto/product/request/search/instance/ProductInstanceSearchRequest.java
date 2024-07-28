@@ -13,6 +13,7 @@ public class ProductInstanceSearchRequest extends ProductCategoryPageSearchReque
     @NotEmpty(message = DtoValidationErrorMessage.SEARCH_REQUEST_ATTRIBUTE_EMPTY)
     private String productInstance;
     private List<String> categoryProperties;
+    @NotEmpty(message = DtoValidationErrorMessage.SEARCH_REQUEST_ATTRIBUTE_EMPTY)
     private String shopName;
     public ProductInstanceSearchRequest(final boolean dynamicWebsite,
                                         final String homePageAddress,

@@ -12,6 +12,7 @@ public class ProductOneCategoryPageSearchRequest extends ProductCategoryPageSear
     private List<String> categoryProperties;
     @NotEmpty(message = DtoValidationErrorMessage.SEARCH_REQUEST_ATTRIBUTE_EMPTY)
     private String productInstance;
+    @NotEmpty(message = DtoValidationErrorMessage.SEARCH_REQUEST_ATTRIBUTE_EMPTY)
     private String shopName;
 
     public ProductOneCategoryPageSearchRequest(final boolean dynamicWebsite,
