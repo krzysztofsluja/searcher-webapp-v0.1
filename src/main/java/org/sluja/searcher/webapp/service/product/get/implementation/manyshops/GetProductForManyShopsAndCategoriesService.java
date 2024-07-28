@@ -61,7 +61,7 @@ public class GetProductForManyShopsAndCategoriesService implements IGetProductSe
                        throw new ProductForShopAndCategoryNotFoundException(new Pair<>(shop, category));
                    }
                    productsForShop.put(category, products);
-               } catch (final ProductNotFoundException | ProductForShopAndCategoryNotFoundException e) {
+               } catch (final ProductNotFoundException e) {
                    continue;
                }
            }
