@@ -9,7 +9,7 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.List;
 
-public record ProductsForShopAndCategoryRedisObject(@Pattern(regexp = "^(?!-)(.*-)+(\\\\d{4}-\\\\d{1,2}-([12][0-9]|3[01]|0?[1-9]))$", message = DtoValidationErrorMessage.CACHE_PRODUCT_ID_INCORRECT) String id,
+public record ProductsForShopAndCategoryRedisObject(@Pattern(regexp = "^(?!-)([a-zA-Z0-9]+-)*\\d{4}-\\d{1,2}-\\d{1,2}$", message = DtoValidationErrorMessage.CACHE_PRODUCT_ID_INCORRECT) String id,
                                                     @NotEmpty(message = DtoValidationErrorMessage.SHOP_NAME_EMPTY) String shopName,
                                                     @NotEmpty(message = DtoValidationErrorMessage.CATEGORY_NAME_EMPTY) String category,
                                                     LocalDate additionDate,

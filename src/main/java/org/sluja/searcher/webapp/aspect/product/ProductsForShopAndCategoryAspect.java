@@ -1,6 +1,7 @@
 package org.sluja.searcher.webapp.aspect.product;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Around;
@@ -14,15 +15,19 @@ import org.sluja.searcher.webapp.exception.ExceptionWithErrorCodeAndMessage;
 import org.sluja.searcher.webapp.exception.cache.CacheElementForGivenKeyNotFound;
 import org.sluja.searcher.webapp.exception.cache.CacheKeyCreationFailedException;
 import org.sluja.searcher.webapp.service.cache.CacheService;
+import org.sluja.searcher.webapp.utils.logger.LoggerMessageUtils;
+import org.sluja.searcher.webapp.utils.logger.LoggerUtils;
 import org.springframework.stereotype.Component;
 
 @Aspect
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class ProductsForShopAndCategoryAspect {
 
     private final CacheService<ProductsForShopAndCategoryRedisObject> getProductsForShopAndCategoryCacheService;
     private final ProductsForShopAndCategoryRedisObjectBuilder productsForShopAndCategoryRedisObjectBuilder;
+    private final LoggerMessageUtils loggerMessageUtils;
 
     @Pointcut("execution(* org.sluja.searcher.webapp.service.product.get.implementation.singleshop.GetProductForShopAndCategoryService.get(..)) && args(request)")
     public void productForShopAndCategoryPointcut(final GetProductForShopNameAndCategoryRequest request) {}
@@ -34,8 +39,11 @@ public class ProductsForShopAndCategoryAspect {
         try {
             redisObject = productsForShopAndCategoryRedisObjectBuilder.build(response);
             getProductsForShopAndCategoryCacheService.save(redisObject);
-        } catch (CacheKeyCreationFailedException e) {
-            //TODO logging
+        } catch (final CacheKeyCreationFailedException e) {
+            log.error(loggerMessageUtils.getErrorLogMessage(LoggerUtils.getCurrentClassName(),
+                    LoggerUtils.getCurrentMethodName(),
+                    e.getMessageCode(),
+                    e.getErrorCode()));
         }
     }
 
@@ -55,6 +63,7 @@ public class ProductsForShopAndCategoryAspect {
                 return  (GetProductForShopAndCategoryResponse) joinPoint.proceed();
             } catch (Throwable ex) {
                 //TODO logging
+                //TODO error handling
                 throw new ExceptionWithErrorCodeAndMessage(ExceptionWithErrorCodeAndMessage.GENERAL_MESSAGE_CODE, ExceptionWithErrorCodeAndMessage.GENERAL_ERROR_CODE);
             }
         }
