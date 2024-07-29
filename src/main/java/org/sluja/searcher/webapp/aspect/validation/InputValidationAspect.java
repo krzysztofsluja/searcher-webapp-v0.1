@@ -9,8 +9,6 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.sluja.searcher.webapp.annotation.validation.InputValidation;
 import org.sluja.searcher.webapp.exception.validation.ValidationNotPassedException;
-import org.sluja.searcher.webapp.utils.message.implementation.ErrorMessageReader;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.annotation.Validated;
 
@@ -23,13 +21,10 @@ import java.util.Set;
 public class InputValidationAspect {
 
     private final Validator validator;
-    private final ErrorMessageReader errorMessageReader;
 
-    @Autowired
-    public InputValidationAspect(final ErrorMessageReader errorMessageReader) {
+    public InputValidationAspect() {
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
         this.validator = factory.getValidator();
-        this.errorMessageReader = errorMessageReader;
     }
 
     @Before("@annotation(inputValidation)")
