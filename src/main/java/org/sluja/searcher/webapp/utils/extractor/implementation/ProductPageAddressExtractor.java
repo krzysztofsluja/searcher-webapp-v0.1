@@ -1,6 +1,7 @@
 package org.sluja.searcher.webapp.utils.extractor.implementation;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.jsoup.nodes.Element;
 import org.sluja.searcher.webapp.dto.product.request.search.object.BuildProductObjectRequest;
@@ -13,6 +14,8 @@ import org.sluja.searcher.webapp.service.interfaces.scrap.IGetScraper;
 import org.sluja.searcher.webapp.service.scraper.interfaces.WebsiteScraper;
 import org.sluja.searcher.webapp.utils.extractor.Extractor;
 import org.sluja.searcher.webapp.utils.formatter.ProductFormatter;
+import org.sluja.searcher.webapp.utils.logger.LoggerMessageUtils;
+import org.sluja.searcher.webapp.utils.logger.LoggerUtils;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
@@ -22,9 +25,11 @@ import java.util.Objects;
 @Component
 @Qualifier("productPageAddressExtractor")
 @RequiredArgsConstructor
+@Slf4j
 public class ProductPageAddressExtractor implements Extractor<List<String>, Element, BuildProductObjectRequest>, IGetScraper {
 
     private final WebsiteScraperFactory websiteScraperFactory;
+    private final LoggerMessageUtils loggerMessageUtils;
 
     @Override
     public List<String> extract(final Element element, final BuildProductObjectRequest request) {
@@ -35,8 +40,11 @@ public class ProductPageAddressExtractor implements Extractor<List<String>, Elem
                     final StaticWebsiteElementScrapRequest scrapRequest = new StaticWebsiteElementScrapRequest(address, element);
                     try {
                         return getScraperService().scrap(scrapRequest);
-                    } catch (ScraperIncorrectFieldException e) {
-                        //TODO logging
+                    } catch (final ScraperIncorrectFieldException e) {
+                        log.error(loggerMessageUtils.getErrorLogMessage(LoggerUtils.getCurrentClassName(),
+                                LoggerUtils.getCurrentMethodName(),
+                                e.getMessageCode(),
+                                e.getErrorCode()));
                         return null;
                     }
                 })
@@ -47,7 +55,10 @@ public class ProductPageAddressExtractor implements Extractor<List<String>, Elem
                     try {
                         return ProductFormatter.format(request, ProductProperty.URL, elem);
                     } catch (UnsuccessfulFormatException e) {
-                        //TODO logging
+                        log.error(loggerMessageUtils.getErrorLogMessage(LoggerUtils.getCurrentClassName(),
+                                LoggerUtils.getCurrentMethodName(),
+                                e.getMessageCode(),
+                                e.getErrorCode()));
                         return StringUtils.EMPTY;
                     }
                 })

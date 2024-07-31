@@ -8,7 +8,6 @@ import org.springframework.core.env.Environment;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.regex.Pattern;
 
 public abstract class MessageReader {
 
@@ -39,8 +38,7 @@ public abstract class MessageReader {
     }
 
     protected boolean isMessageParametrized(final String message) {
-        final Pattern pattern = Pattern.compile(ParametrizedExceptionWithErrorCodeAndMessage.VALIDATION_REGEX);
-        return pattern.matcher(message).matches();
+        return message.contains(ParametrizedExceptionWithErrorCodeAndMessage.SEPARATOR);
     }
 
     protected String getParametrizedMessage(final String message) {

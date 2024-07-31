@@ -27,4 +27,12 @@ public class GetProductsForShopAndManyCategoriesResponse {
                 .productsForCategory(Collections.emptyMap())
                 .build();
     }
+
+    public static GetProductsForShopAndManyCategoriesResponse empty(final String shopName, final List<String> categories) {
+        return GetProductsForShopAndManyCategoriesResponse.builder()
+                .shopName(shopName)
+                .categories(categories)
+                .productsForCategory(Collections.emptyMap())
+                .build();
+    }
 }

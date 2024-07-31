@@ -47,7 +47,6 @@ public class InputValidationAspect {
             final List<String> errorCodes =violations.stream()
                     .map(ConstraintViolation::getMessage)
                     .toList();
-            //TODO add error handling
             throw new ValidationNotPassedException(errorCodes);
         }
     }

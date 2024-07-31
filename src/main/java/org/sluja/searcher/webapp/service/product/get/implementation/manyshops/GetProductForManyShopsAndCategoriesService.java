@@ -1,6 +1,7 @@
 package org.sluja.searcher.webapp.service.product.get.implementation.manyshops;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.sluja.searcher.webapp.annotation.validation.InputValidation;
 import org.sluja.searcher.webapp.builder.request.product.get.GetProductForShopAndCategoryRequestBuilder;
@@ -13,6 +14,8 @@ import org.sluja.searcher.webapp.dto.product.response.GetProductsForShopAndManyC
 import org.sluja.searcher.webapp.exception.product.general.ProductNotFoundException;
 import org.sluja.searcher.webapp.exception.product.object.ProductForShopAndCategoryNotFoundException;
 import org.sluja.searcher.webapp.service.product.get.IGetProductService;
+import org.sluja.searcher.webapp.utils.logger.LoggerMessageUtils;
+import org.sluja.searcher.webapp.utils.logger.LoggerUtils;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import oshi.util.tuples.Pair;
@@ -24,9 +27,11 @@ import java.util.concurrent.ExecutionException;
 @Service
 @Qualifier("getProductForManyShopsAndCategoriesService")
 @RequiredArgsConstructor
+@Slf4j
 public class GetProductForManyShopsAndCategoriesService implements IGetProductService<List<GetProductsForShopAndManyCategoriesResponse>, GetProductForManyShopsAndCategoriesRequest> {
 
     private final IGetProductService<GetProductForShopAndCategoryResponse, GetProductForShopNameAndCategoryRequest> getProductForShopAndCategoryService;
+    private final LoggerMessageUtils loggerMessageUtils;
     @Override
     @InputValidation(inputs = {GetProductForManyShopsAndCategoriesRequest.class})
     public List<GetProductsForShopAndManyCategoriesResponse> get(final GetProductForManyShopsAndCategoriesRequest request) throws ProductNotFoundException {
@@ -40,7 +45,9 @@ public class GetProductForManyShopsAndCategoriesService implements IGetProductSe
                     try {
                         return future.get();
                     } catch (final ExecutionException | InterruptedException e) {
-                        //TODO logging
+                        log.error(loggerMessageUtils.getErrorLogMessageWithDeclaredErrorMessage(LoggerUtils.getCurrentClassName(),
+                                LoggerUtils.getCurrentMethodName(),
+                                e.getMessage()));
                         return null;
                     }
                 })
