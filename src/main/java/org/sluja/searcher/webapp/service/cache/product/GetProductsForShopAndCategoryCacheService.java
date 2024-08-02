@@ -1,6 +1,10 @@
 package org.sluja.searcher.webapp.service.cache.product;
 
 import lombok.RequiredArgsConstructor;
+import org.sluja.searcher.webapp.annotation.log.noobject.MethodEndLog;
+import org.sluja.searcher.webapp.annotation.log.noobject.MethodStartLog;
+import org.sluja.searcher.webapp.annotation.log.object.ObjectMethodEndLog;
+import org.sluja.searcher.webapp.annotation.log.object.ObjectMethodStartLog;
 import org.sluja.searcher.webapp.annotation.validation.InputValidation;
 import org.sluja.searcher.webapp.dto.product.cache.ProductsForShopAndCategoryRedisObject;
 import org.sluja.searcher.webapp.exception.cache.CacheElementForGivenKeyNotFound;
@@ -20,8 +24,9 @@ public class GetProductsForShopAndCategoryCacheService implements CacheService<P
     private final RedisTemplate<String, ProductsForShopAndCategoryRedisObject> productsForShopAndCategoryRedisTemplate;
     @Override
     @InputValidation(inputs = {ProductsForShopAndCategoryRedisObject.class})
+    @ObjectMethodStartLog
+    @MethodEndLog
     public void save(final ProductsForShopAndCategoryRedisObject object) {
-        //TODO logging
         final String key = object.id();
         if (notExists(key)) {
             productsForShopAndCategoryRedisTemplate.opsForValue().set(key, object);
@@ -29,6 +34,8 @@ public class GetProductsForShopAndCategoryCacheService implements CacheService<P
     }
 
     @Override
+    @MethodStartLog
+    @ObjectMethodEndLog
     public ProductsForShopAndCategoryRedisObject get(final String key) throws CacheElementForGivenKeyNotFound {
         final ProductsForShopAndCategoryRedisObject object = productsForShopAndCategoryRedisTemplate.opsForValue().get(key);
         if(Objects.isNull(object)) {

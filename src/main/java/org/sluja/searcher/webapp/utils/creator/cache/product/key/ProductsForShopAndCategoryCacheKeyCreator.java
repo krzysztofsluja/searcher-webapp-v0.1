@@ -1,6 +1,5 @@
 package org.sluja.searcher.webapp.utils.creator.cache.product.key;
 
-import jakarta.validation.Valid;
 import org.sluja.searcher.webapp.annotation.validation.InputValidation;
 import org.sluja.searcher.webapp.dto.creator.product.ProductsForShopAndCategoryKeyCreatorData;
 import org.sluja.searcher.webapp.exception.cache.CacheKeyCreationFailedException;
@@ -34,6 +33,6 @@ public class ProductsForShopAndCategoryCacheKeyCreator implements Creator<String
                     .append(request.additionDate().getDayOfMonth())
                     .toString();
         }
-        throw new CacheKeyCreationFailedException();
+        throw new CacheKeyCreationFailedException(request.shopName(), request.category());
     }
 }

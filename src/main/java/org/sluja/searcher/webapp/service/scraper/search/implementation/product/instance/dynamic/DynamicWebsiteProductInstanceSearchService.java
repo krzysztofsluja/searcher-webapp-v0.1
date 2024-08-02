@@ -1,6 +1,7 @@
 package org.sluja.searcher.webapp.service.scraper.search.implementation.product.instance.dynamic;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jsoup.nodes.Element;
@@ -19,6 +20,7 @@ import org.sluja.searcher.webapp.dto.scraper.dynamic.DynamicWebsiteScrapRequest;
 import org.sluja.searcher.webapp.dto.scraper.stat.StaticWebsiteScrapRequest;
 import org.sluja.searcher.webapp.exception.connection.ConnectionTimeoutException;
 import org.sluja.searcher.webapp.exception.product.category.CategoryPageAddressNotFoundException;
+import org.sluja.searcher.webapp.exception.product.category.CategoryProductsOnOnePageException;
 import org.sluja.searcher.webapp.exception.product.general.ProductNotFoundException;
 import org.sluja.searcher.webapp.exception.product.instance.ProductInstanceNotFoundException;
 import org.sluja.searcher.webapp.exception.scraper.ScraperIncorrectFieldException;
@@ -27,6 +29,8 @@ import org.sluja.searcher.webapp.service.scraper.interfaces.WebsiteScraper;
 import org.sluja.searcher.webapp.service.scraper.search.implementation.product.category.ProductCategoryPageSearchService;
 import org.sluja.searcher.webapp.service.scraper.search.implementation.product.instance.ProductInstanceSearchService;
 import org.sluja.searcher.webapp.utils.connector.IConnector;
+import org.sluja.searcher.webapp.utils.logger.LoggerMessageUtils;
+import org.sluja.searcher.webapp.utils.logger.LoggerUtils;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
@@ -37,12 +41,14 @@ import java.util.List;
 @Component
 @Qualifier("dynamicWebsiteProductInstanceSearchService")
 @RequiredArgsConstructor
+@Slf4j
 public class DynamicWebsiteProductInstanceSearchService extends ProductInstanceSearchService<DynamicWebsiteScrapRequest, ProductInstanceSearchRequest> {
 
     private final ProductCategoryPageSearchService<DynamicWebsiteScrapRequest, ProductOneCategoryPageSearchRequest> dynamicWebsiteProductCategoryPageSearchService;
     private final IConnector<WebDriver, DynamicWebsiteConnectRequest> dynamicWebsiteConnector;
     private final ProductInstanceSearchService<StaticWebsiteScrapRequest, ScrapProductInstanceSearchRequest> staticWebsiteProductInstanceSearchService;
     private final WebsiteScraperFactory websiteScraperFactory;
+    private final LoggerMessageUtils loggerMessageUtils;
     @Override
     @InputValidation(inputs = {ProductInstanceSearchRequest.class})
     public List<Element> searchList(final ProductInstanceSearchRequest searchRequest) throws ProductNotFoundException {
@@ -60,11 +66,10 @@ public class DynamicWebsiteProductInstanceSearchService extends ProductInstanceS
                     final WebDriver driver = dynamicWebsiteConnector.connectAndGetPage(connectRequest);
                     productCategoryPageAddresses.addAll(getProductInstanceFromAllPages(searchRequest, driver));
                     break;
-                } catch (ConnectionTimeoutException | IOException e) {
-                    //TODO logging
-                    continue;
-                } catch (StaleElementReferenceException ex) {
-                    //TODO logging
+                } catch (ConnectionTimeoutException | IOException | StaleElementReferenceException e) {
+                    log.error(loggerMessageUtils.getErrorLogMessageWithDeclaredErrorMessage(LoggerUtils.getCurrentClassName(),
+                            LoggerUtils.getCurrentMethodName(),
+                            e.getMessage()));
                     connectCounter++;
                 }
             }
@@ -78,7 +83,9 @@ public class DynamicWebsiteProductInstanceSearchService extends ProductInstanceS
 
     private List<Element> getProductInstanceFromAllPages(final ProductInstanceSearchRequest request, final WebDriver driver) throws ProductNotFoundException {
         if (StringUtils.isEmpty(driver.getCurrentUrl())) {
-            //TODO logging
+            log.error(loggerMessageUtils.getErrorLogMessageWithDefaultErrorCode(LoggerUtils.getCurrentClassName(),
+                    LoggerUtils.getCurrentMethodName(),
+                    "error.validation.url.empty"));
             throw new CategoryPageAddressNotFoundException();
         }
         final List<Element> productInstances = new ArrayList<>();
@@ -91,13 +98,15 @@ public class DynamicWebsiteProductInstanceSearchService extends ProductInstanceS
                     productInstances.addAll(elements);
                 }
                 changePage(request, driver);
-            } catch (ProductNotFoundException ex) {
-                //TODO logging
+            } catch (final ProductNotFoundException ex) {
+                log.error(loggerMessageUtils.getErrorLogMessage(LoggerUtils.getCurrentClassName(),
+                        LoggerUtils.getCurrentMethodName(),
+                        ex.getMessageCode(),
+                        ex.getErrorCode()));
                 break;
             }
         }
         if(CollectionUtils.isEmpty(productInstances)) {
-            //TODO logging
             throw new ProductInstanceNotFoundException();
         }
         return productInstances;
@@ -105,8 +114,7 @@ public class DynamicWebsiteProductInstanceSearchService extends ProductInstanceS
 
     private void changePage(final ProductInstanceSearchRequest request, final WebDriver driver) throws ProductNotFoundException {
         if(StringUtils.isEmpty(request.getCategoryPageAmounts())) {
-            //TODO logging
-            throw new CategoryPageAddressNotFoundException();
+            throw new CategoryProductsOnOnePageException();
         }
         try {
             final DynamicWebsiteScrapRequest scrapRequest = new DynamicWebsiteScrapRequest(request.getCategoryPageAmounts(), driver);
@@ -116,9 +124,16 @@ public class DynamicWebsiteProductInstanceSearchService extends ProductInstanceS
                     .orElseThrow(CategoryPageAddressNotFoundException::new)
                     .click();
             Thread.sleep(1500);
-        } catch (ScraperIncorrectFieldException |
-                 InterruptedException e) {
-            //TODO logging
+        } catch (ScraperIncorrectFieldException e) {
+            log.error(loggerMessageUtils.getErrorLogMessage(LoggerUtils.getCurrentClassName(),
+                    LoggerUtils.getCurrentMethodName(),
+                    e.getMessageCode(),
+                    e.getErrorCode()));
+            throw new CategoryPageAddressNotFoundException();
+        } catch (final InterruptedException ex) {
+            log.error(loggerMessageUtils.getErrorLogMessageWithDeclaredErrorMessage(LoggerUtils.getCurrentClassName(),
+                    LoggerUtils.getCurrentMethodName(),
+                    ex.getMessage()));
             throw new CategoryPageAddressNotFoundException();
         }
     }

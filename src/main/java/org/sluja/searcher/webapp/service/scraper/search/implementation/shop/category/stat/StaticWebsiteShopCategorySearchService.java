@@ -1,6 +1,6 @@
 package org.sluja.searcher.webapp.service.scraper.search.implementation.shop.category.stat;
 
-import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jsoup.nodes.Document;
@@ -17,6 +17,9 @@ import org.sluja.searcher.webapp.service.factory.scraper.WebsiteScraperFactory;
 import org.sluja.searcher.webapp.service.scraper.interfaces.WebsiteScraper;
 import org.sluja.searcher.webapp.service.scraper.search.implementation.shop.category.ShopCategorySearchService;
 import org.sluja.searcher.webapp.utils.connector.IConnector;
+import org.sluja.searcher.webapp.utils.logger.LoggerMessageUtils;
+import org.sluja.searcher.webapp.utils.logger.LoggerUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
@@ -24,12 +27,23 @@ import java.io.IOException;
 import java.util.List;
 
 @Component
-@RequiredArgsConstructor
 @Qualifier("staticWebsiteShopCategorySearchService")
+@Slf4j
 public class StaticWebsiteShopCategorySearchService extends ShopCategorySearchService<StaticWebsiteScrapRequest> {
 
     private final IConnector<Document, StaticWebsiteConnectRequest> staticWebsiteConnector;
     private final WebsiteScraperFactory websiteScraperFactory;
+    private final LoggerMessageUtils loggerMessageUtils;
+
+    @Autowired
+    public StaticWebsiteShopCategorySearchService(final LoggerMessageUtils loggerMessageUtils,
+                                                  final IConnector<Document, StaticWebsiteConnectRequest> staticWebsiteConnector,
+                                                  final WebsiteScraperFactory websiteScraperFactory) {
+        super(loggerMessageUtils);
+        this.staticWebsiteConnector = staticWebsiteConnector;
+        this.websiteScraperFactory = websiteScraperFactory;
+        this.loggerMessageUtils = loggerMessageUtils;
+    }
 
     @Override
     @InputValidation(inputs = {ShopCategoryPageSearchRequest.class})
@@ -48,10 +62,17 @@ public class StaticWebsiteShopCategorySearchService extends ShopCategorySearchSe
                     .map(element -> element.replaceAll("\\s", StringUtils.EMPTY))
                     .distinct()
                     .toList();
-        } catch (ConnectionTimeoutException | IOException | ProductNotFoundException e) {
-            //TODO logging
-            throw new ShopCategoriesPageAddressesNotFoundException(request.getShopName());
+        } catch (ConnectionTimeoutException | IOException e) {
+            log.error(loggerMessageUtils.getErrorLogMessageWithDeclaredErrorMessage(LoggerUtils.getCurrentClassName(),
+                    LoggerUtils.getCurrentMethodName(),
+                    e.getMessage()));
+        } catch (final ProductNotFoundException e) {
+            log.error(loggerMessageUtils.getErrorLogMessage(LoggerUtils.getCurrentClassName(),
+                    LoggerUtils.getCurrentMethodName(),
+                    e.getMessageCode(),
+                    e.getErrorCode()));
         }
+        throw new ShopCategoriesPageAddressesNotFoundException(request.getShopName());
     }
 
     @Override

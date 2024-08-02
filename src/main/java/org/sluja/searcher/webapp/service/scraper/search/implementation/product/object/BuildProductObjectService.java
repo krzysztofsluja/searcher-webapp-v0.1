@@ -1,6 +1,7 @@
 package org.sluja.searcher.webapp.service.scraper.search.implementation.product.object;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.jsoup.nodes.Element;
 import org.sluja.searcher.webapp.dto.product.ProductDTO;
@@ -15,6 +16,8 @@ import org.sluja.searcher.webapp.service.factory.scraper.WebsiteScraperFactory;
 import org.sluja.searcher.webapp.service.scraper.interfaces.WebsiteScraper;
 import org.sluja.searcher.webapp.utils.extractor.Extractor;
 import org.sluja.searcher.webapp.utils.formatter.ProductFormatter;
+import org.sluja.searcher.webapp.utils.logger.LoggerMessageUtils;
+import org.sluja.searcher.webapp.utils.logger.LoggerUtils;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
@@ -28,6 +31,7 @@ import java.util.concurrent.ExecutionException;
 @Service
 @Qualifier("buildProductObjectService")
 @RequiredArgsConstructor
+@Slf4j
 public class BuildProductObjectService implements IBuildProductObject {
 
 
@@ -35,6 +39,7 @@ public class BuildProductObjectService implements IBuildProductObject {
     private final Extractor<BigDecimal, Element, BuildProductObjectRequest> productPriceExtractor;
     private final Extractor<List<String>, Element, BuildProductObjectRequest> productPageAddressExtractor;
     private final Extractor<List<String>, Element, BuildProductObjectRequest> productImageAddressExtractor;
+    private final LoggerMessageUtils loggerMessageUtils;
     @Override
     public List<ProductDTO> build(final BuildProductObjectRequest request) throws ProductNotFoundException {
         final List<CompletableFuture<ProductDTO>> futureProducts = request.getInstancesToCreateProducts()
@@ -47,7 +52,9 @@ public class BuildProductObjectService implements IBuildProductObject {
         try {
             allFutureProducts.get();
         } catch (InterruptedException | ExecutionException e) {
-            //TODO logging
+            log.error(loggerMessageUtils.getErrorLogMessageWithDeclaredErrorMessage(LoggerUtils.getCurrentClassName(),
+                    LoggerUtils.getCurrentMethodName(),
+                    e.getMessage()));
             throw new ProductObjectBuildFailedException();
         }
         return futureProducts.stream()
@@ -77,8 +84,9 @@ public class BuildProductObjectService implements IBuildProductObject {
                         .build();
                 //TODO add validation for fields
             } catch (Exception e) {
-                //LOGGER.error("Error during product search occurred", e);
-                //TODO logging
+                log.error(loggerMessageUtils.getErrorLogMessageWithDeclaredErrorMessage(LoggerUtils.getCurrentClassName(),
+                        LoggerUtils.getCurrentMethodName(),
+                        e.getMessage()));
                 return ProductDTO.emptyProductDTO();
             }
         });
@@ -91,8 +99,15 @@ public class BuildProductObjectService implements IBuildProductObject {
                 final StaticWebsiteElementScrapRequest scrapRequest = new StaticWebsiteElementScrapRequest(request.getProductName(), instance);
                 return ProductFormatter.format(request, ProductProperty.NAME, getScraperService().scrap(scrapRequest));
             } catch (UnsuccessfulFormatException | ScraperIncorrectFieldException e) {
-                //LOGGER.info("Error during formatting product name");
-                //TODO logging, add default product name
+                final String currentClassName = LoggerUtils.getCurrentClassName();
+                final String currentMethodName = LoggerUtils.getCurrentMethodName();
+                log.error(loggerMessageUtils.getErrorLogMessage(currentClassName,
+                        currentMethodName,
+                        e.getMessageCode(),
+                        e.getErrorCode()));
+                log.info(loggerMessageUtils.getInfoLogMessage(currentClassName,
+                        currentMethodName,
+                        "info.product.object.default.name"));
                 return StringUtils.EMPTY;
             }
         });
@@ -103,9 +118,16 @@ public class BuildProductObjectService implements IBuildProductObject {
         {
             try {
                 return productPriceExtractor.extract(element, request);
-            } catch (ScraperIncorrectFieldException | ProductNotFoundException | UnsuccessfulFormatException e) {
-                //LOGGER.info("Error during formatting product price");
-                //TODO logging
+            } catch (final ScraperIncorrectFieldException | ProductNotFoundException | UnsuccessfulFormatException e) {
+                final String currentClassName = LoggerUtils.getCurrentClassName();
+                final String currentMethodName = LoggerUtils.getCurrentMethodName();
+                log.error(loggerMessageUtils.getErrorLogMessage(currentClassName,
+                        currentMethodName,
+                        e.getMessageCode(),
+                        e.getErrorCode()));
+                log.info(loggerMessageUtils.getInfoLogMessage(currentClassName,
+                        currentMethodName,
+                        "info.product.object.default.price"));
                 return BigDecimal.ZERO;
             }
         });
@@ -124,8 +146,15 @@ public class BuildProductObjectService implements IBuildProductObject {
             try {
                 return extractor.extract(element, request);
             } catch (ProductNotFoundException | UnsuccessfulFormatException | ScraperIncorrectFieldException e) {
-                //LOGGER.info("Error during formatting product address");
-                //TODO logging
+                final String currentClassName = LoggerUtils.getCurrentClassName();
+                final String currentMethodName = LoggerUtils.getCurrentMethodName();
+                log.error(loggerMessageUtils.getErrorLogMessage(currentClassName,
+                        currentMethodName,
+                        e.getMessageCode(),
+                        e.getErrorCode()));
+                log.info(loggerMessageUtils.getInfoLogMessage(currentClassName,
+                        currentMethodName,
+                        "info.product.object.default.address"));
                 return Collections.emptyList();
             }
         });

@@ -14,7 +14,8 @@ public class BadGetProductRequestException extends ExceptionWithErrorCodeAndMess
         EMPTY_SHOPS_LIST("error.product.request.empty.shops.list"),
         SHOP_AMOUNT_EXCEEDED("error.product.request.too.much.shops.selected"),
         SHOP_CATEGORY_LIST_EMPTY("error.product.request.category.list.empty"),
-        CATEGORY_FOR_SHOP_AMOUNT_EXCEEDED("error.product.request.category.too.much.for.shop.selected");
+        CATEGORY_FOR_SHOP_AMOUNT_EXCEEDED("error.product.request.category.too.much.for.shop.selected"),
+        REQUEST_NULL("error.product.request.null");
 
         final String errorMessage;
         Type(final String errorMessage) {

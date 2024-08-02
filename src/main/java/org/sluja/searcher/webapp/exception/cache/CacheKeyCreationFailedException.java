@@ -1,10 +1,12 @@
 package org.sluja.searcher.webapp.exception.cache;
 
-import org.sluja.searcher.webapp.exception.ExceptionWithErrorCodeAndMessage;
+import org.sluja.searcher.webapp.exception.ParametrizedExceptionWithErrorCodeAndMessage;
 
-public class CacheKeyCreationFailedException extends ExceptionWithErrorCodeAndMessage {
+import java.util.List;
 
-    public CacheKeyCreationFailedException() {
-        super("error.cache.key.creation.failed", 7001L);
+public class CacheKeyCreationFailedException extends ParametrizedExceptionWithErrorCodeAndMessage {
+
+    public CacheKeyCreationFailedException(final String shopName, final String categoryName) {
+        super("error.cache.key.creation.failed", List.of(shopName, categoryName), 7001L);
     }
 }
