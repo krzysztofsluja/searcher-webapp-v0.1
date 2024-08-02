@@ -3,6 +3,8 @@ package org.sluja.searcher.webapp.service.product.get.implementation.manyshops;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
+import org.sluja.searcher.webapp.annotation.log.object.ObjectMethodEndLog;
+import org.sluja.searcher.webapp.annotation.log.object.ObjectMethodStartLog;
 import org.sluja.searcher.webapp.annotation.validation.InputValidation;
 import org.sluja.searcher.webapp.builder.request.product.get.GetProductForShopAndCategoryRequestBuilder;
 import org.sluja.searcher.webapp.dto.product.ProductDTO;
@@ -13,6 +15,7 @@ import org.sluja.searcher.webapp.dto.product.response.GetProductForShopAndCatego
 import org.sluja.searcher.webapp.dto.product.response.GetProductsForShopAndManyCategoriesResponse;
 import org.sluja.searcher.webapp.exception.product.general.ProductNotFoundException;
 import org.sluja.searcher.webapp.exception.product.object.ProductForShopAndCategoryNotFoundException;
+import org.sluja.searcher.webapp.exception.product.request.BadGetProductRequestException;
 import org.sluja.searcher.webapp.service.product.get.IGetProductService;
 import org.sluja.searcher.webapp.utils.logger.LoggerMessageUtils;
 import org.sluja.searcher.webapp.utils.logger.LoggerUtils;
@@ -39,7 +42,11 @@ public class GetProductForManyShopsAndCategoriesService implements IGetProductSe
     public List<GetProductsForShopAndManyCategoriesResponse> get(final GetProductForManyShopsAndCategoriesRequest request) throws ProductNotFoundException {
         final List<CompletableFuture<GetProductsForShopAndManyCategoriesResponse>> futureResponses = new ArrayList<>();
         for(final String shop : request.getShopsWithCategories().keySet()) {
-            futureResponses.add(getResponseFuture(shop, request.getShopsPropertiesMap().get(shop)));
+            try {
+                futureResponses.add(getResponseFuture(shop, request.getShopsPropertiesMap().get(shop)));
+            } catch (final RuntimeException e) {
+                continue;
+            }
         }
         CompletableFuture.allOf(futureResponses.toArray(new CompletableFuture[0])).join();
         return futureResponses.stream()
@@ -60,6 +67,17 @@ public class GetProductForManyShopsAndCategoriesService implements IGetProductSe
     @InputValidation(inputs = {GetProductForShopNameRequest.class})
     private CompletableFuture<GetProductsForShopAndManyCategoriesResponse> getResponseFuture(final String shop, final GetProductForShopNameRequest request) {
         return CompletableFuture.supplyAsync(() -> {
+            if(Objects.isNull(request)) {
+                try {
+                    throw new BadGetProductRequestException(BadGetProductRequestException.Type.REQUEST_NULL);
+                } catch (final BadGetProductRequestException e) {
+                    log.error(loggerMessageUtils.getErrorLogMessage(LoggerUtils.getCurrentClassName(),
+                            LoggerUtils.getCurrentMethodName(),
+                            e.getMessageCode(),
+                            e.getErrorCode()));
+                    throw new RuntimeException(e);
+                }
+            }
            final Map<String, List<ProductDTO>> productsForShop = new HashMap<>();
            for(final String category : request.getCategories()) {
                final GetProductForShopNameAndCategoryRequest requestForCategory = GetProductForShopAndCategoryRequestBuilder.build(request, shop, category);
@@ -82,7 +100,7 @@ public class GetProductForManyShopsAndCategoriesService implements IGetProductSe
         }).handleAsync((r,e) -> {
             if(Objects.nonNull(e)) {
                 //TODO logging
-                return GetProductsForShopAndManyCategoriesResponse.empty();
+                return GetProductsForShopAndManyCategoriesResponse.empty(shop, request.getCategories());
             }
             return r;
         });

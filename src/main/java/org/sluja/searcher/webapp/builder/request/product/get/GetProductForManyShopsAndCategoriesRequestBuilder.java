@@ -34,8 +34,13 @@ public class GetProductForManyShopsAndCategoriesRequestBuilder extends ProductBu
                     request.categories().get(entry.getKey()));
             shopsPropertiesMap.put(entry.getKey(), requestForShop);
         }
+        final Map<String, List<String>> shopsWithCategories = request.categories()
+                .entrySet()
+                .stream()
+                .filter(entry -> shopsPropertiesMap.containsKey(entry.getKey()))
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
         return GetProductForManyShopsAndCategoriesRequest.builder()
-                .shopsWithCategories(request.categories())
+                .shopsWithCategories(shopsWithCategories)
                 .shopsPropertiesMap(shopsPropertiesMap)
                 .context(request.context())
                 .build();
