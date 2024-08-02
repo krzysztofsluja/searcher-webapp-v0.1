@@ -1,8 +1,9 @@
 package org.sluja.searcher.webapp.service.connector.stat;
 
-import jakarta.validation.Valid;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.sluja.searcher.webapp.annotation.log.noobject.MethodEndLog;
+import org.sluja.searcher.webapp.annotation.log.object.ObjectMethodStartLog;
 import org.sluja.searcher.webapp.annotation.validation.InputValidation;
 import org.sluja.searcher.webapp.dto.connect.StaticWebsiteConnectRequest;
 import org.sluja.searcher.webapp.exception.connection.ConnectionTimeoutException;
@@ -21,6 +22,8 @@ public class StaticWebsiteConnector implements IConnector<Document, StaticWebsit
 
     @Override
     @InputValidation(inputs = {StaticWebsiteConnectRequest.class})
+    @ObjectMethodStartLog
+    @MethodEndLog
     public Document connectAndGetPage(final StaticWebsiteConnectRequest request) throws ConnectionTimeoutException, IOException {
         int tryCounter = 0;
         while (tryCounter < CONNECTION_RETRY_TRIES) {

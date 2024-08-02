@@ -4,6 +4,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
+import org.sluja.searcher.webapp.annotation.log.noobject.MethodEndLog;
+import org.sluja.searcher.webapp.annotation.log.noobject.MethodStartLog;
 import org.sluja.searcher.webapp.dto.scraper.dynamic.DynamicWebsiteScrapRequest;
 import org.sluja.searcher.webapp.enums.scraper.dynamic.ScraperByAttribute;
 import org.sluja.searcher.webapp.exception.scraper.ScraperIncorrectFieldException;
@@ -25,6 +27,8 @@ public class DynamicWebsiteScraper implements WebsiteScraper<List<WebElement>, D
 
     private final LoggerMessageUtils loggerMessageUtils;
     @Override
+    @MethodStartLog
+    @MethodEndLog
     public List<WebElement> scrap(final DynamicWebsiteScrapRequest request) throws ScraperIncorrectFieldException {
         if (Objects.nonNull(request)) {
             return request.getDriver().findElements(getBy(request.getAttribute(), request.getProperty()));

@@ -1,6 +1,8 @@
 package org.sluja.searcher.webapp.service.presentation.shop.attribute;
 
 import lombok.RequiredArgsConstructor;
+import org.sluja.searcher.webapp.annotation.log.noobject.MethodStartLog;
+import org.sluja.searcher.webapp.annotation.log.object.ObjectMethodEndLog;
 import org.sluja.searcher.webapp.dto.presentation.shop.attribute.ShopAttributeDto;
 import org.sluja.searcher.webapp.exception.presentation.SpecificEntityNotFoundException;
 import org.sluja.searcher.webapp.exception.presentation.shop.attribute.AttributeForGivenShopInContextNotFoundException;
@@ -22,6 +24,8 @@ public class GetShopAttributesService {
     @Autowired
     private final ShopAttributeMapper shopAttributeMapper;
 
+    @MethodStartLog
+    @ObjectMethodEndLog
     public List<ShopAttributeDto> getAttributesForGivenShopAndContext(final String shopName, final String context) throws SpecificEntityNotFoundException {
         return shopAttributeRepository
                 .findShopAttributesForShopInContext(shopName, context)
@@ -31,6 +35,8 @@ public class GetShopAttributesService {
                 .toList();
     }
 
+    @MethodStartLog
+    @ObjectMethodEndLog
     public Map<String, List<ShopAttributeDto>> getAttributesForManyShopsInContext(final List<String> shopNames, final String context) throws SpecificEntityNotFoundException {
         return shopAttributeRepository
                 .findAttributesForShopsInContext(shopNames, context)

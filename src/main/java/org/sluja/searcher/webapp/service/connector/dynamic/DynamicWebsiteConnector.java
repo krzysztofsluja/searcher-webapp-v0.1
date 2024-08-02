@@ -1,10 +1,11 @@
 package org.sluja.searcher.webapp.service.connector.dynamic;
 
-import jakarta.validation.Valid;
 import org.apache.commons.lang3.StringUtils;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.sluja.searcher.webapp.annotation.log.noobject.MethodEndLog;
+import org.sluja.searcher.webapp.annotation.log.object.ObjectMethodStartLog;
 import org.sluja.searcher.webapp.annotation.validation.InputValidation;
 import org.sluja.searcher.webapp.dto.connect.DynamicWebsiteConnectRequest;
 import org.sluja.searcher.webapp.exception.connection.ConnectionTimeoutException;
@@ -24,6 +25,8 @@ public class DynamicWebsiteConnector implements IConnector<WebDriver, DynamicWeb
     //public static DynamicWebsiteConnector INSTANCE = new DynamicWebsiteConnector();
     @Override
     @InputValidation(inputs = {DynamicWebsiteConnectRequest.class})
+    @ObjectMethodStartLog
+    @MethodEndLog
     public WebDriver connectAndGetPage(final DynamicWebsiteConnectRequest request) throws ConnectionTimeoutException, IOException {
         if(StringUtils.isEmpty(request.getUrl())) {
             throw new ConnectionTimeoutException();

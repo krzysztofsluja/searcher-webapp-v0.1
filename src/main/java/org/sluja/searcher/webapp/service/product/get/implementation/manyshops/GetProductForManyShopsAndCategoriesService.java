@@ -34,6 +34,8 @@ public class GetProductForManyShopsAndCategoriesService implements IGetProductSe
     private final LoggerMessageUtils loggerMessageUtils;
     @Override
     @InputValidation(inputs = {GetProductForManyShopsAndCategoriesRequest.class})
+    @ObjectMethodStartLog
+    @ObjectMethodEndLog
     public List<GetProductsForShopAndManyCategoriesResponse> get(final GetProductForManyShopsAndCategoriesRequest request) throws ProductNotFoundException {
         final List<CompletableFuture<GetProductsForShopAndManyCategoriesResponse>> futureResponses = new ArrayList<>();
         for(final String shop : request.getShopsWithCategories().keySet()) {

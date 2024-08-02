@@ -3,6 +3,8 @@ package org.sluja.searcher.webapp.service.product.get.implementation.singleshop;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.collections4.CollectionUtils;
 import org.jsoup.nodes.Element;
+import org.sluja.searcher.webapp.annotation.log.object.ObjectMethodEndLog;
+import org.sluja.searcher.webapp.annotation.log.object.ObjectMethodStartLog;
 import org.sluja.searcher.webapp.annotation.validation.InputValidation;
 import org.sluja.searcher.webapp.builder.request.product.instance.ProductInstanceSearchRequestBuilder;
 import org.sluja.searcher.webapp.builder.request.product.object.BuildProductObjectRequestBuilder;
@@ -32,6 +34,8 @@ public class GetProductForShopAndCategoryService implements IGetProductService<G
 
     @Override
     @InputValidation(inputs = {GetProductForShopNameAndCategoryRequest.class})
+    @ObjectMethodStartLog
+    @ObjectMethodEndLog
     public GetProductForShopAndCategoryResponse get(final GetProductForShopNameAndCategoryRequest request) throws ProductNotFoundException  {
         final List<ProductDTO> products = getProducts(request);
         return GetProductForShopAndCategoryResponse.builder()

@@ -5,6 +5,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.tuple.Pair;
+import org.sluja.searcher.webapp.annotation.log.object.ObjectMethodEndLog;
+import org.sluja.searcher.webapp.annotation.log.object.ObjectMethodStartLog;
 import org.sluja.searcher.webapp.annotation.validation.InputValidation;
 import org.sluja.searcher.webapp.builder.request.product.get.GetProductForManyShopsAndCategoriesRequestBuilder;
 import org.sluja.searcher.webapp.dto.presentation.category.property.CategoryPropertyDto;
@@ -41,8 +43,9 @@ public class GetProductsService implements IGetProductService<List<GetProductsFo
 
     @Override
     @InputValidation(inputs = {GetProductsRequest.class})
+    @ObjectMethodStartLog
+    @ObjectMethodEndLog
     public List<GetProductsForShopAndManyCategoriesResponse> get(final GetProductsRequest request) throws ProductNotFoundException {
-        //TODO logging
         final Map<String, List<String>> categoryPropertyDtos = getCategoriesProperties(request);
         try {
             //TODO logging
