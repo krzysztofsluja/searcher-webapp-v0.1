@@ -34,7 +34,7 @@ public abstract class MessageReader {
         if(isMessageParametrized(message)) {
             return getParametrizedMessage(message);
         }
-        return message;
+        return environment.getProperty(message);
     }
 
     protected boolean isMessageParametrized(final String message) {

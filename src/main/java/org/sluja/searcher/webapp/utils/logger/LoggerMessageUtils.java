@@ -1,9 +1,13 @@
 package org.sluja.searcher.webapp.utils.logger;
 
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.sluja.searcher.webapp.utils.message.implementation.ErrorMessageReader;
 import org.sluja.searcher.webapp.utils.message.implementation.InformationMessageReader;
 import org.springframework.stereotype.Component;
+
+import java.util.Arrays;
+import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
@@ -55,6 +59,21 @@ public class LoggerMessageUtils {
                 .append(methodName)
                 .append(SEPARATOR)
                 .append(messageText)
+                .toString();
+    }
+
+    public String getInfoLogMessageWithObjects(final String className, final String methodName, final String messageCode, final Object[] objects) {
+        final String messageText = informationMessageReader.getPropertyValueOrEmptyOnNotFound(messageCode);
+        return new StringBuilder()
+                .append("|INFO")
+                .append(SEPARATOR)
+                .append(className)
+                .append(SEPARATOR)
+                .append(methodName)
+                .append(SEPARATOR)
+                .append(messageText)
+                .append(StringUtils.SPACE)
+                .append(Arrays.stream(objects).map(Object::toString).collect(Collectors.joining(",")))
                 .toString();
     }
 }
