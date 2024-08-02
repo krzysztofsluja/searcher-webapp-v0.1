@@ -17,6 +17,7 @@ import org.sluja.searcher.webapp.exception.cache.CacheKeyCreationFailedException
 import org.sluja.searcher.webapp.service.cache.CacheService;
 import org.sluja.searcher.webapp.utils.logger.LoggerMessageUtils;
 import org.sluja.searcher.webapp.utils.logger.LoggerUtils;
+import org.springframework.data.redis.RedisConnectionFailureException;
 import org.springframework.stereotype.Component;
 
 @Aspect
@@ -43,7 +44,11 @@ public class ProductsForShopAndCategoryAspect {
             log.error(loggerMessageUtils.getErrorLogMessage(LoggerUtils.getCurrentClassName(),
                     LoggerUtils.getCurrentMethodName(),
                     e.getMessageCode(),
-                    e.getErrorCode()));
+                    e.getErrorCode()), e);
+        } catch (final RedisConnectionFailureException e) {
+            log.error(loggerMessageUtils.getErrorLogMessageWithDeclaredErrorMessage(LoggerUtils.getCurrentClassName(),
+                    LoggerUtils.getCurrentMethodName(),
+                    e.getMessage()), e);
         }
     }
 
@@ -58,7 +63,10 @@ public class ProductsForShopAndCategoryAspect {
                     .products(cachedProducts.products())
                     .context(request.getContext())
                     .build();
-        } catch (CacheElementForGivenKeyNotFound | CacheKeyCreationFailedException e) {
+        } catch (CacheElementForGivenKeyNotFound | CacheKeyCreationFailedException | RedisConnectionFailureException e) {
+            log.error(loggerMessageUtils.getErrorLogMessageWithDeclaredErrorMessage(LoggerUtils.getCurrentClassName(),
+                    LoggerUtils.getCurrentMethodName(),
+                    e.getMessage()));
             try {
                 return  (GetProductForShopAndCategoryResponse) joinPoint.proceed();
             } catch (Throwable ex) {
