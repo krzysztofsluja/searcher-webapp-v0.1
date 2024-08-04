@@ -25,6 +25,7 @@ import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
@@ -74,6 +75,7 @@ public class BuildProductObjectService implements IBuildProductObject {
                 );
                 futures.get();
                 return ProductDTO.builder()
+                        .id(UUID.randomUUID().toString())
                         .name(futureName.join())
                         .price(futurePrice.join())
                         .productPageAddress(futureAddresses.join())

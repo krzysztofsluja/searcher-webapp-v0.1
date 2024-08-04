@@ -89,6 +89,7 @@ public class GetProductForManyShopsAndCategoriesService implements IGetProductSe
                    }
                    productsForShop.put(category, products);
                } catch (final ProductNotFoundException e) {
+                   //TODO logging
                    continue;
                }
            }

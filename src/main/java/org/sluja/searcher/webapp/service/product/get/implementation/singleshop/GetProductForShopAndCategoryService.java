@@ -19,9 +19,13 @@ import org.sluja.searcher.webapp.exception.product.object.ProductObjectBuildFail
 import org.sluja.searcher.webapp.service.product.get.IGetProductService;
 import org.sluja.searcher.webapp.service.scraper.search.implementation.product.instance.ProductInstanceSearchService;
 import org.sluja.searcher.webapp.service.scraper.search.implementation.product.object.IBuildProductObject;
+import org.sluja.searcher.webapp.utils.logger.LoggerMessageUtils;
+import org.sluja.searcher.webapp.utils.logger.LoggerUtils;
+import org.sluja.searcher.webapp.utils.message.builder.InformationMessageBuilder;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -31,6 +35,7 @@ public class GetProductForShopAndCategoryService implements IGetProductService<G
 
     private final ProductInstanceSearchService<DynamicWebsiteScrapRequest, ProductInstanceSearchRequest> dynamicWebsiteProductInstanceSearchService;
     private final IBuildProductObject buildProductObjectService;
+    private final LoggerMessageUtils loggerMessageUtils;
 
     @Override
     @InputValidation(inputs = {GetProductForShopNameAndCategoryRequest.class})
@@ -49,7 +54,19 @@ public class GetProductForShopAndCategoryService implements IGetProductService<G
     @InputValidation(inputs = {GetProductForShopNameAndCategoryRequest.class})
     private List<ProductDTO> getProducts(final GetProductForShopNameAndCategoryRequest request) throws ProductNotFoundException{
         final ProductInstanceSearchRequest productInstanceSearchRequest = ProductInstanceSearchRequestBuilder.build(request);
-        final List<Element> elements = (List<Element>) dynamicWebsiteProductInstanceSearchService.searchList(productInstanceSearchRequest);
+        List<Element> elements = Collections.emptyList();
+        try {
+             elements = (List<Element>) dynamicWebsiteProductInstanceSearchService.searchList(productInstanceSearchRequest);
+        } catch (final ProductNotFoundException e) {
+            loggerMessageUtils.getErrorLogMessage(LoggerUtils.getCurrentClassName(),
+                    LoggerUtils.getCurrentMethodName(),
+                    e.getMessageCode(),
+                    e.getErrorCode());
+            loggerMessageUtils.getInfoLogMessage(LoggerUtils.getCurrentClassName(),
+                    LoggerUtils.getCurrentMethodName(),
+                    InformationMessageBuilder.buildParametrizedMessage("info.product.category.continue.searching", List.of(request.getCategoryName(), request.getShopName())));
+            return Collections.emptyList();
+        }
         final BuildProductObjectRequest buildProductObjectRequest = BuildProductObjectRequestBuilder.build(request, elements);
         final List<ProductDTO> products = buildProductObjectService.build(buildProductObjectRequest);
         if(CollectionUtils.isEmpty(products)) {
