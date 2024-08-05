@@ -21,7 +21,8 @@ public class ProductInstanceSearchRequestBuilder extends ProductBuilder {
                 (String) getProperty(request, SearchProperty.CATEGORY_PAGE_AMOUNTS),
                 ((Map<String, List<String>>) getProperty(request, SearchProperty.CATEGORY_PROPERTIES)).get(category),
                 (String) getProperty(request, SearchProperty.PRODUCT_INSTANCE),
-                (String) getProperty(request, SearchProperty.SHOP_NAME));
+                (String) getProperty(request, SearchProperty.SHOP_NAME),
+                category);
     }
 
     @InputValidation(inputs = {GetProductForShopNameAndCategoryRequest.class})
@@ -33,6 +34,7 @@ public class ProductInstanceSearchRequestBuilder extends ProductBuilder {
                 request.getCategoryPageAmounts(),
                 request.getCategoryProperties(),
                 request.getProductInstance(),
-                request.getShopName());
+                request.getShopName(),
+                request.getCategoryName());
     }
 }
