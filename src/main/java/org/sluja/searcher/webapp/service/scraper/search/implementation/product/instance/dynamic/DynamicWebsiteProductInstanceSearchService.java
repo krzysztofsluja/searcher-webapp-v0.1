@@ -32,6 +32,7 @@ import org.sluja.searcher.webapp.service.scraper.search.implementation.product.i
 import org.sluja.searcher.webapp.utils.connector.IConnector;
 import org.sluja.searcher.webapp.utils.logger.LoggerMessageUtils;
 import org.sluja.searcher.webapp.utils.logger.LoggerUtils;
+import org.sluja.searcher.webapp.utils.message.builder.InformationMessageBuilder;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
@@ -117,7 +118,9 @@ public class DynamicWebsiteProductInstanceSearchService extends ProductInstanceS
     }
 
     private void changePage(final ProductInstanceSearchRequest request, final WebDriver driver) throws ProductNotFoundException {
-        //TODO logging
+        log.info(loggerMessageUtils.getInfoLogMessage(LoggerUtils.getCurrentClassName(),
+                LoggerUtils.getCurrentMethodName(),
+                InformationMessageBuilder.buildParametrizedMessage("info.product.change.page", List.of(request.getShopName(), request.getCategoryName()))));
         if(StringUtils.isEmpty(request.getCategoryPageAmounts())) {
             throw new CategoryProductsOnOnePageException();
         }

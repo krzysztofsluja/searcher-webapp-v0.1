@@ -2,6 +2,7 @@ package org.sluja.searcher.webapp.service.user.cart.implementation;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.sluja.searcher.webapp.annotation.log.object.ObjectMethodStartLog;
 import org.sluja.searcher.webapp.annotation.validation.InputValidation;
 import org.sluja.searcher.webapp.dto.product.ProductDTO;
 import org.sluja.searcher.webapp.dto.product.cart.CartDTO;
@@ -20,8 +21,8 @@ public class UserCartService implements ICart<CartProductDTO, ProductDTO> {
     private final CartDTO cartDTO;
     @Override
     @InputValidation(inputs = {ProductDTO.class})
+    @ObjectMethodStartLog
     public void addProductToCart(final ProductDTO product) {
-        //TODO logging
         final CartProductDTO cartProductDTO = CartProductMapper.map(product);
         cartDTO.addProduct(cartProductDTO);
     }

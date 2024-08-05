@@ -46,7 +46,6 @@ public class GetProductsService implements IGetProductService<List<GetProductsFo
     public List<GetProductsForShopAndManyCategoriesResponse> get(final GetProductsRequest request) throws ProductNotFoundException {
         final Map<String, List<String>> categoryPropertyDtos = getCategoriesProperties(request);
         try {
-            //TODO logging
             final Map<String, List<ShopAttributeDto>> shopAttributeDtos = getAttributesForShops(request);
             final GetProductForManyShopsAndCategoriesRequest getProductForManyShopsAndCategoriesRequest = GetProductForManyShopsAndCategoriesRequestBuilder.build(request, shopAttributeDtos, categoryPropertyDtos);
             return getProductForManyShopsAndCategoriesService.get(getProductForManyShopsAndCategoriesRequest);
@@ -74,7 +73,9 @@ public class GetProductsService implements IGetProductService<List<GetProductsFo
                     .filter(property -> property.getContext().equalsIgnoreCase(request.context()))
                     .collect(Collectors.groupingBy(CategoryPropertyDto::getCategoryName, Collectors.mapping(CategoryPropertyDto::getValue, Collectors.toList())));
         if(properties.keySet().size() != allCategories.size()) {
-            //TODO logging
+            log.info(loggerMessageUtils.getInfoLogMessage(LoggerUtils.getCurrentClassName(),
+                    LoggerUtils.getCurrentMethodName(),
+                    InformationMessageBuilder.buildParametrizedMessage("info.product.not.all.categories.found", List.of(String.valueOf(allCategories.size()), String.valueOf(properties.keySet().size())))));
             allCategories.stream()
                     .filter(category -> !properties.containsKey(category))
                     .forEach(category -> properties.put(category, Collections.emptyList()));

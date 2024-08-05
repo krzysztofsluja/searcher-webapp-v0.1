@@ -29,10 +29,15 @@ public class ValidationExceptionAdvice {
     private final LoggerMessageUtils loggerMessageUtils;
     @ExceptionHandler(ValidationNotPassedException.class)
     public ResponseEntity<ApiResponse<Void>> handleValidationNotPassedException(final ValidationNotPassedException e) {
-        log.error(loggerMessageUtils.getErrorLogMessage());
         final List<String> messageCodes = e.getMessageCodes();
+        log.error(loggerMessageUtils.getErrorLogMultiMessages(LoggerUtils.getCurrentClassName(),
+                LoggerUtils.getCurrentMethodName(),
+                messageCodes,
+                e.getErrorCode()));
         if(messageCodes.contains(ExceptionWithErrorCodeAndMessage.GENERAL_MESSAGE_CODE)) {
-            //TODO logging
+            log.error(loggerMessageUtils.getErrorLogMessageWithDeclaredErrorMessage(LoggerUtils.getCurrentClassName(),
+                    LoggerUtils.getCurrentMethodName(),
+                    "error.multi.error.contain.general"));
             return new ResponseEntity<>(new ApiResponse<>(null, List.of(errorMessageReader.getPropertyValueOrGeneralMessageOnDefault(ExceptionWithErrorCodeAndMessage.GENERAL_MESSAGE_CODE))), HttpStatus.BAD_REQUEST);
         }
         final List<String> errorsList = e.getMessageCodes().stream()

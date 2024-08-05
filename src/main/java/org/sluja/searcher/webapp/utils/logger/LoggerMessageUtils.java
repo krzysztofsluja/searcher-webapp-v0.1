@@ -20,7 +20,6 @@ public class LoggerMessageUtils {
     private final String INTERNAL_SEPARATOR = "|";
 
     public String getErrorLogMultiMessages(final String className, final String methodName, final List<String> errorMessageCodes, Long errorCode) {
-
         return new StringBuilder("|ERROR")
                 .append(SEPARATOR)
                 .append(className)
@@ -29,15 +28,16 @@ public class LoggerMessageUtils {
                 .append(SEPARATOR)
                 .append(errorCode)
                 .append(SEPARATOR)
+                .append(getErrorMessageCombinedLog(errorMessageCodes))
+                .toString();
     }
 
-    public String getErrorMessageCombinedLog(final List<String> errorMessageCodes) {
-        final List<String> messagesTexts = errorMessageCodes.stream()
+    private String getErrorMessageCombinedLog(final List<String> errorMessageCodes) {
+        return errorMessageCodes.stream()
                 .filter(StringUtils::isNotEmpty)
                 .map(errorMessageReader::getPropertyValueOrGeneralMessageOnDefault)
-                .
-                .toList();
-
+                .map(value -> value + StringUtils.SPACE)
+                .collect(Collectors.joining(INTERNAL_SEPARATOR));
     }
 
     public String getErrorLogMessage(final String className, final String methodName, final String errorMessageCode, final Long errorCode) {
