@@ -15,7 +15,7 @@ public class WebSecurityConfiguration {
     public SecurityFilterChain securityFilterChain(final HttpSecurity http) throws Exception {
         return http
                 .authorizeHttpRequests((requests) -> requests
-                        .requestMatchers("/", "/test").permitAll()
+                        .requestMatchers("/").permitAll()
                         .anyRequest().authenticated())
                 .httpBasic(Customizer.withDefaults())
                 .build();
