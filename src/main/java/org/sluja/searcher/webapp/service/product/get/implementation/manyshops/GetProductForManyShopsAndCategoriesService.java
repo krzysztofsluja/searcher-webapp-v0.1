@@ -13,6 +13,7 @@ import org.sluja.searcher.webapp.dto.product.request.get.GetProductForShopNameAn
 import org.sluja.searcher.webapp.dto.product.request.get.GetProductForShopNameRequest;
 import org.sluja.searcher.webapp.dto.product.response.GetProductForShopAndCategoryResponse;
 import org.sluja.searcher.webapp.dto.product.response.GetProductsForShopAndManyCategoriesResponse;
+import org.sluja.searcher.webapp.exception.ExceptionWithErrorCodeAndMessage;
 import org.sluja.searcher.webapp.exception.product.general.ProductNotFoundException;
 import org.sluja.searcher.webapp.exception.product.object.ProductForShopAndCategoryNotFoundException;
 import org.sluja.searcher.webapp.exception.product.request.BadGetProductRequestException;
@@ -89,7 +90,10 @@ public class GetProductForManyShopsAndCategoriesService implements IGetProductSe
                    }
                    productsForShop.put(category, products);
                } catch (final ProductNotFoundException e) {
-                   //TODO logging
+                   log.error(loggerMessageUtils.getErrorLogMessage(LoggerUtils.getCurrentClassName(),
+                           LoggerUtils.getCurrentMethodName(),
+                           e.getMessageCode(),
+                           e.getErrorCode()));
                    continue;
                }
            }
@@ -100,7 +104,16 @@ public class GetProductForManyShopsAndCategoriesService implements IGetProductSe
                    .build();
         }).handleAsync((r,e) -> {
             if(Objects.nonNull(e)) {
-                //TODO logging
+                if(e instanceof ExceptionWithErrorCodeAndMessage ex) {
+                    log.error(loggerMessageUtils.getErrorLogMessage(LoggerUtils.getCurrentClassName(),
+                            LoggerUtils.getCurrentMethodName(),
+                            ex.getMessageCode(),
+                            ex.getErrorCode()));
+                } else {
+                    log.error(loggerMessageUtils.getErrorLogMessageWithDeclaredErrorMessage(LoggerUtils.getCurrentClassName(),
+                            LoggerUtils.getCurrentMethodName(),
+                            e.getMessage()));
+                }
                 return GetProductsForShopAndManyCategoriesResponse.empty(shop, request.getCategories());
             }
             return r;

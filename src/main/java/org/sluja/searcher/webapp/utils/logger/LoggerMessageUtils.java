@@ -7,6 +7,7 @@ import org.sluja.searcher.webapp.utils.message.implementation.InformationMessage
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
@@ -16,6 +17,28 @@ public class LoggerMessageUtils {
     private final ErrorMessageReader errorMessageReader;
     private final InformationMessageReader informationMessageReader;
     private final String SEPARATOR = "|||";
+    private final String INTERNAL_SEPARATOR = "|";
+
+    public String getErrorLogMultiMessages(final String className, final String methodName, final List<String> errorMessageCodes, Long errorCode) {
+
+        return new StringBuilder("|ERROR")
+                .append(SEPARATOR)
+                .append(className)
+                .append(SEPARATOR)
+                .append(methodName)
+                .append(SEPARATOR)
+                .append(errorCode)
+                .append(SEPARATOR)
+    }
+
+    public String getErrorMessageCombinedLog(final List<String> errorMessageCodes) {
+        final List<String> messagesTexts = errorMessageCodes.stream()
+                .filter(StringUtils::isNotEmpty)
+                .map(errorMessageReader::getPropertyValueOrGeneralMessageOnDefault)
+                .
+                .toList();
+
+    }
 
     public String getErrorLogMessage(final String className, final String methodName, final String errorMessageCode, final Long errorCode) {
         final String messageText = errorMessageReader.getPropertyValueOrGeneralMessageOnDefault(errorMessageCode);

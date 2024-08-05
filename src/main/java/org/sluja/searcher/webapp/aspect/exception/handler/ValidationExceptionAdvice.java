@@ -29,7 +29,7 @@ public class ValidationExceptionAdvice {
     private final LoggerMessageUtils loggerMessageUtils;
     @ExceptionHandler(ValidationNotPassedException.class)
     public ResponseEntity<ApiResponse<Void>> handleValidationNotPassedException(final ValidationNotPassedException e) {
-        //TODO logging
+        log.error(loggerMessageUtils.getErrorLogMessage());
         final List<String> messageCodes = e.getMessageCodes();
         if(messageCodes.contains(ExceptionWithErrorCodeAndMessage.GENERAL_MESSAGE_CODE)) {
             //TODO logging

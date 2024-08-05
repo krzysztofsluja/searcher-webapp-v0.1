@@ -48,7 +48,6 @@ public class GetShopService {
         final Optional<List<Shop>> shops = shopRepository
                 .findByContextName(contextName);
         if(shops.isEmpty()) {
-            //TODO logging
             throw new ShopNotFoundException();
         }
         return shops.get()

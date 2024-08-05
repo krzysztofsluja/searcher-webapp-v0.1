@@ -95,7 +95,10 @@ public class DynamicWebsiteProductInstanceSearchService extends ProductInstanceS
                 final ScrapProductInstanceSearchRequest searchRequest = ScrapProductInstanceSearchRequestBuilder.build(request, driver.getPageSource());
                 final List<Element> elements = (List<Element>) staticWebsiteProductInstanceSearchService.searchList(searchRequest);
                 if (CollectionUtils.isNotEmpty(elements)) {
-                    //TODO logging
+                    log.info(loggerMessageUtils.getInfoLogMessageWithObjects(LoggerUtils.getCurrentClassName(),
+                            LoggerUtils.getCurrentMethodName(),
+                            "info.product.scraper.instance.found",
+                            elements.toArray()));
                     productInstances.addAll(elements);
                 }
                 changePage(request, driver);
