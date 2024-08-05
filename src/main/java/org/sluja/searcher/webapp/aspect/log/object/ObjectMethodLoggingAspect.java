@@ -6,8 +6,10 @@ import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.*;
 import org.sluja.searcher.webapp.annotation.log.object.ObjectMethodEndLog;
 import org.sluja.searcher.webapp.annotation.log.object.ObjectMethodStartLog;
+import org.sluja.searcher.webapp.exception.ExceptionWithErrorCodeAndMessage;
 import org.sluja.searcher.webapp.utils.logger.LoggerMessageUtils;
 import org.sluja.searcher.webapp.utils.message.builder.InformationMessageBuilder;
+import org.sluja.searcher.webapp.utils.message.implementation.ErrorMessageReader;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -19,6 +21,7 @@ import java.util.List;
 public class ObjectMethodLoggingAspect {
 
     private final LoggerMessageUtils loggerMessageUtils;
+    private final ErrorMessageReader errorMessageReader;
 
     @Pointcut("execution(@org.sluja.searcher.webapp.annotation.log.object.ObjectMethodStartLog * org.sluja.searcher.webapp..*.*(..)))")
     public void atExecutionOfObjectMethodStartLog() {}
@@ -50,6 +53,11 @@ public class ObjectMethodLoggingAspect {
     public void logObjectMethodEndOnException(final JoinPoint joinPoint, final Throwable exception, final ObjectMethodEndLog objectMethodEndLog) {
         final String methodName = joinPoint.getSignature().getName();
         final String className = joinPoint.getTarget().getClass().getName();
-        log.info(loggerMessageUtils.getInfoLogMessage(className, methodName, InformationMessageBuilder.buildParametrizedMessage("error.method.end.with.object.exception", List.of(exception.getMessage()))));
+        String messageText = exception.getMessage();
+        if(exception instanceof ExceptionWithErrorCodeAndMessage e) {
+            messageText = errorMessageReader.getPropertyValueOrGeneralMessageOnDefault(e.getMessageCode());
+        }
+        log.info(loggerMessageUtils.getInfoLogMessage(className, methodName, InformationMessageBuilder.buildParametrizedMessage("error.method.end.with.object.exception", List.of(messageText))));
+        //log.info(loggerMessageUtils.getInfoLogMessage(className, methodName, InformationMessageBuilder.buildParametrizedMessage("error.method.end.with.object.exception", List.of(exception.getMessage()))));
     }
 }

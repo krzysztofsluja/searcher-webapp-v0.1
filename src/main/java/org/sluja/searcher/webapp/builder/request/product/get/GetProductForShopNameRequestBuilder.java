@@ -11,6 +11,7 @@ import org.sluja.searcher.webapp.enums.scraper.search.SearchProperty;
 import org.sluja.searcher.webapp.exception.enums.search.ValueForSearchPropertyException;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class GetProductForShopNameRequestBuilder extends ProductBuilder {
 
@@ -54,8 +55,18 @@ public class GetProductForShopNameRequestBuilder extends ProductBuilder {
                 getPropertyValueWhereTypeList(shopAttributes, SearchProperty.PRODUCT_PAGE_ADDRESSES).orElse(Collections.emptyList()),
                 getPropertyValueWhereTypeList(shopAttributes, SearchProperty.PRODUCT_IMAGE_ADDRESSES).orElse(Collections.emptyList()),
                 getPropertyValue(shopAttributes, SearchProperty.SHOP_NAME).orElse(StringUtils.EMPTY),
-                categoryProperties,
+                getCategoryPropertiesForShop(categoryProperties, categories),
                 categories);
+    }
+
+    private static Map<String, List<String>> getCategoryPropertiesForShop(final Map<String, List<String>> categoryProperties, final List<String> categories) {
+        return categoryProperties.keySet()
+                .stream()
+                .filter(categories::contains)
+                .collect(Collectors.toMap(
+                        key -> key,
+                        categoryProperties::get
+                ));
     }
 
     private static Optional<String> getPropertyValue(final List<ShopAttributeDto> attributeDtos, final SearchProperty property) {

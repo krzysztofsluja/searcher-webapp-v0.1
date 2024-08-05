@@ -21,6 +21,7 @@ import org.sluja.searcher.webapp.dto.scraper.stat.StaticWebsiteScrapRequest;
 import org.sluja.searcher.webapp.exception.connection.ConnectionTimeoutException;
 import org.sluja.searcher.webapp.exception.product.category.CategoryPageAddressNotFoundException;
 import org.sluja.searcher.webapp.exception.product.category.CategoryProductsOnOnePageException;
+import org.sluja.searcher.webapp.exception.product.category.NoMoreCategoryPageAddressFoundException;
 import org.sluja.searcher.webapp.exception.product.general.ProductNotFoundException;
 import org.sluja.searcher.webapp.exception.product.instance.ProductInstanceNotFoundException;
 import org.sluja.searcher.webapp.exception.scraper.ScraperIncorrectFieldException;
@@ -113,6 +114,7 @@ public class DynamicWebsiteProductInstanceSearchService extends ProductInstanceS
     }
 
     private void changePage(final ProductInstanceSearchRequest request, final WebDriver driver) throws ProductNotFoundException {
+        //TODO logging
         if(StringUtils.isEmpty(request.getCategoryPageAmounts())) {
             throw new CategoryProductsOnOnePageException();
         }
@@ -121,7 +123,7 @@ public class DynamicWebsiteProductInstanceSearchService extends ProductInstanceS
             ((List<WebElement>) super.search(scrapRequest)).stream()
                     .distinct()
                     .findFirst()
-                    .orElseThrow(CategoryPageAddressNotFoundException::new)
+                    .orElseThrow(() -> new NoMoreCategoryPageAddressFoundException(request.getShopName(), request.getCategoryName()))
                     .click();
             Thread.sleep(1500);
         } catch (ScraperIncorrectFieldException e) {

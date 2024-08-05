@@ -11,7 +11,8 @@ import java.util.Collections;
 import java.util.List;
 
 @Builder
-public record ProductDTO(@NotEmpty(message = DtoValidationErrorMessage.PRODUCT_NAME_EMPTY) String name,
+public record ProductDTO(String id,
+                         @NotEmpty(message = DtoValidationErrorMessage.PRODUCT_NAME_EMPTY) String name,
                          @NotEmpty(message = DtoValidationErrorMessage.SHOP_NAME_EMPTY) String shopName,
                          BigDecimal price,
                          List<String> productPageAddress,
@@ -21,6 +22,7 @@ public record ProductDTO(@NotEmpty(message = DtoValidationErrorMessage.PRODUCT_N
 
     public static ProductDTO emptyProductDTO() {
         return ProductDTO.builder()
+                .id("0L")
                 .name(StringUtils.EMPTY)
                 .shopName(StringUtils.EMPTY)
                 .category(StringUtils.EMPTY)
@@ -36,6 +38,7 @@ public record ProductDTO(@NotEmpty(message = DtoValidationErrorMessage.PRODUCT_N
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         return (((ProductDTO) o).name().equals(this.name()))
+                && (((ProductDTO) o).id().equals(this.id()))
                 && (((ProductDTO) o).shopName().equals(this.shopName()))
                 && (((ProductDTO) o).price().equals(this.price()))
                 && (((ProductDTO) o).productPageAddress().equals(this.productPageAddress()))

@@ -64,9 +64,16 @@ public class ProductsForShopAndCategoryAspect {
                     .context(request.getContext())
                     .build();
         } catch (CacheElementForGivenKeyNotFound | CacheKeyCreationFailedException | RedisConnectionFailureException e) {
-            log.error(loggerMessageUtils.getErrorLogMessageWithDeclaredErrorMessage(LoggerUtils.getCurrentClassName(),
-                    LoggerUtils.getCurrentMethodName(),
-                    e.getMessage()));
+            if(e instanceof ExceptionWithErrorCodeAndMessage ex) {
+                log.error(loggerMessageUtils.getErrorLogMessage(LoggerUtils.getCurrentClassName(),
+                        LoggerUtils.getCurrentMethodName(),
+                        ex.getMessageCode(),
+                        ex.getErrorCode()));
+            } else {
+                log.error(loggerMessageUtils.getErrorLogMessageWithDeclaredErrorMessage(LoggerUtils.getCurrentClassName(),
+                        LoggerUtils.getCurrentMethodName(),
+                        e.getMessage()));
+            }
             try {
                 return  (GetProductForShopAndCategoryResponse) joinPoint.proceed();
             } catch (Throwable ex) {

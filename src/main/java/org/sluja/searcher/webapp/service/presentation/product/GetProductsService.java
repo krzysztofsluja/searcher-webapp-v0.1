@@ -25,9 +25,7 @@ import org.sluja.searcher.webapp.utils.logger.LoggerUtils;
 import org.sluja.searcher.webapp.utils.message.builder.InformationMessageBuilder;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -72,9 +70,16 @@ public class GetProductsService implements IGetProductService<List<GetProductsFo
                 .distinct()
                 .toList();
         final List<CategoryPropertyDto> categoryPropertyDtos = getCategoryPropertyService.findPropertiesForCategories(allCategories, request.context());
-        return categoryPropertyDtos.stream()
+        final Map<String, List<String>> properties = categoryPropertyDtos.stream()
                     .filter(property -> property.getContext().equalsIgnoreCase(request.context()))
                     .collect(Collectors.groupingBy(CategoryPropertyDto::getCategoryName, Collectors.mapping(CategoryPropertyDto::getValue, Collectors.toList())));
+        if(properties.keySet().size() != allCategories.size()) {
+            //TODO logging
+            allCategories.stream()
+                    .filter(category -> !properties.containsKey(category))
+                    .forEach(category -> properties.put(category, Collections.emptyList()));
+        }
+        return properties;
     }
 
     @InputValidation(inputs = {GetProductsRequest.class})
