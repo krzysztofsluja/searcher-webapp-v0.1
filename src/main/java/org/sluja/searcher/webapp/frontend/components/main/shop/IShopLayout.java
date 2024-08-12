@@ -1,14 +1,8 @@
 package org.sluja.searcher.webapp.frontend.components.main.shop;
 
-import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import lombok.Getter;
-import lombok.Setter;
+import org.sluja.searcher.webapp.frontend.components.main.ILayoutWithContext;
 
-public abstract class IShopLayout extends VerticalLayout {
-
-    @Setter
-    @Getter
-    protected String context;
+public abstract class IShopLayout extends ILayoutWithContext {
 
     public abstract IShopLayout getShopLayout();
 }

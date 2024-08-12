@@ -39,8 +39,6 @@ public class ShopLayout extends IShopLayout {
         //add(getShopLabel(), getShopCheckboxesLayout());
     }
 
-
-
     private List<String> getShopNames(final String context) {
         try {
             if(StringUtils.isNotEmpty(context)) {
