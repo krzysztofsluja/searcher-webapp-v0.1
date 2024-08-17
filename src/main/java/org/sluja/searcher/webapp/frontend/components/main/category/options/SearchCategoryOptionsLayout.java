@@ -4,29 +4,30 @@ import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.radiobutton.RadioButtonGroup;
-import org.sluja.searcher.webapp.service.frontend.mainview.searchoptions.SearchCategoryOptionsLayoutService;
+import lombok.Getter;
 import org.sluja.searcher.webapp.utils.message.MessageReader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Component
+@Scope("prototype")
+@Getter
 @Qualifier("searchCategoryOptionsLayout")
 public class SearchCategoryOptionsLayout extends ISearchCategoryOptionsLayout {
 
     private final MessageReader viewElementMessageReader;
     private final String SAME_CATEGORY_FOR_SHOPS;
     private final String OTHER_CATEGORY_FOR_SHOPS;
-    private final SearchCategoryOptionsLayoutService searchCategoryOptionsLayoutService;
+    private final RadioButtonGroup<String> radioButtonGroup = new RadioButtonGroup<>();
 
     @Autowired
-    public SearchCategoryOptionsLayout(final MessageReader viewElementMessageReader,
-                                       final SearchCategoryOptionsLayoutService searchCategoryOptionsLayoutService) {
+    public SearchCategoryOptionsLayout(final MessageReader viewElementMessageReader) {
         this.viewElementMessageReader = viewElementMessageReader;
-        this.searchCategoryOptionsLayoutService = searchCategoryOptionsLayoutService;
         this.SAME_CATEGORY_FOR_SHOPS = viewElementMessageReader.getPropertyValueOrEmptyOnError("view.main.dashboard.category.search.options.same.category");
         this.OTHER_CATEGORY_FOR_SHOPS = viewElementMessageReader.getPropertyValueOrEmptyOnError("view.main.dashboard.category.search.options.other.category");
     }
@@ -53,12 +54,10 @@ public class SearchCategoryOptionsLayout extends ISearchCategoryOptionsLayout {
         final List<String> searchOptions = new ArrayList<>();
         searchOptions.add(SAME_CATEGORY_FOR_SHOPS);
         searchOptions.add(OTHER_CATEGORY_FOR_SHOPS);
-        final RadioButtonGroup<String> searchOptionsGroup = new RadioButtonGroup<>(getMainLabelText(), searchOptions);
-        searchOptionsGroup.addValueChangeListener(event -> {
-            final boolean value = SAME_CATEGORY_FOR_SHOPS.equals(event.getValue());
-            searchCategoryOptionsLayoutService.publishSearchOptionsChangedEvent(this, value);
-        });
-        return searchOptionsGroup;
+        radioButtonGroup.setLabel(getMainLabelText());
+        radioButtonGroup.setItems(searchOptions);
+        radioButtonGroup.setValue(SAME_CATEGORY_FOR_SHOPS);
+        return radioButtonGroup;
     }
 
     private VerticalLayout getSearchOptionsLayout() {
@@ -71,5 +70,10 @@ public class SearchCategoryOptionsLayout extends ISearchCategoryOptionsLayout {
         final VerticalLayout layout = new VerticalLayout();
         layout.add(getSearchOptions());
         return layout;
+    }
+
+    @Override
+    public com.vaadin.flow.component.Component getMainComponent() {
+        return radioButtonGroup;
     }
 }
