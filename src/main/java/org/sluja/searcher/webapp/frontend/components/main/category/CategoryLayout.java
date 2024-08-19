@@ -4,6 +4,7 @@ import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.Unit;
 import com.vaadin.flow.component.combobox.MultiSelectComboBox;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextArea;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
@@ -88,6 +89,14 @@ public class CategoryLayout extends ICategoryLayout{
         return layout;
     }
 
+    private VerticalLayout getLayoutWithLabelAndCategories() {
+        final VerticalLayout layout = new VerticalLayout();
+        layout.add(categoryLayoutService.getSelectedCurrentShop());
+        layout.add(getLayoutWithCategories());
+        layout.setVisible(categoryLayoutService.shouldCategoryLayoutBeVisible());
+        return layout;
+    }
+
     private void fillUpCategoryComponents(final TextArea selectedCategoriesTextArea,
                                           final MultiSelectComboBox<CategoryDto> categorySelectComboBox,
                                           final List<CategoryDto> selectedCategories) {
@@ -99,6 +108,9 @@ public class CategoryLayout extends ICategoryLayout{
     @Override
     public HorizontalLayout getCategoriesLayout() {
         removeAll();
+        if(categoryLayoutService.isIndividualCategoriesForEachShop()) {
+            return new HorizontalLayout(getLayoutWithLabelAndCategories());
+        }
         return getLayoutWithCategories();
     }
 }

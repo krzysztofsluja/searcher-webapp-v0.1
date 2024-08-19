@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -22,6 +24,10 @@ public class CategoryLayoutService {
 
     public String getCurrentSearchContext() {
         return mainViewSearchContextForUserSessionAttribute.getCategoryContext();
+    }
+
+    public String getSelectedCurrentShop() {
+        return mainViewSearchContextForUserSessionAttribute.getShopForWhichCategoryLayoutIsShown();
     }
 
     public List<CategoryDto> getCategoriesForCurrentContext() {
@@ -75,7 +81,13 @@ public class CategoryLayoutService {
     public boolean shouldCategoryLayoutBeVisible() {
         return (!mainViewSearchContextForUserSessionAttribute.isOtherCategoriesForEachShop() && StringUtils.isNotEmpty(mainViewSearchContextForUserSessionAttribute.getCategoryContext()))
                 || (StringUtils.isNotEmpty(mainViewSearchContextForUserSessionAttribute.getShopForWhichCategoryLayoutIsShown())
-                && mainViewSearchContextForUserSessionAttribute.getCategoryLayoutVisibilityForShop().get(mainViewSearchContextForUserSessionAttribute.getShopForWhichCategoryLayoutIsShown()));
+                && shouldCategoryLayoutBeVisibleForClickedShop());
+    }
+
+    public boolean shouldCategoryLayoutBeVisibleForClickedShop() {
+        final String currentClickedShop = mainViewSearchContextForUserSessionAttribute.getShopForWhichCategoryLayoutIsShown();
+        final Map<String, Boolean> categoryLayoutVisibilityForShop = mainViewSearchContextForUserSessionAttribute.getCategoryLayoutVisibilityForShop();
+        return Objects.nonNull(categoryLayoutVisibilityForShop.get(currentClickedShop)) && categoryLayoutVisibilityForShop.get(currentClickedShop);
     }
 
     public boolean isIndividualCategoriesForEachShop() {

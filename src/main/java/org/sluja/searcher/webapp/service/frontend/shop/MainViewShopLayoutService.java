@@ -69,6 +69,8 @@ public class MainViewShopLayoutService {
         if(isShopSelected) {
             setShopSelection(true, shopName);
             setSelectedCategoriesForShop(shopName);
+            mainViewSearchContextForUserSessionAttribute.getCategoryLayoutVisibilityForShop().clear();
+            mainViewSearchContextForUserSessionAttribute.setShopForWhichCategoryLayoutIsShown(StringUtils.EMPTY);
         } else {
             setShopSelection(false, shopName);
             mainViewSearchContextForUserSessionAttribute.getCategoryLayoutVisibilityForShop().put(shopName, false);
