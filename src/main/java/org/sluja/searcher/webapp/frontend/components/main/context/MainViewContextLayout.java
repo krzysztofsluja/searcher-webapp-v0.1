@@ -4,12 +4,14 @@ import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import lombok.RequiredArgsConstructor;
 import org.sluja.searcher.webapp.dto.context.ContextDto;
-import org.sluja.searcher.webapp.dto.session.MainViewSearchProductsSessionAttribute;
+import org.sluja.searcher.webapp.service.frontend.context.MainViewContextLayoutService;
 import org.sluja.searcher.webapp.service.presentation.context.GetContextService;
 import org.sluja.searcher.webapp.utils.message.MessageReader;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
+
+import java.util.Objects;
 
 @Component
 @Scope("prototype")
@@ -17,9 +19,9 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class MainViewContextLayout extends IContextLayout {
 
-    private final MainViewSearchProductsSessionAttribute mainViewSearchProductsSessionAttribute;
     private final GetContextService getContextService;
     private final MessageReader viewElementMessageReader;
+    private final MainViewContextLayoutService mainViewContextLayoutService;
     private ComboBox<ContextDto> comboBox = new ComboBox<>();
 
     private String getMainLabelText() {
@@ -38,6 +40,13 @@ public class MainViewContextLayout extends IContextLayout {
         comboBox.setLabel(mainLabelText);
         comboBox.setItems(getContextService.getAllContexts());
         comboBox.setItemLabelGenerator(ContextDto::name);
+        comboBox.addValueChangeListener(event -> {
+            if(Objects.nonNull(event.getValue())) {
+                String newContext = event.getValue().name();
+                mainViewContextLayoutService.setContext(newContext);
+                mainViewContextLayoutService.refreshShopsWithCategoriesLayout();
+            }
+        });
         return comboBox;
     }
 

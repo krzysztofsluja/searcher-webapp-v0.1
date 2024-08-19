@@ -6,14 +6,11 @@ import com.vaadin.flow.component.combobox.MultiSelectComboBox;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.textfield.TextArea;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.sluja.searcher.webapp.dto.presentation.category.CategoryDto;
-import org.sluja.searcher.webapp.dto.session.MainViewSearchProductsSessionAttribute;
-import org.sluja.searcher.webapp.dto.session.MainViewSearchRequestSessionAttribute;
 import org.sluja.searcher.webapp.exception.message.IncorrectMessageCodeForReaderException;
 import org.sluja.searcher.webapp.exception.message.MessageForGivenKeyNotFoundException;
-import org.sluja.searcher.webapp.service.presentation.category.GetCategoryService;
+import org.sluja.searcher.webapp.service.frontend.category.CategoryLayoutService;
 import org.sluja.searcher.webapp.utils.message.MessageReader;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -26,9 +23,7 @@ import java.util.List;
 public class CategoryLayout extends ICategoryLayout{
 
     private final MessageReader viewElementMessageReader;
-    private final GetCategoryService getCategoryService;
-    private final MainViewSearchProductsSessionAttribute mainViewSearchProductsSessionAttribute;
-    private final MainViewSearchRequestSessionAttribute mainViewSearchRequestSessionAttribute;
+    private final CategoryLayoutService categoryLayoutService;
 
     private Text getMainLabel() {
         try {
@@ -40,80 +35,65 @@ public class CategoryLayout extends ICategoryLayout{
         }
     }
 
+    private MultiSelectComboBox<CategoryDto> getCategorySelectBox() {
+        final List<CategoryDto> categories = categoryLayoutService.getCategoriesForCurrentContext();
+        final MultiSelectComboBox<CategoryDto> categorySelectComboBox = new MultiSelectComboBox<>(viewElementMessageReader.getPropertyValueOrEmptyOnError("view.main.dashboard.category.lowercase"));
+        categorySelectComboBox.setItems(categories);
+        categorySelectComboBox.setItemLabelGenerator(CategoryDto::name);
+        categorySelectComboBox.setSelectedItemsOnTop(true);
+        categorySelectComboBox.setEnabled(categoryLayoutService.isAnyShopSelected());
+        return categorySelectComboBox;
+    }
+
+    private void setUpComboBoxListener(final MultiSelectComboBox<CategoryDto> categorySelectComboBox,
+                                       final TextArea selectedCategoriesTextArea) {
+        categorySelectComboBox.addValueChangeListener(e -> {
+            List<String> selectedCategories = e.getValue().stream().map(CategoryDto::name).toList();
+            String selectedCategoriesText = String.join("\n", selectedCategories);
+            selectedCategoriesTextArea.setValue(selectedCategoriesText);
+            categoryLayoutService.setSelectedCategories(selectedCategories);
+        });
+    }
+
+    private TextArea getSelectedCategoriesTextArea() {
+        final TextArea selectedCategoriesTextArea = new TextArea(viewElementMessageReader.getPropertyValueOrEmptyOnError("view.main.dashboard.selected.category"));
+        selectedCategoriesTextArea.setReadOnly(true);
+        selectedCategoriesTextArea.setHeight(200, Unit.PIXELS);
+        selectedCategoriesTextArea.setEnabled(categoryLayoutService.isAnyShopSelected());
+        return selectedCategoriesTextArea;
+    }
+
     private HorizontalLayout getLayoutWithCategories() {
-        final String currentContext = mainViewSearchProductsSessionAttribute.getContext();
+        final String currentContext = categoryLayoutService.getCurrentSearchContext();
         if(StringUtils.isEmpty(currentContext)) {
             //todo logging
             return new HorizontalLayout();
         }
         final HorizontalLayout layout = new HorizontalLayout();
+        final MultiSelectComboBox<CategoryDto> categorySelectComboBox = getCategorySelectBox();
+        final TextArea selectedCategoriesTextArea = getSelectedCategoriesTextArea();
 
-        final List<CategoryDto> categories = getCategoryService.getCategoriesByContextName(currentContext);
-        final MultiSelectComboBox<CategoryDto> categorySelectComboBox = new MultiSelectComboBox<>(viewElementMessageReader.getPropertyValueOrEmptyOnError("view.main.dashboard.category.lowercase"));
-        categorySelectComboBox.setItems(categories);
-        categorySelectComboBox.setItemLabelGenerator(CategoryDto::name);
-        categorySelectComboBox.setSelectedItemsOnTop(true);
-        categorySelectComboBox.setEnabled(!mainViewSearchProductsSessionAttribute.getSelectedShopNames().isEmpty());
-
-        final TextArea selectedCategoriesTextArea = new TextArea(viewElementMessageReader.getPropertyValueOrEmptyOnError("view.main.dashboard.selected.category"));
-
-        if(mainViewSearchProductsSessionAttribute.isOtherCategoryForEachShop()
-                && StringUtils.isNotEmpty(mainViewSearchProductsSessionAttribute.getActuallyClickedCategoryShopButton())
-                && CollectionUtils.isNotEmpty(mainViewSearchRequestSessionAttribute.getShopsWithCategories().get(mainViewSearchProductsSessionAttribute.getActuallyClickedCategoryShopButton()))) {
-            final List<CategoryDto> selectedCategories = getCategoryService.getCategoriesByNames(mainViewSearchRequestSessionAttribute
-                    .getShopsWithCategories()
-                    .get(mainViewSearchProductsSessionAttribute.getActuallyClickedCategoryShopButton())
-                    .stream()
-                    .toList());
-            final String selectedCategoriesText = String.join("\n", selectedCategories.stream().map(CategoryDto::name).toList());
-            categorySelectComboBox.setValue(selectedCategories);
-            selectedCategoriesTextArea.setValue(selectedCategoriesText);
-        } else if(!mainViewSearchProductsSessionAttribute.isOtherCategoryForEachShop()
-        && !mainViewSearchRequestSessionAttribute.getShopsWithCategories().keySet().isEmpty()) {
-            final List<CategoryDto> selectedCategories = getCategoryService.getCategoriesByNames(mainViewSearchRequestSessionAttribute
-                    .getShopsWithCategories()
-                    .values()
-                    .stream()
-                    .distinct()
-                    .flatMap(List::stream)
-                    .toList());
-            final String selectedCategoriesText = String.join("\n", selectedCategories.stream().map(CategoryDto::name).toList());
-            categorySelectComboBox.setValue(selectedCategories);
-            selectedCategoriesTextArea.setValue(selectedCategoriesText);
+        if(categoryLayoutService.shouldSpecificCategoriesForShopBeShown()) {
+            final List<CategoryDto> selectedCategories = categoryLayoutService.getCategories(false);
+            fillUpCategoryComponents(selectedCategoriesTextArea, categorySelectComboBox, selectedCategories);
+        } else if(categoryLayoutService.shouldSameCategoriesForShopsBeShown()) {
+            final List<CategoryDto> selectedCategories = categoryLayoutService.getCategories(true);
+            fillUpCategoryComponents(selectedCategoriesTextArea, categorySelectComboBox, selectedCategories);
         }
 
+        setUpComboBoxListener(categorySelectComboBox, selectedCategoriesTextArea);
 
-        selectedCategoriesTextArea.setReadOnly(true);
-        selectedCategoriesTextArea.setHeight(200, Unit.PIXELS);
-        selectedCategoriesTextArea.setEnabled(!mainViewSearchProductsSessionAttribute.getSelectedShopNames().isEmpty());
-        categorySelectComboBox.addValueChangeListener(e -> {
-            List<String> selectedCategories = e.getValue().stream().map(CategoryDto::name).toList();
-            String selectedCategoriesText = String.join("\n", selectedCategories);
-            selectedCategoriesTextArea.setValue(selectedCategoriesText);
-            if(mainViewSearchProductsSessionAttribute.isOtherCategoryForEachShop()) {
-                String shopName = mainViewSearchProductsSessionAttribute.getActuallyClickedCategoryShopButton();
-                if(StringUtils.isNotEmpty(shopName)) {
-                    mainViewSearchRequestSessionAttribute.getShopsWithCategories().put(shopName, selectedCategories);
-                }
-            } else {
-                mainViewSearchProductsSessionAttribute.getSelectedShopNames()
-                        .forEach(shopName -> {
-                            mainViewSearchRequestSessionAttribute.getShopsWithCategories().put(shopName, selectedCategories);
-                        });
-            }
-
-
-
-        });
         layout.add(categorySelectComboBox, selectedCategoriesTextArea);
-        layout.setVisible(showCategoryLayout());
+        layout.setVisible(categoryLayoutService.shouldCategoryLayoutBeVisible());
         return layout;
     }
 
-    private boolean showCategoryLayout() {
-        return (!mainViewSearchProductsSessionAttribute.isOtherCategoryForEachShop() && StringUtils.isNotEmpty(mainViewSearchProductsSessionAttribute.getContext()))
-                || (StringUtils.isNotEmpty(mainViewSearchProductsSessionAttribute.getActuallyClickedCategoryShopButton())
-                && mainViewSearchProductsSessionAttribute.getOtherShopForEachCategoryCategoryLayoutShowed().get(mainViewSearchProductsSessionAttribute.getActuallyClickedCategoryShopButton()));
+    private void fillUpCategoryComponents(final TextArea selectedCategoriesTextArea,
+                                          final MultiSelectComboBox<CategoryDto> categorySelectComboBox,
+                                          final List<CategoryDto> selectedCategories) {
+        final String selectedCategoriesText = categoryLayoutService.getSelectedCategoriesText(selectedCategories);
+        categorySelectComboBox.setValue(selectedCategories);
+        selectedCategoriesTextArea.setValue(selectedCategoriesText);
     }
 
     @Override

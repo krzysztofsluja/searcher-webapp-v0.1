@@ -5,6 +5,8 @@ import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.radiobutton.RadioButtonGroup;
 import lombok.Getter;
+import org.sluja.searcher.webapp.service.frontend.category.options.MainViewSearchCategoryOptionsLayoutService;
+import org.sluja.searcher.webapp.service.frontend.view.mainview.MainViewService;
 import org.sluja.searcher.webapp.utils.message.MessageReader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -13,6 +15,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Component
 @Scope("prototype")
@@ -24,10 +27,16 @@ public class SearchCategoryOptionsLayout extends ISearchCategoryOptionsLayout {
     private final String SAME_CATEGORY_FOR_SHOPS;
     private final String OTHER_CATEGORY_FOR_SHOPS;
     private final RadioButtonGroup<String> radioButtonGroup = new RadioButtonGroup<>();
+    private final MainViewSearchCategoryOptionsLayoutService mainViewSearchCategoryOptionsLayoutService;
+    private final MainViewService mainViewService;
 
     @Autowired
-    public SearchCategoryOptionsLayout(final MessageReader viewElementMessageReader) {
+    public SearchCategoryOptionsLayout(final MessageReader viewElementMessageReader,
+                                       final MainViewSearchCategoryOptionsLayoutService mainViewSearchCategoryOptionsLayoutService,
+                                       final MainViewService mainViewService) {
         this.viewElementMessageReader = viewElementMessageReader;
+        this.mainViewSearchCategoryOptionsLayoutService = mainViewSearchCategoryOptionsLayoutService;
+        this.mainViewService = mainViewService;
         this.SAME_CATEGORY_FOR_SHOPS = viewElementMessageReader.getPropertyValueOrEmptyOnError("view.main.dashboard.category.search.options.same.category");
         this.OTHER_CATEGORY_FOR_SHOPS = viewElementMessageReader.getPropertyValueOrEmptyOnError("view.main.dashboard.category.search.options.other.category");
     }
@@ -57,6 +66,14 @@ public class SearchCategoryOptionsLayout extends ISearchCategoryOptionsLayout {
         radioButtonGroup.setLabel(getMainLabelText());
         radioButtonGroup.setItems(searchOptions);
         radioButtonGroup.setValue(SAME_CATEGORY_FOR_SHOPS);
+        radioButtonGroup.addValueChangeListener(event -> {
+            if(Objects.nonNull(event.getValue())) {
+                final boolean option = event.getValue().equalsIgnoreCase(OTHER_CATEGORY_FOR_SHOPS);
+                mainViewSearchCategoryOptionsLayoutService.setSearchOption(option);
+                mainViewSearchCategoryOptionsLayoutService.clearPreviousSearchContextOnChange();
+                mainViewService.refreshShopsWithCategoriesLayout();
+            }
+        });
         return radioButtonGroup;
     }
 
