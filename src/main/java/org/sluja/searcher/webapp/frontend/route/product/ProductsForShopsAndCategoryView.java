@@ -1,10 +1,12 @@
 package org.sluja.searcher.webapp.frontend.route.product;
 
 import com.vaadin.flow.component.Text;
+import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.html.Anchor;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Image;
+import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.FlexLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.AfterNavigationEvent;
@@ -12,12 +14,14 @@ import com.vaadin.flow.router.AfterNavigationObserver;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 import org.apache.commons.lang3.StringUtils;
+import org.sluja.searcher.webapp.dto.cart.UserCartProductDto;
 import org.sluja.searcher.webapp.dto.product.ProductDTO;
 import org.sluja.searcher.webapp.dto.product.response.GetProductsForShopAndManyCategoriesResponse;
 import org.sluja.searcher.webapp.dto.product.view.route.SearchProductsForShopsAndCategoriesRouteViewRequest;
 import org.sluja.searcher.webapp.dto.request.presentation.product.GetProductsRequest;
 import org.sluja.searcher.webapp.exception.product.general.ProductNotFoundException;
 import org.sluja.searcher.webapp.service.product.get.IGetProductService;
+import org.sluja.searcher.webapp.service.user.cart.ICart;
 import org.sluja.searcher.webapp.utils.message.MessageReader;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -34,13 +38,16 @@ public class ProductsForShopsAndCategoryView extends VerticalLayout implements A
     private final MessageReader informationMessageReader;
     private GetProductsRequest request;
     private final SearchProductsForShopsAndCategoriesRouteViewRequest searchProductsForShopsAndCategoriesRouteViewRequest;
+    private final ICart<UserCartProductDto, ProductDTO> userCartService;
 
     public ProductsForShopsAndCategoryView(@Autowired IGetProductService<List<GetProductsForShopAndManyCategoriesResponse>, GetProductsRequest> getProductsService,
                                            @Autowired MessageReader informationMessageReader,
-                                           @Autowired SearchProductsForShopsAndCategoriesRouteViewRequest searchProductsForShopsAndCategoriesRouteViewRequest) {
+                                           @Autowired SearchProductsForShopsAndCategoriesRouteViewRequest searchProductsForShopsAndCategoriesRouteViewRequest,
+                                           @Autowired ICart<UserCartProductDto, ProductDTO> userCartService) {
         this.getProductsService = getProductsService;
         this.informationMessageReader = informationMessageReader;
         this.searchProductsForShopsAndCategoriesRouteViewRequest = searchProductsForShopsAndCategoriesRouteViewRequest;
+        this.userCartService = userCartService;
 /*        GetProductsRequest request = new GetProductsRequest(List.of("bmxlife","manyfestbmx","avebmx"), Map.of("bmxlife", List.of("bars",
                 "frames",
                 "rims",
@@ -104,8 +111,17 @@ public class ProductsForShopsAndCategoryView extends VerticalLayout implements A
         final Div priceLabel = new Div(new Text(product.price().toPlainString()));
         final Div storeLabel = new Div(new Text(product.shopName()));
 
-        productCard.add(image, nameLabel, priceLabel, storeLabel);
+        productCard.add(image, nameLabel, priceLabel, storeLabel, getAddingToCartButton(product));
         return productCard;
+    }
+
+    private Button getAddingToCartButton(final ProductDTO product) {
+        final Button button = new Button();
+        button.setIcon(VaadinIcon.CART.create());
+        button.addClickListener(_ -> {
+            userCartService.addProductToCart(product);
+        });
+        return button;
     }
 
     private String getProductImageUrl(final ProductDTO product) {

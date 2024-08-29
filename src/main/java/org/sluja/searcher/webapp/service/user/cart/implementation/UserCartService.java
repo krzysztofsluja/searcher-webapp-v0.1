@@ -1,12 +1,9 @@
 package org.sluja.searcher.webapp.service.user.cart.implementation;
 
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import org.sluja.searcher.webapp.annotation.log.object.ObjectMethodStartLog;
-import org.sluja.searcher.webapp.annotation.validation.InputValidation;
+import org.sluja.searcher.webapp.dto.cart.UserCartProductDto;
 import org.sluja.searcher.webapp.dto.product.ProductDTO;
-import org.sluja.searcher.webapp.dto.product.cart.CartDTO;
-import org.sluja.searcher.webapp.dto.product.cart.CartProductDTO;
+import org.sluja.searcher.webapp.dto.session.frontend.cart.UserCartSessionAttribute;
 import org.sluja.searcher.webapp.mapper.product.CartProductMapper;
 import org.sluja.searcher.webapp.service.user.cart.ICart;
 import org.springframework.stereotype.Service;
@@ -15,8 +12,48 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class UserCartService implements ICart<CartProductDTO, ProductDTO> {
+public class UserCartService implements ICart<UserCartProductDto, ProductDTO> {
 
+    private final UserCartSessionAttribute userCartSessionAttribute;
+    @Override
+    public void addProductToCart(final ProductDTO product) {
+        if(!doesCartContainProduct(product)) {
+            userCartSessionAttribute.getCartProducts().add(CartProductMapper.map(product));
+        } else {
+            userCartSessionAttribute.getCartProducts().stream()
+                    .filter(cartProduct -> cartProduct.getProduct().id().equals(product.id()))
+                    .forEach(cartProduct -> cartProduct.setQuantity(cartProduct.getQuantity() + 1));
+        }
+    }
+
+    private boolean doesCartContainProduct(final ProductDTO product) {
+        return getCartProducts().stream()
+                .anyMatch(cartProduct -> cartProduct.getProduct().name().equalsIgnoreCase(product.name())
+                                      && cartProduct.getProduct().shopName().equalsIgnoreCase(product.shopName()));
+    }
+
+    @Override
+    public void removeProductFromCart(UserCartProductDto product) {
+        userCartSessionAttribute.getCartProducts().remove(product);
+    }
+
+    @Override
+    public void clearCart() {
+        userCartSessionAttribute.getCartProducts().clear();
+    }
+
+    @Override
+    public void changeQuantity(final UserCartProductDto product, final int quantity) {
+        userCartSessionAttribute.getCartProducts().stream()
+                .filter(cartProduct -> cartProduct.getProduct().id().equals(product.getCartProductId()))
+                .forEach(cartProduct -> cartProduct.setQuantity(cartProduct.getQuantity() + quantity));
+    }
+
+    @Override
+    public List<UserCartProductDto> getCartProducts() {
+        return userCartSessionAttribute.getCartProducts();
+    }
+/*
     @Getter
     private final CartDTO cartDTO;
     @Override
@@ -48,5 +85,5 @@ public class UserCartService implements ICart<CartProductDTO, ProductDTO> {
                 .values()
                 .stream()
                 .toList();
-    }
+    }*/
 }
