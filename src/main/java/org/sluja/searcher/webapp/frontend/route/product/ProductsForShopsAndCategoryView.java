@@ -7,6 +7,8 @@ import com.vaadin.flow.component.html.Anchor;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.FlexLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.AfterNavigationEvent;
@@ -25,7 +27,10 @@ import org.sluja.searcher.webapp.service.user.cart.ICart;
 import org.sluja.searcher.webapp.utils.message.MessageReader;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Route("/public/products")
@@ -36,6 +41,7 @@ public class ProductsForShopsAndCategoryView extends VerticalLayout implements A
     private final int PRODUCTS_PER_ROW = 6;
     private final IGetProductService<List<GetProductsForShopAndManyCategoriesResponse>, GetProductsRequest> getProductsService;
     private final MessageReader informationMessageReader;
+    private final MessageReader viewElementMessageReader;
     private GetProductsRequest request;
     private final SearchProductsForShopsAndCategoriesRouteViewRequest searchProductsForShopsAndCategoriesRouteViewRequest;
     private final ICart<UserCartProductDto, ProductDTO> userCartService;
@@ -43,11 +49,13 @@ public class ProductsForShopsAndCategoryView extends VerticalLayout implements A
     public ProductsForShopsAndCategoryView(@Autowired IGetProductService<List<GetProductsForShopAndManyCategoriesResponse>, GetProductsRequest> getProductsService,
                                            @Autowired MessageReader informationMessageReader,
                                            @Autowired SearchProductsForShopsAndCategoriesRouteViewRequest searchProductsForShopsAndCategoriesRouteViewRequest,
-                                           @Autowired ICart<UserCartProductDto, ProductDTO> userCartService) {
+                                           @Autowired ICart<UserCartProductDto, ProductDTO> userCartService,
+                                           @Autowired MessageReader viewElementMessageReader) {
         this.getProductsService = getProductsService;
         this.informationMessageReader = informationMessageReader;
         this.searchProductsForShopsAndCategoriesRouteViewRequest = searchProductsForShopsAndCategoriesRouteViewRequest;
         this.userCartService = userCartService;
+        this.viewElementMessageReader = viewElementMessageReader;
 /*        GetProductsRequest request = new GetProductsRequest(List.of("bmxlife","manyfestbmx","avebmx"), Map.of("bmxlife", List.of("bars",
                 "frames",
                 "rims",
@@ -78,7 +86,7 @@ public class ProductsForShopsAndCategoryView extends VerticalLayout implements A
         final List<ProductDTO> productsForCategory = products.stream()
                 .map(GetProductsForShopAndManyCategoriesResponse::getProductsForCategory)
                 .flatMap(map -> map.values().stream()) // Stream<List<ProductDTO>>
-                .flatMap(List::stream) // Stream<ProductDTO>
+                .flatMap(List::stream)
                 .toList();
 
         productsForCategory.forEach(product -> productLayout.add(getProductCard(product)));
@@ -120,6 +128,9 @@ public class ProductsForShopsAndCategoryView extends VerticalLayout implements A
         button.setIcon(VaadinIcon.CART.create());
         button.addClickListener(_ -> {
             userCartService.addProductToCart(product);
+            Notification notification = Notification.show(viewElementMessageReader.getPropertyValueOrEmptyOnError("view.cart.notification.product.added"));
+            notification.addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+            notification.setPosition(Notification.Position.TOP_END);
         });
         return button;
     }
@@ -136,7 +147,6 @@ public class ProductsForShopsAndCategoryView extends VerticalLayout implements A
 
     @Override
     public void afterNavigation(AfterNavigationEvent afterNavigationEvent) {
-        //searchProductsForShopsAndCategoriesRouteViewRequest.getShopsWithCategories();
         setRequest();
         this.add(getMainLayout());
     }
