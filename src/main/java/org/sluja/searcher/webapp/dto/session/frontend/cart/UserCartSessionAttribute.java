@@ -19,4 +19,6 @@ public class UserCartSessionAttribute {
     private List<UserCartProductDto> cartProducts = new ArrayList<>();
     @Setter
     private UserCartView userCartView;
+    @Setter
+    private boolean tabbedShopView;
 }

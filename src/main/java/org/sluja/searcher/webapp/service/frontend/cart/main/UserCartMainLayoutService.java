@@ -30,6 +30,10 @@ public class UserCartMainLayoutService {
         userCartSessionAttribute.getUserCartView().refreshView();
     }
 
+    public boolean isTabbedViewActivated() {
+        return userCartSessionAttribute.isTabbedShopView();
+    }
+
     public List<UserCartProductDto> getCartProducts() {
         return userCartSessionAttribute.getCartProducts();
     }
