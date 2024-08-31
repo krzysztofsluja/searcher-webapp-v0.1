@@ -49,5 +49,13 @@ public abstract class MessageReader {
         return String.format(environment.getProperty(getKeyForPropertiesFile(message)), messageParameters.toArray());
     }
 
+    public String getPropertyValueOrEmptyOnError(final String key) {
+        try {
+            return getPropertyValue(key);
+        } catch (IncorrectMessageCodeForReaderException | MessageForGivenKeyNotFoundException e) {
+            return StringUtils.EMPTY;
+        }
+    }
+
     public abstract String getPropertyValue(final String key) throws IncorrectMessageCodeForReaderException, MessageForGivenKeyNotFoundException;
 }

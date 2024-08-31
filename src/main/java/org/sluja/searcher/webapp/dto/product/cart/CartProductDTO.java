@@ -3,11 +3,13 @@ package org.sluja.searcher.webapp.dto.product.cart;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 import java.math.BigDecimal;
 
 @Builder
 @Getter
+@ToString
 public class CartProductDTO {
 
     private final String id;

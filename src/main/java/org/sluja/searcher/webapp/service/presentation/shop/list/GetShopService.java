@@ -1,7 +1,8 @@
 package org.sluja.searcher.webapp.service.presentation.shop.list;
 
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.sluja.searcher.webapp.annotation.log.object.ObjectMethodEndLog;
+import org.sluja.searcher.webapp.annotation.log.object.ObjectMethodStartLog;
 import org.sluja.searcher.webapp.annotation.validation.InputValidation;
 import org.sluja.searcher.webapp.dto.presentation.shop.list.ShopDto;
 import org.sluja.searcher.webapp.exception.presentation.SpecificEntityNotFoundException;
@@ -24,8 +25,9 @@ public class GetShopService {
     @Autowired
     private final ShopMapper shopMapper;
 
+    @ObjectMethodStartLog
+    @ObjectMethodEndLog
     public List<ShopDto> getAllShops() {
-        //TODO logging
         return shopRepository
                 .findAll()
                 .stream()
@@ -35,20 +37,21 @@ public class GetShopService {
     }
 
     @InputValidation(inputs = {ShopDto.class})
+    @ObjectMethodStartLog
+    @ObjectMethodEndLog
     public ShopDto getShopByName(final String name) throws SpecificEntityNotFoundException {
-        //TODO logging
         return shopRepository
                 .findByName(name)
                 .map(shopMapper::map)
                 .orElseThrow(ShopNotFoundException::new);
     }
 
+    @ObjectMethodStartLog
+    @ObjectMethodEndLog
     public List<ShopDto> getShopsByContextName(final String contextName) throws SpecificEntityNotFoundException {
-        //TODO logging
         final Optional<List<Shop>> shops = shopRepository
                 .findByContextName(contextName);
         if(shops.isEmpty()) {
-            //TODO logging
             throw new ShopNotFoundException();
         }
         return shops.get()

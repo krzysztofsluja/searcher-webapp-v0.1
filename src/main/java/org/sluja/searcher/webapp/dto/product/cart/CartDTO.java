@@ -1,21 +1,29 @@
 package org.sluja.searcher.webapp.dto.product.cart;
 
-import lombok.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.web.context.annotation.SessionScope;
+import org.sluja.searcher.webapp.utils.logger.LoggerMessageUtils;
+import org.sluja.searcher.webapp.utils.logger.LoggerUtils;
+import org.sluja.searcher.webapp.utils.message.builder.InformationMessageBuilder;
+import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 @NoArgsConstructor
 @Getter
+@Slf4j
 public class CartDTO {
 
     private final Map<String, CartProductDTO> products = new HashMap<>();
     @Setter
     private String userIp = StringUtils.EMPTY;
+    @Autowired
+    private LoggerMessageUtils loggerMessageUtils;
 
     private boolean doesCartContainProduct(final String id) {
         return products.keySet().stream().anyMatch(productKey -> productKey.equals(id));
@@ -47,7 +55,9 @@ public class CartDTO {
 
     public void addProduct(final CartProductDTO product) {
         if(doesCartContainProduct(product.getId())) {
-            //TODO logging
+            log.info(loggerMessageUtils.getInfoLogMessage(LoggerUtils.getCurrentClassName(),
+                    LoggerUtils.getCurrentMethodName(),
+                    InformationMessageBuilder.buildParametrizedMessage("info.cart.addition.product.already.in.cart", List.of(product.toString()))));
             increaseQuantity(product.getId(), 1L);
             return;
         }

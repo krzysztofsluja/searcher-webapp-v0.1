@@ -7,6 +7,7 @@ import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
+import org.sluja.searcher.webapp.annotation.log.object.ObjectMethodStartLog;
 import org.sluja.searcher.webapp.builder.cache.product.ProductsForShopAndCategoryRedisObjectBuilder;
 import org.sluja.searcher.webapp.dto.product.cache.ProductsForShopAndCategoryRedisObject;
 import org.sluja.searcher.webapp.dto.product.request.get.GetProductForShopNameAndCategoryRequest;
@@ -34,8 +35,8 @@ public class ProductsForShopAndCategoryAspect {
     public void productForShopAndCategoryPointcut(final GetProductForShopNameAndCategoryRequest request) {}
 
     @AfterReturning(pointcut = "productForShopAndCategoryPointcut(request)", returning = "response")
+    @ObjectMethodStartLog
     public void saveProducts(final GetProductForShopNameAndCategoryRequest request, final GetProductForShopAndCategoryResponse response) {
-        //TODO logging
         final ProductsForShopAndCategoryRedisObject redisObject;
         try {
             redisObject = productsForShopAndCategoryRedisObjectBuilder.build(response);

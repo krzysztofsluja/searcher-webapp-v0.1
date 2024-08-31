@@ -1,25 +1,27 @@
 package org.sluja.searcher.webapp.config.security;
 
-import org.springframework.context.annotation.Bean;
+import com.vaadin.flow.spring.security.VaadinWebSecurity;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
 @EnableWebSecurity
-public class WebSecurityConfiguration {
+public class WebSecurityConfiguration extends VaadinWebSecurity {
 
-    @Bean
-    public SecurityFilterChain securityFilterChain(final HttpSecurity http) throws Exception {
-        return http
-                .authorizeHttpRequests((requests) -> requests
-                        .requestMatchers("/").permitAll()
-                        .anyRequest().authenticated())
-                .httpBasic(Customizer.withDefaults())
-                .build();
+    @Override
+    protected void configure(final HttpSecurity http) throws Exception {
+        http.authorizeHttpRequests(auth -> auth.requestMatchers(new AntPathRequestMatcher("/public/**"))
+                .permitAll());
+
+        super.configure(http);
     }
 
+    @Override
+    public void configure(final WebSecurity web) throws Exception {
+        super.configure(web);
+    }
 
 }
