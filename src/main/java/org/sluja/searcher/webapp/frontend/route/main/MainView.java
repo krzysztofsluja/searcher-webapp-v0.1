@@ -10,6 +10,7 @@ import com.vaadin.flow.router.RouteAlias;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 import org.sluja.searcher.webapp.frontend.components.main.category.ICategoryLayout;
 import org.sluja.searcher.webapp.frontend.components.main.category.options.ISearchCategoryOptionsLayout;
+import org.sluja.searcher.webapp.frontend.components.main.contact.IContactFormLayout;
 import org.sluja.searcher.webapp.frontend.components.main.context.IContextLayout;
 import org.sluja.searcher.webapp.frontend.components.main.shop.IShopLayout;
 import org.sluja.searcher.webapp.service.frontend.view.mainview.MainViewService;
@@ -28,20 +29,25 @@ public class MainView extends VerticalLayout {
     private final IContextLayout mainViewContextLayout;
     private final HorizontalLayout shopsWithCategoriesLayout;
     private final MainViewService mainViewService;
+    private final IContactFormLayout mainViewContactFormLayout;
+    private final VerticalLayout contactFormLayout;
 
     @Autowired
     public MainView(final IShopLayout shopLayout,
                     final ICategoryLayout categoryLayout,
                     final ISearchCategoryOptionsLayout searchCategoryOptionsLayout,
                     @Qualifier("mainViewContextLayout") final IContextLayout mainViewContextLayout,
-                    final MainViewService mainViewService) {
+                    final MainViewService mainViewService,
+                    @Qualifier("mainViewContactFormLayout") final IContactFormLayout mainViewContactFormLayout) {
         this.shopLayout = shopLayout;
         this.categoryLayout = categoryLayout;
         this.searchCategoryOptionsLayout = searchCategoryOptionsLayout;
         this.mainViewContextLayout = mainViewContextLayout;
         this.mainViewService = mainViewService;
+        this.mainViewContactFormLayout = mainViewContactFormLayout;
         this.mainViewService.initContext(this);
         shopsWithCategoriesLayout = getShopsWithCategoriesLayout();
+        contactFormLayout = mainViewContactFormLayout.build();
         setupView();
      }
 
@@ -53,6 +59,7 @@ public class MainView extends VerticalLayout {
         mainLayout.add(mainViewContextLayout.buildContextLayout());
         mainLayout.add(shopsWithCategoriesLayout);
         mainLayout.add(getButtonLayout());
+        mainLayout.add(contactFormLayout);
         return mainLayout;
     }
 
@@ -64,6 +71,11 @@ public class MainView extends VerticalLayout {
     public void refreshShopsWithCategoriesLayout() {
         shopsWithCategoriesLayout.removeAll();
         shopsWithCategoriesLayout.add(getShopsWithCategoriesLayout());
+    }
+
+    public void refreshContactFormLayout() {
+        contactFormLayout.removeAll();
+        contactFormLayout.add(mainViewContactFormLayout.build());
     }
 
     private HorizontalLayout getShopsWithCategoriesLayout() {
