@@ -17,6 +17,7 @@ public class ContactEmailSender implements IEmailSender{
         mail.setFrom("noreply-searcher@searcher.com");
         mail.setTo(EmailConfiguration.RECEIVER_EMAIL);
         mail.setText(text);
+        mail.setSubject("Searcher - new shop request");
         javaMailSender.send(mail);
     }
 }
