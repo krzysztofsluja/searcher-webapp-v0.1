@@ -5,6 +5,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.sluja.searcher.webapp.dto.product.view.route.SearchProductsForShopsAndCategoriesRouteViewRequest;
 import org.sluja.searcher.webapp.dto.session.MainViewSearchRequestSessionAttribute;
 import org.sluja.searcher.webapp.dto.session.frontend.mainview.MainViewSearchContextForUserSessionAttribute;
+import org.sluja.searcher.webapp.dto.session.frontend.mainview.contact.MainViewContactFormSessionAttribute;
 import org.sluja.searcher.webapp.frontend.route.main.MainView;
 import org.springframework.stereotype.Service;
 
@@ -17,10 +18,17 @@ public class MainViewService {
     private final MainViewSearchContextForUserSessionAttribute mainViewSearchContextForUserSessionAttribute;
     private final MainViewSearchRequestSessionAttribute mainViewSearchRequestSessionAttribute;
     private final SearchProductsForShopsAndCategoriesRouteViewRequest searchProductsForShopsAndCategoriesRouteViewRequest;
+    private final MainViewContactFormSessionAttribute mainViewContactFormSessionAttribute;
 
     public void refreshShopsWithCategoriesLayout() {
         if(Objects.nonNull(mainViewSearchContextForUserSessionAttribute.getMainView())) {
             mainViewSearchContextForUserSessionAttribute.getMainView().refreshShopsWithCategoriesLayout();
+        }
+    }
+
+    public void refreshContactForm() {
+        if(Objects.nonNull(mainViewSearchContextForUserSessionAttribute.getMainView())) {
+            mainViewSearchContextForUserSessionAttribute.getMainView().refreshContactFormLayout();
         }
     }
 
@@ -32,6 +40,10 @@ public class MainViewService {
         mainViewSearchContextForUserSessionAttribute.setCategoryContext(StringUtils.EMPTY);
         mainViewSearchRequestSessionAttribute.getShopsWithCategories().clear();
         mainViewSearchContextForUserSessionAttribute.setMainView(mainView);
+        mainViewContactFormSessionAttribute.setShopAddressUrl(StringUtils.EMPTY);
+        mainViewContactFormSessionAttribute.setShopNameTextWithAdditionalInformation(StringUtils.EMPTY);
+        mainViewContactFormSessionAttribute.setShouldClientBeNotified(false);
+        mainViewContactFormSessionAttribute.setContactUserEmail(StringUtils.EMPTY);
     }
 
     public void setProductViewSearchRequest() {
